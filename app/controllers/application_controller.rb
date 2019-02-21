@@ -2,10 +2,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def user
-    @user ||= User.first || User.create!(
-      uuid: "abc123",
-      name: "Test User",
-      treatment_start: Time.current,
-    )
+    @user ||= User.first.tap { |u| raise "NoAccountError" if u.nil? }
   end
 end
