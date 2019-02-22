@@ -4,6 +4,7 @@ require "json"
 #
 # Just... run the code.
 class CodeController < ApplicationController
+  before_action :set_cors_headers, only: [:evaluate, :cors_preflight]
   skip_before_action :verify_authenticity_token
 
   def evaluate
@@ -38,7 +39,17 @@ class CodeController < ApplicationController
     convey(results_of_executing(code))
   end
 
+  def cors_preflight
+    render plain: "", status: 200
+  end
+
   private
+
+  def set_cors_headers
+    response.set_header("Allow", "POST")
+    response.set_header("Access-Control-Allow-Origin", "*")
+    response.set_header("Access-Control-Allow-Headers", "Content-Type")
+  end
 
   # Securely transport information to the public context
   # (in this case, a web client)
