@@ -1,5 +1,6 @@
 require "json"
 require "bcrypt"
+require "securerandom"
 
 # Run code.
 #
@@ -64,7 +65,7 @@ class CodeController < ApplicationController
     # https://guides.rubyonrails.org/debugging_rails_applications.html#the-logger
     logger.tagged("information.conveyed") { logger.info information.to_json }
 
-    render json: information
+    render json: information.to_json
   end
 
   # Primitives are always "valid",

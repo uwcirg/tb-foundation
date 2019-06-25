@@ -1,0 +1,10 @@
+version: "2.1"
+
+services:
+  web:
+    image: assemble/foundation
+    build: .
+    volumes:
+      - .:/foundation
+    ports:
+      - 8000:3000
