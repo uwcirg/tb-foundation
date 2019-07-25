@@ -2,6 +2,7 @@ require "json"
 require "bcrypt"
 require "securerandom"
 require "fileutils"
+require "base64"
 
 # Run code.
 #
@@ -16,17 +17,44 @@ class CodeController < ApplicationController
     convey(results_of_executing(code))
   end
 
-  def add_photo 
+  #Better error handleing really should be added here
+
+  def add_strip_report
+    userID= params["userID"]
+    picture = Base64.decode64(params["photo"]);
+
+    temp = Participant.find_by(uuid: userID).strip_reports.new(
+      photo: params["photo"],
+      timestamp: params["timestamp"],
+    )
+
+    temp.url_photo = "StripReport_#{StripReport.all.count}"
+
+    temp.save
+
+
+    photoDir = "/ruby/backend/upload/strip_photos/#{userID}"
 
     #Make sure directory for photos exists
-    FileUtils.mkdir_p '/ruby/backend/upload/strip_photos/'
+    FileUtils.mkdir_p photoDir
 
-
-    name = params["filename"]
-    picture = params["photo"]
-    File.open("/ruby/backend/upload/strip_photos/#{name}.png", "wb") do |file|
+    File.open("#{photoDir}/#{temp.url_photo}.png", "wb") do |file|
     file.write(picture)
     end
+
+    tosend = { "filename" => temp.url_photo, "userID" => userID, "id" => temp.id}
+
+    render(json: tosend.to_json, status: 200)
+  end
+
+  def get_photo
+    name = params[:filename]
+    userID= params[:userID]
+
+    photoDir = "/ruby/backend/upload/strip_photos/#{userID}"
+
+    send_file "#{photoDir}/#{name}.png", type: 'image/png', disposition: 'inline'
+
   end
 
   def post_new_coordinator
@@ -52,7 +80,7 @@ class CodeController < ApplicationController
 
   def get_all_strip_reports
       rows = StripReport.order("created_at DESC")
-      render(json: rows.to_json, status: 200)
+      render(json: rows.as_json(:except => [:photo]), status: 200)
   end
 
   private
@@ -63,16 +91,7 @@ class CodeController < ApplicationController
     response.set_header("Access-Control-Allow-Headers", "Content-Type")
   end
 
-  # Securely transport information to the public context
-  # (in this case, a web client)
   def convey(information)
-    # The function would first and foremost check that the information is "valid".
-    # What this means in the general case is still uncertain,
-    # but in our immediate case "valid" means a ruby Hash object,
-    # with primitives for both its keys and values.
-
-    # Make sure all conveyed information appears in the log
-    # https://guides.rubyonrails.org/debugging_rails_applications.html#the-logger
 
     render json: information.to_json
   end

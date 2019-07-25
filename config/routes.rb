@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   post "/coordinator", to: "code#post_new_coordinator"
 
-  post "/photo", to: "code#add_photo"
+  post "/photo", to: "code#add_strip_report"
+
+  get "/photo/:userID/:filename", to: "code#get_photo"
 
   get "/testingnew", :to => redirect('/test.html')
 
