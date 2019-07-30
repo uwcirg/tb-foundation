@@ -22,13 +22,17 @@ class CodeController < ApplicationController
   def add_strip_report
     userID= params["userID"]
     picture = Base64.decode64(params["photo"]);
+    baseURL = ENV["URL_API"]
 
     temp = Participant.find_by(uuid: userID).strip_reports.new(
       photo: params["photo"],
       timestamp: params["timestamp"],
-    )
+    )   
 
-    temp.url_photo = "StripReport_#{StripReport.all.count}"
+    date = Time.now.strftime("%Y%m%dT%H%M%S")
+    filename = "strip_report_#{StripReport.all.count + 1}_#{date}"
+    
+    temp.url_photo = "#{baseURL}/photo/#{userID}/#{filename}"
 
     temp.save
 
@@ -38,7 +42,7 @@ class CodeController < ApplicationController
     #Make sure directory for photos exists
     FileUtils.mkdir_p photoDir
 
-    File.open("#{photoDir}/#{temp.url_photo}.png", "wb") do |file|
+    File.open("#{photoDir}/#{filename}.png", "wb") do |file|
     file.write(picture)
     end
 
@@ -93,7 +97,7 @@ class CodeController < ApplicationController
 
   def convey(information)
 
-    render json: information.to_json
+    render json: information.to_json(:except => :photo)
   end
 
   # Primitives are always "valid",
