@@ -4,6 +4,7 @@ class StripReport < ApplicationRecord
   
   def as_json(*args)
     {
+      id: id,
       participant_id: participant_id,
       timestamp: timestamp,
       url_photo: url_photo,
