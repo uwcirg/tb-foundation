@@ -9,10 +9,34 @@ require "base64"
 # Just... run the code.
 class CodeController < ApplicationController
   before_action :set_cors_headers, only: [:evaluate, :cors_preflight]
+  before_action :authorize_request, :except => [:cors_preflight]
   skip_before_action :verify_authenticity_token
+
+  def authorize_request
+    header = request.headers['Authorization']
+    header = header.split(' ').last if header
+    begin
+      @decoded = JsonWebToken.decode(header)
+
+      @current_user = Participant.find(@decoded[:uuid])
+
+    rescue ActiveRecord::RecordNotFound => e
+
+      #This is messy, maybe break into a few methods
+      begin 
+        @current_user = Coordinator.find(@decoded[:uuid])
+      rescue ActiveRecord::RecordNotFound => e
+        render json: { errors: e.message }, status: :unauthorized
+      end
+
+    rescue JWT::DecodeError => e
+      render json: { errors: e.message }, status: :unauthorized
+    end
+  end
 
   def evaluate
     code = params.permit(:code)[:code]
+    puts("code #{code}")
 
     convey(results_of_executing(code))
   end
@@ -79,12 +103,6 @@ class CodeController < ApplicationController
     response.set_header("Allow", "POST")
     response.set_header("Access-Control-Allow-Origin", "*")
     response.set_header("Access-Control-Allow-Headers", "Content-Type") 
-  end
-
-
-  def get_all_strip_reports
-      rows = StripReport.order("created_at DESC")
-      render(json: rows.as_json(:except => [:photo]), status: 200)
   end
 
   private
