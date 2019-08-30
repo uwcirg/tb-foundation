@@ -9,19 +9,19 @@ Rails.application.routes.draw do
 
   get "/public_certificate", to: "crypto#public_certificate"
 
-  #match "/evaluate", to: "code#cors_preflight", via: [:options]
-  
-  #match "/photo", to: "code#cors_preflight", via: [:options]
-
   get "*path", to: static("index.html")
 
   #New routes for overhual
   post "/participant", to: "participant#create_new_participant"
-  #match "/participant", to: "participant#set_cors_headers", via: [:options]
 
   #Authentication Routes
   post '/auth/login/participant', to: 'auth#login_participant'
   post '/auth/login/coordinator', to: 'auth#login_coordinator'
-  #match '/auth/login', to: "code#cors_preflight", via: [:options]
+
+  #Currently logged in participant modification routes
+  get '/participant/current', to: 'participant#get_current_participant'
+  patch '/participant/current', to: 'participant#update_information'
+  patch '/participant/current/password', to: 'participant#update_password'
+  patch '/participant/:userID/reset_password', to: 'participant#reset_password'
 
 end
