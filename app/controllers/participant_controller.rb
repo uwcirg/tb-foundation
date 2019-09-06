@@ -13,6 +13,10 @@ class ParticipantController < ApplicationController
         render( json: current.to_json, status: 200)
     end
 
+    def get_specific_participant
+        #TODO
+    end
+
     def create_new_participant
 
         newAccount = Participant.new(
@@ -36,8 +40,13 @@ class ParticipantController < ApplicationController
 
     def update_password
         if params["password"] == params["password_check"]
-            Participant.update(@current_user.id, {password_digest:  BCrypt::Password.create(params["password"])})
-            render(json: {message: "Password update sucessful"}, status: 200)
+
+            if( BCrypt::Password.new(@current_user.password_digest) == params["current_password"])
+                Participant.update(@current_user.id, {password_digest:  BCrypt::Password.create(params["password"])})
+                render(json: {message: "Password update sucessful"}, status: 200)
+            else
+                render(json: {error: "Incorrect current password"},status: 400)
+            end
         else 
             render(json: {error: "New password and password_check do not match"},status: 400)
         end
