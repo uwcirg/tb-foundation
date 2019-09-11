@@ -4,17 +4,16 @@ require "securerandom"
 require "fileutils"
 require "base64"
 
-class CodeController < ApplicationController
-  before_action :auth_any_user, :except => [:cors_preflight]
+class CodeController < AuthenticatedController
+  #before_action :auth_any_user, :except => [:cors_preflight]
+  before_action :auth_any_user
   skip_before_action :verify_authenticity_token
  
 
   def evaluate
 
     #note you have access to variables from above controllers here
-    puts("here #{@current_user}")
     code = params.permit(:code)[:code]
-
     convey(results_of_executing(code))
   end
 

@@ -1,7 +1,23 @@
 
-class AuthController < ApplicationController
+class LoginController < ApplicationController
 
     skip_before_action :verify_authenticity_token
+
+  def create_new_participant
+
+    newAccount = Participant.new(
+      name: params["name"],
+      phone_number: params["phone_number"],
+      treatment_start: params["treatment_start"],
+      password_digest:  BCrypt::Password.create(params["password"]),
+      uuid: SecureRandom.uuid
+    )
+
+    newAccount.save
+
+    render(json: newAccount.to_json, status: 200)
+
+  end
 
   # POST /auth/login
   def login_participant
@@ -14,7 +30,7 @@ class AuthController < ApplicationController
     @user = Coordinator.find_by(email: params[:email])
     @user_type = "coordinator"
     authenticate()
-  end 
+  end
 
   private
 
@@ -28,6 +44,6 @@ class AuthController < ApplicationController
         render json: { error: 'unauthorized' }, status: :unauthorized
       end
 
-  end 
+  end
 
 end

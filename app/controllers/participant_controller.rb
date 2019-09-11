@@ -1,41 +1,56 @@
-require 'securerandom'
-
-class ParticipantController < ApplicationController
-    before_action :auth_participant, :except => [:create_new_participant,:reset_password]
+class ParticipantController < AuthenticatedController
+    before_action :auth_participant
     
     #Require coordinator authentication for user password reset
     before_action :auth_coordinator, :only => [:reset_password]
     skip_before_action :verify_authenticity_token
-
 
     def get_current_participant
         current = Participant.find(@current_user.id);
         render( json: current.to_json, status: 200)
     end
 
-    def get_specific_participant
-        #TODO
-    end
-
-    def create_new_participant
-
-        newAccount = Participant.new(
-          name: params["name"],
-          phone_number: params["phone_number"],
-          treatment_start: params["treatment_start"],
-          password_digest:  BCrypt::Password.create(params["password"]),
-          uuid: SecureRandom.uuid
-        )
-    
-        newAccount.save
-    
-        render(json: newAccount.to_json, status: 200)
-    
+    def create_note
+        new_note = @current_user.notes.create!({title: params[:title], text: params[:text]});
+        all_notes = @current_user.notes
+        render(json: all_notes, status: 200)
     end
 
     def update_information
         account = Participant.update(@current_user.id,update_params)
         render(json: account.to_json, status: 200)
+    end
+
+    def report_medication
+        new_report = @current_user.medication_reports.create!({timestamp: params[:timestamp],
+         took_medication: params[:took_medication],
+          not_taking_medication_reason: params[:not_taking_medication_reason]})
+        
+        all_reports = @current_user.medication_reports
+        render(json: all_reports, status: 200)
+    end
+
+    def report_symptoms
+        filtered_params = params.permit([:nausea,
+            :nausea_rating,
+            :redness,
+            :hives,
+            :fever,
+            :appetite_loss,
+            :blurred_vision,
+            :sore_belly,
+            :yellow_coloration,
+            :difficulty_breathing,
+            :facial_swelling,
+            :dizziness,
+            :headache,
+            :other,
+        :timestamp])
+
+        new_report = @current_user.symptom_reports.create!(filtered_params.to_h)
+
+        all_reports = @current_user.symptom_reports
+        render(json: all_reports, status: 200);
     end
 
     def update_password
@@ -52,13 +67,6 @@ class ParticipantController < ApplicationController
         end
 
     end
-
-    def reset_password
-        random_string = SecureRandom.hex[0,7];
-        Participant.update(params["userID"],{password_digest:  BCrypt::Password.create(random_string)} )
-        render(json: {new_password: random_string}, status: 200)
-    end
-
 
     private
 
