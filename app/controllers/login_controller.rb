@@ -1,7 +1,6 @@
-
 class LoginController < ApplicationController
 
-    skip_before_action :verify_authenticity_token
+  skip_before_action :verify_authenticity_token
 
   def create_new_participant
 
@@ -43,7 +42,6 @@ class LoginController < ApplicationController
       else
         render json: { error: 'unauthorized' }, status: :unauthorized
       end
-
   end
 
 end

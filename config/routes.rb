@@ -28,5 +28,9 @@ Rails.application.routes.draw do
 
   #Coordinator only routes
   patch '/participant/:userID/reset_password', to: 'coordinator#reset_password'
+  post '/coordinator/temp_file_link', to: 'coordinator#generate_zip_url'
+
+  #Test
+  get '/strip_zip_file', to: 'temp#generate_zip'
 
 end

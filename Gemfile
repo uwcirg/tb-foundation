@@ -13,6 +13,7 @@ gem "puma", "~> 3.7"
 gem "rails", "~> 5.1.4"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'jwt'
+gem 'rubyzip'
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console
