@@ -1,3 +1,7 @@
+require "fileutils"
+require "base64"
+
+
 class ParticipantController < AuthenticatedController
     before_action :auth_participant
     
@@ -67,6 +71,39 @@ class ParticipantController < AuthenticatedController
         end
 
     end
+
+    def add_strip_report
+        userID= params["userID"]
+        picture = Base64.decode64(params["photo"]);
+        baseURL = ENV["URL_API"]
+    
+        temp = Participant.find_by(uuid: userID).strip_reports.new(
+          photo: params["photo"],
+          timestamp: params["timestamp"],
+        )   
+    
+        date = Time.now.strftime("%Y%m%dT%H%M%S")
+        filename = "strip_report_#{StripReport.all.count + 1}_#{date}"
+        
+        temp.url_photo = "#{baseURL}/photo/#{userID}/#{filename}"
+    
+        temp.save
+    
+    
+        photoDir = "/ruby/backend/upload/strip_photos/#{userID}"
+    
+        #Make sure directory for photos exists
+        FileUtils.mkdir_p photoDir
+    
+        File.open("#{photoDir}/#{filename}.png", "wb") do |file|
+        file.write(picture)
+        end
+          #Better error handleing really should be added here
+
+    tosend = { "filename" => temp.url_photo, "userID" => userID, "id" => temp.id}
+
+    render(json: tosend.to_json, status: 200)
+  end
 
     private
 

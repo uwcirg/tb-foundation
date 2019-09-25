@@ -1,11 +1,6 @@
 Rails.application.routes.draw do
-  post "/evaluate", to: "code#evaluate"
 
-  post "/coordinator", to: "code#post_new_coordinator"
-
-  post "/photo", to: "code#add_strip_report"
-
-  get "/photo/:userID/:filename", to: "code#get_photo"
+  get "/photo/:userID/:filename", to: "common#get_photo"
 
   get "/public_certificate", to: "crypto#public_certificate"
 
@@ -25,12 +20,20 @@ Rails.application.routes.draw do
   post '/participant/current/notes', to: 'participant#create_note'
   post '/participant/current/medication_report', to: 'participant#report_medication'
   post '/participant/current/symptom_report', to: 'participant#report_symptoms'
+  post "/photo", to: "participant#add_strip_report"
 
   #Coordinator only routes
-  patch '/participant/:userID/reset_password', to: 'coordinator#reset_password'
+  post "/coordinator", to: "coordinator#post_new_coordinator"
   post '/coordinator/temp_file_link', to: 'coordinator#generate_zip_url'
+  get '/coordinator/current', to: 'coordinator#get_current_coordinator'
 
-  #Test
+  patch '/participant/:userID/reset_password', to: 'coordinator#reset_password'
+  get '/participant/all', to: 'coordinator#get_records'
+  get '/participant/:userID', to: 'coordinator#get_participant'
+
+  post '/resolution', to: 'coordinator#resolve_records'
+  
+  post '/strip_report/:userID/status', to: 'coordinator#set_photo_status'
   get '/strip_zip_file', to: 'temp#generate_zip'
 
 end
