@@ -1,5 +1,6 @@
 require "fileutils"
 require "base64"
+require 'twilio-ruby'
 
 
 class ParticipantController < AuthenticatedController

@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   get "/photo/:userID/:filename", to: "common#get_photo"
 
+  #TODO - take this out for the next deploy
   get "/public_certificate", to: "crypto#public_certificate"
 
   get "*path", to: static("index.html")
@@ -26,13 +27,10 @@ Rails.application.routes.draw do
   post "/coordinator", to: "coordinator#post_new_coordinator"
   post '/coordinator/temp_file_link', to: 'coordinator#generate_zip_url'
   get '/coordinator/current', to: 'coordinator#get_current_coordinator'
-
   patch '/participant/:userID/reset_password', to: 'coordinator#reset_password'
   get '/participant/all', to: 'coordinator#get_records'
   get '/participant/:userID', to: 'coordinator#get_participant'
-
-  post '/resolution', to: 'coordinator#resolve_records'
-  
+  post '/resolution', to: 'coordinator#resolve_records' 
   post '/strip_report/:userID/status', to: 'coordinator#set_photo_status'
   get '/strip_zip_file', to: 'temp#generate_zip'
 

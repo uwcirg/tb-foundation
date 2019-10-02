@@ -14,6 +14,8 @@ gem "rails", "~> 5.1.4"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'jwt'
 gem 'rubyzip'
+gem 'twilio-ruby', '~> 5.27.0'
+
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console

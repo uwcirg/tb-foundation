@@ -4,7 +4,9 @@ This is the backend API for a project intended to improve tuberculosis treatment
 
 Provides REST style routes for CRUD operations about patients history and information. 
 
+## API Routes and descriptions
+[TB-Backend on Postman Documenter](https://documenter.getpostman.com/view/8985648/SVtPYrMr?version=latest)
+
 
 More documentation coming soon.
-Last updated (9/30/19)
 
