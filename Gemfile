@@ -10,7 +10,7 @@ gem "rack-cors"
 gem "bcrypt", "~> 3.1"
 gem "pg", "~> 0.18"
 gem "puma", "~> 3.7"
-gem "rails", "~> 5.1.4"
+gem "rails", "~> 6.0"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'jwt'
 gem 'rubyzip'
@@ -21,5 +21,5 @@ group :development, :test do
   # Call `byebug` to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "pry"
-  gem "rspec-rails"
 end
+

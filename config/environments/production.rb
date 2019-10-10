@@ -1,4 +1,8 @@
 Rails.application.configure do
+  #Test - adding this on
+  config.log_level = :info
+  config.logger = Logger.new('/proc/1/fd/1')
+
   # Code is not reloaded between requests.
   config.cache_classes = true
 

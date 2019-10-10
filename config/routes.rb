@@ -2,11 +2,6 @@ Rails.application.routes.draw do
 
   get "/photo/:userID/:filename", to: "common#get_photo"
 
-  #TODO - take this out for the next deploy
-  get "/public_certificate", to: "crypto#public_certificate"
-
-  get "*path", to: static("index.html")
-
   #New routes for overhual
   post "/participant", to: "login#create_new_participant"
 

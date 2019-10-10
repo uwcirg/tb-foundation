@@ -13,4 +13,4 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV['DATA'] %>/production
+  url: <%= ENV['DATA'] %>/development
