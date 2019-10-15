@@ -37,8 +37,8 @@ class LoginController < ApplicationController
 
     if @user && BCrypt::Password.new(@user.password_digest) == params[:password]
         token = JsonWebToken.encode(uuid: @user.id)
-        time = Time.now + 24.hours.to_i
-        render json: { token: token, exp: time.strftime("%m-%d-%Y %H:%M"), uuid: @user.id, user_type: @user_type }, status: :ok
+        time = Time.now + 7.days.to_i
+        render json: { token: token, exp: time.iso8601, uuid: @user.id, user_type: @user_type }, status: :ok
       else
         render json: { error: 'unauthorized' }, status: :unauthorized
       end

@@ -7,6 +7,13 @@ class JsonWebToken
     #   JWT.encode(payload, SECRET_KEY)
     # end
 
+    #This is what to use
+    # def self.encode(payload, exp = 7.days.from_now)
+    #   payload[:exp] = exp.to_i
+    #   JWT.encode(payload, SECRET_KEY)
+    # end
+
+    #For testing 
     def self.encode(payload, exp = 7.days.from_now)
       payload[:exp] = exp.to_i
       JWT.encode(payload, SECRET_KEY)
