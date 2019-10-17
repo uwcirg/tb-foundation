@@ -57,7 +57,7 @@ class CoordinatorController < AuthenticatedController
 
     def set_photo_status
         StripReport.find(params["userID"]).update(status: params["status"]);
-        render plain: "photo status updated", status: :ok
+        render json: {status: "photo status updated"}, status: :ok
     end
 
     def post_new_coordinator
