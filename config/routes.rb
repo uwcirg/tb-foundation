@@ -29,4 +29,8 @@ Rails.application.routes.draw do
   post '/strip_report/:userID/status', to: 'coordinator#set_photo_status'
   get '/strip_zip_file', to: 'temp#generate_zip'
 
+  post '/push', to: 'login#send_push_to_user'
+  get '/push_key', to: 'login#push_key'
+  patch '/update_user_subscription', to: 'login#update_user_subscription'
+
 end

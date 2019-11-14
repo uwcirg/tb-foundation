@@ -14,7 +14,7 @@ gem "rails", "~> 6.0"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'jwt'
 gem 'rubyzip'
-gem 'twilio-ruby', '~> 5.27.0'
+gem 'webpush'
 
 
 group :development, :test do

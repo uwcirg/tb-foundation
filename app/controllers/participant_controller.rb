@@ -77,10 +77,19 @@ class ParticipantController < AuthenticatedController
         userID= params["userID"]
         picture = Base64.decode64(params["photo"]);
         baseURL = ENV["URL_API"]
+        timeString = params[:timestamp]
+        
+        puts("JUST TESTING")
+        puts(params[:timestamp])
+
+        # temp = Participant.find_by(uuid: userID).strip_reports.new(
+        #     photo: "n/a",
+        #     timestamp: params["timestamp"],
+        #   )   
     
         temp = Participant.find_by(uuid: userID).strip_reports.new(
-          photo: params["photo"],
-          timestamp: params["timestamp"],
+          timestamp: "2019-10-22T18:50:25.699-04:00",
+          photo: "n/a"
         )   
     
         date = Time.now.strftime("%Y%m%dT%H%M%S")
@@ -88,8 +97,9 @@ class ParticipantController < AuthenticatedController
         
         temp.url_photo = "#{baseURL}/photo/#{userID}/#{filename}"
     
+        puts("#HERE")
+        puts(temp.to_json)
         temp.save
-    
     
         photoDir = "/ruby/backend/upload/strip_photos/#{userID}"
     
