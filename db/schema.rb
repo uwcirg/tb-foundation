@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_09_193726) do
+ActiveRecord::Schema.define(version: 2019_12_12_224537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -120,6 +120,22 @@ ActiveRecord::Schema.define(version: 2019_12_09_193726) do
     t.string "resolution_uuid"
     t.boolean "headache"
     t.boolean "dizziness"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "password_digest", null: false
+    t.boolean "active", default: true, null: false
+    t.string "family_name", null: false
+    t.string "given_name", null: false
+    t.string "managing_organization", null: false
+    t.integer "language", default: 0, null: false
+    t.string "push_url"
+    t.string "push_auth"
+    t.string "push_p256dh"
+    t.string "email"
+    t.string "phone_number"
+    t.string "general_practitioner"
+    t.datetime "treatment_start"
   end
 
   add_foreign_key "medication_reports", "participants", primary_key: "uuid"
