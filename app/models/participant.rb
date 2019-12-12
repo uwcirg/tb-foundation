@@ -4,6 +4,10 @@ class Participant < ApplicationRecord
   has_many :symptom_reports, dependent: :destroy
   has_many :notes, as: :author, dependent: :destroy
 
+  #Messaging Links
+  has_many :messages, as: :creator, dependent: :destroy
+  has_many :channels, as: :creator, dependent: :destroy
+
   validates :name, presence: true
   validates :phone_number, presence: true, uniqueness: true
   validates :treatment_start, presence: true

@@ -2,18 +2,28 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `rails
+# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190410205240) do
+ActiveRecord::Schema.define(version: 2019_12_09_193726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "channels", force: :cascade do |t|
+    t.string "creator_id", null: false
+    t.string "creator_type", null: false
+    t.string "title", null: false
+    t.string "subtitle"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["creator_type", "creator_id"], name: "index_channels_on_creator_type_and_creator_id"
+  end
 
   create_table "coordinators", primary_key: "uuid", id: :string, force: :cascade do |t|
     t.string "name", null: false
@@ -34,6 +44,16 @@ ActiveRecord::Schema.define(version: 20190410205240) do
     t.string "resolution_uuid"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "channel_id"
+    t.string "creator_id", null: false
+    t.string "creator_type", null: false
+    t.text "body", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["creator_type", "creator_id"], name: "index_messages_on_creator_type_and_creator_id"
+  end
+
   create_table "notes", force: :cascade do |t|
     t.string "author_type", null: false
     t.text "title"
@@ -51,6 +71,9 @@ ActiveRecord::Schema.define(version: 20190410205240) do
     t.date "treatment_start", null: false
     t.string "phone_number", null: false
     t.string "password_digest", null: false
+    t.string "push_url"
+    t.string "push_auth"
+    t.string "push_p256dh"
     t.index ["uuid"], name: "index_participants_on_uuid"
   end
 
@@ -74,6 +97,7 @@ ActiveRecord::Schema.define(version: 20190410205240) do
     t.string "status"
     t.text "photo", null: false
     t.string "resolution_uuid"
+    t.string "url_photo"
   end
 
   create_table "symptom_reports", force: :cascade do |t|
@@ -94,9 +118,12 @@ ActiveRecord::Schema.define(version: 20190410205240) do
     t.datetime "updated_at", null: false
     t.integer "nausea_rating"
     t.string "resolution_uuid"
+    t.boolean "headache"
+    t.boolean "dizziness"
   end
 
   add_foreign_key "medication_reports", "participants", primary_key: "uuid"
+  add_foreign_key "messages", "channels"
   add_foreign_key "strip_reports", "participants", primary_key: "uuid"
   add_foreign_key "symptom_reports", "participants", primary_key: "uuid"
 end

@@ -34,8 +34,8 @@ class LoginController < ApplicationController
   end
   
   def push_key
-    decoded = Base64.urlsafe_decode64(ENV['VAPID_PUBLIC_KEY']).bytes
-    render(json: decoded.to_json, status: 200)
+    vapid_key = ENV['VAPID_PUBLIC_KEY']
+    render(json: {key: vapid_key}, status: 200)
   end
 
   def update_user_subscription
@@ -58,8 +58,8 @@ class LoginController < ApplicationController
 
     message = JSON.generate(
       title: params[:message],
-      body: "A great notification",
-      icon: "https://cnet3.cbsistatic.com/img/Yt768C55hXNi2eGSB9qOv-e7SQg=/2011/03/16/c7675aa8-fdba-11e2-8c7c-d4ae52e62bcc/Chrome-logo-2011-03-16.jpg",
+      body: "name: #{user.name} uuid: #{user.uuid}",
+      icon: "https://images.idgesg.net/images/article/2019/04/google-shift-100794036-large.jpg",
       url: "https://tb-app.cirg.washington.edu"
     )
     
@@ -71,8 +71,8 @@ class LoginController < ApplicationController
       ttl: 24 * 60 * 60,
       vapid: {
         subject: 'mailto:sender@example.com',
-        public_key: ENV['VAPID_PUBLIC_KEY'],
-        private_key: ENV['VAPID_PRIVATE_KEY']
+        public_key: "BMSAvU3i4-87WUvEFijxz-sNq7255ACiF8ubt2196lWu9l0U2eLqXeLt-8ZVUXt4djlQyiiJul23VVt7giO1d_U=",
+        private_key: "iE2ZXg3t_IaZrm2noz2Z8uW_N0kgea9oVacU-8uXRGg="
       }
     )
 

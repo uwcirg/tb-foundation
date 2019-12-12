@@ -1,6 +1,5 @@
 require "fileutils"
 require "base64"
-require 'twilio-ruby'
 
 
 class ParticipantController < AuthenticatedController
@@ -11,7 +10,11 @@ class ParticipantController < AuthenticatedController
     skip_before_action :verify_authenticity_token
 
     def get_current_participant
-        current = Participant.find(@current_user.id);
+        current = Participant.find(@current_user.id).attributes
+
+        #Add push notification key
+        current[:vapid_key] = ENV['VAPID_PUBLIC_KEY'];
+
         render( json: current.to_json, status: 200)
     end
 

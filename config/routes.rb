@@ -33,4 +33,12 @@ Rails.application.routes.draw do
   get '/push_key', to: 'login#push_key'
   patch '/update_user_subscription', to: 'login#update_user_subscription'
 
+  #post '/message', to: 'message#post_message'
+  post '/channel', to: 'channel#new_channel'
+  get '/channels', to: 'channel#all_channels'
+
+  post '/channel/:channelID', to: 'channel#post_message'
+  get '/channel/:channelID/messages', to: 'channel#get_recent_messages'
+  get '/channel/:channelID/messages/:messageID', to: 'channel#get_messages_before'
+
 end
