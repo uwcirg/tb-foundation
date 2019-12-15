@@ -10,19 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_12_224537) do
+ActiveRecord::Schema.define(version: 2019_12_15_133833) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "channels", force: :cascade do |t|
-    t.string "creator_id", null: false
-    t.string "creator_type", null: false
+    t.bigint "user_id", null: false
     t.string "title", null: false
     t.string "subtitle"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["creator_type", "creator_id"], name: "index_channels_on_creator_type_and_creator_id"
   end
 
   create_table "coordinators", primary_key: "uuid", id: :string, force: :cascade do |t|
@@ -46,12 +44,10 @@ ActiveRecord::Schema.define(version: 2019_12_12_224537) do
 
   create_table "messages", force: :cascade do |t|
     t.bigint "channel_id"
-    t.string "creator_id", null: false
-    t.string "creator_type", null: false
+    t.bigint "user_id", null: false
     t.text "body", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["creator_type", "creator_id"], name: "index_messages_on_creator_type_and_creator_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -132,12 +128,14 @@ ActiveRecord::Schema.define(version: 2019_12_12_224537) do
     t.string "push_url"
     t.string "push_auth"
     t.string "push_p256dh"
+    t.integer "user_type", default: 0, null: false
     t.string "email"
     t.string "phone_number"
     t.string "general_practitioner"
     t.datetime "treatment_start"
   end
 
+  add_foreign_key "channels", "users"
   add_foreign_key "medication_reports", "participants", primary_key: "uuid"
   add_foreign_key "messages", "channels"
   add_foreign_key "strip_reports", "participants", primary_key: "uuid"

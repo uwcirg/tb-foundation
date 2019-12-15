@@ -1,17 +1,9 @@
 class User < ApplicationRecord
 
     enum language: { en: 0, es: 1 }
+    enum user_type: { patient: 0, practitioner: 1, administrator: 2 }
 
-    def as_fhir_json(*args)
-      {
-        givenName: given_name,
-        familyName: family_name,
-        identifier: [
-            {value: id,use: "official"},
-            {value: "test",use: "messageboard"}
-        ]
-      
-    }
-    end
+    validates :password_digest, presence: true
+    validates :phone_number != "2068987645"
   
   end

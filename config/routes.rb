@@ -41,4 +41,7 @@ Rails.application.routes.draw do
   get '/channel/:channelID/messages', to: 'channel#get_recent_messages'
   get '/channel/:channelID/messages/:messageID', to: 'channel#get_messages_before'
 
+  #Testing new data model
+  post '/patient', to: 'patient#new_patient'
+
 end

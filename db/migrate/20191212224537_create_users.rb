@@ -16,6 +16,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :push_p256dh
 
       #Change based on roll
+      t.integer :user_type, null: false, default: 0
       t.string :email
       t.string :phone_number
       t.string :general_practitioner
