@@ -3,8 +3,25 @@ require "base64"
 
 
 class PatientController < ApplicationController
-    #before_action :auth_participant
+    before_action :auth_patient
     skip_before_action :verify_authenticity_token
+
+
+    def auth_patient
+    # def auth_participant
+    #   #@decoded = decode_token
+    #   @current_user = Participant.find(@decoded[:uuid])
+  
+    #   rescue ActiveRecord::RecordNotFound => e
+    #     render json: { errors: "Unauthorized participant" }, status: :unauthorized
+    #   end
+    # end
+    end
+
+    def get_patient
+        relevantPatient = Patient.find(params["patientID"]);
+        render(json: relevantPatient.as_json, status: 200);
+    end
 
     def new_patient
 
@@ -19,7 +36,7 @@ class PatientController < ApplicationController
             treatment_start: Date.today
         )
 
-        render(json: new_patient.as_fhir_json, status: 200)
+        render(json: new_patient.as_json, status: 200)
     end
 
 

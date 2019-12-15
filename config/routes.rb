@@ -43,5 +43,7 @@ Rails.application.routes.draw do
 
   #Testing new data model
   post '/patient', to: 'patient#new_patient'
+  get '/patient/:patientID', to: 'patient#get_patient'
+  post '/authentication', to: 'user#authenticate'
 
 end

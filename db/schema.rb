@@ -128,7 +128,7 @@ ActiveRecord::Schema.define(version: 2019_12_15_133833) do
     t.string "push_url"
     t.string "push_auth"
     t.string "push_p256dh"
-    t.integer "user_type", default: 0, null: false
+    t.integer "type", default: 0, null: false
     t.string "email"
     t.string "phone_number"
     t.string "general_practitioner"
