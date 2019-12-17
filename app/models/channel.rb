@@ -1,6 +1,5 @@
 class Channel < ApplicationRecord
     has_many :messages
-    belongs_to :creator, polymorphic: true
-
+    belongs_to :user
     validates :title, presence: true, uniqueness: true  
 end

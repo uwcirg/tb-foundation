@@ -5,10 +5,6 @@ Rails.application.routes.draw do
   #New routes for overhual
   post "/participant", to: "login#create_new_participant"
 
-  #Authentication Routes
-  post '/auth/login/participant', to: 'login#login_participant'
-  post '/auth/login/coordinator', to: 'login#login_coordinator'
-
   #Currently logged in participant modification routes
   get '/participant/current', to: 'participant#get_current_participant'
   patch '/participant/current', to: 'participant#update_information'
@@ -42,8 +38,14 @@ Rails.application.routes.draw do
   get '/channel/:channelID/messages/:messageID', to: 'channel#get_messages_before'
 
   #Testing new data model
-  post '/patient', to: 'patient#new_patient'
   get '/patient/:patientID', to: 'patient#get_patient'
   post '/authentication', to: 'user#authenticate'
+
+  #Routes from in progress refractoring
+  post '/authenticate', to: 'user#login'
+  post '/practitioner', to: 'administrator#create_practitioner'
+
+  post '/administrator', to:'practitioner#create_admin'
+  post '/patient', to: 'practitioner#create_patient'
 
 end

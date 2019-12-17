@@ -17,7 +17,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
 
       #Change based on roll
       t.integer :type, null: false, default: 0
-      t.string :email
+      t.string :email, 
       t.string :phone_number
       t.string :general_practitioner
       t.datetime :treatment_start

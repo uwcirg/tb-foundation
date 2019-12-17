@@ -1,8 +1,7 @@
-class ChannelController < AuthenticatedController
-
+class ChannelController < UserController
     #before_action :auth_any_user, :except => [:cors_preflight]
-    before_action :auth_any_user
-    skip_before_action :verify_authenticity_token
+    #TODO: make sure each user level has access to only thier proper functions
+    before_action :auth_user
   
     #Message CRUG
     def new_channel

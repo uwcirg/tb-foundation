@@ -23,7 +23,7 @@ StripReport.find_each do |sr|
     File.open("#{photoDir}/#{filename}.png", "wb") do |file|
         file.write(picture)
     end
-    puts(filename)
+
 end
 
 

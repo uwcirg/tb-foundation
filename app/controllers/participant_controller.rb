@@ -81,9 +81,7 @@ class ParticipantController < AuthenticatedController
         picture = Base64.decode64(params["photo"]);
         baseURL = ENV["URL_API"]
         timeString = params[:timestamp]
-        
-        puts("JUST TESTING")
-        puts(params[:timestamp])
+    
 
         # temp = Participant.find_by(uuid: userID).strip_reports.new(
         #     photo: "n/a",
@@ -100,8 +98,6 @@ class ParticipantController < AuthenticatedController
         
         temp.url_photo = "#{baseURL}/photo/#{userID}/#{filename}"
     
-        puts("#HERE")
-        puts(temp.to_json)
         temp.save
     
         photoDir = "/ruby/backend/upload/strip_photos/#{userID}"

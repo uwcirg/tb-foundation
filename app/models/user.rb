@@ -1,10 +1,24 @@
 require 'webpush'
 class User < ApplicationRecord
 
+    has_many :messages
+    has_many :channels
+
     enum language: { en: 0, es: 1 }
     enum type: { Patient: 0, Practitioner: 1, Administrator: 2 }
 
     validates :password_digest, presence: true
+    validates :email, uniqueness: true, allow_nil: true
+    validates :phone_number, uniqueness: true, allow_nil: true
+
+
+    def as_json(*args)
+      {
+        id: id,
+        name: given_name
+      }
+
+    end
 
     #Given a uuid, send a push to that user
 

@@ -1,21 +1,14 @@
 require "fileutils"
 require "base64"
 
-
-class PatientController < ApplicationController
+class PatientController < UserController
     before_action :auth_patient
-    skip_before_action :verify_authenticity_token
-
-
     def auth_patient
-    # def auth_participant
-    #   #@decoded = decode_token
-    #   @current_user = Participant.find(@decoded[:uuid])
+      @decoded = decode_token
+      @current_user = Patient.find(@decoded[:user_id])
   
-    #   rescue ActiveRecord::RecordNotFound => e
-    #     render json: { errors: "Unauthorized participant" }, status: :unauthorized
-    #   end
-    # end
+      rescue ActiveRecord::RecordNotFound => e
+        render json: { errors: "Unauthorized participant" }, status: :unauthorized
     end
 
     def get_patient
