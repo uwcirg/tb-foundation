@@ -12,14 +12,6 @@ class User < ApplicationRecord
     validates :phone_number, uniqueness: true, allow_nil: true
 
 
-    def as_json(*args)
-      {
-        id: id,
-        name: given_name
-      }
-
-    end
-
     #Given a uuid, send a push to that user
 
     #TODO: Modify this code to not use Participant.find but to just use the values like in the participant controller

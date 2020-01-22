@@ -1,6 +1,5 @@
 class UserController < ApplicationController
-  before_action :decode_token, :except => [:login]
-
+  before_action :decode_token, :except => [:login,:upload_lab_test,:generate_presigned_url]
 
   def auth_user
     #Uses @decoded from User Controller(Super Class)
@@ -24,11 +23,11 @@ class UserController < ApplicationController
   def login
     case params[:userType] # a_variable is the variable we want to compare
     when "Administrator"
-      @user = Administrator.find_by(email: params[:email])
+      @user = Administrator.find_by(email: params[:identifier])
     when "Practitioner"
-      @user = Practitioner.find_by(email: params[:email])
+      @user = Practitioner.find_by(email: params[:identifier])
     when "Patient"
-      @user = Patient.find_by(phone_number: params[:phoneNumber])
+      @user = Patient.find_by(phone_number: params[:identifier])
     else
         render json: { error: "Invalid User Type. Possible values: Administrator, Practitioner, or Patient" }, status: :unauthorized
         return
@@ -36,8 +35,6 @@ class UserController < ApplicationController
 
     authenticate()
   end
-
-  
 
   private
 

@@ -39,6 +39,7 @@ Rails.application.routes.draw do
 
   #Testing new data model
   get '/patient/:patientID', to: 'patient#get_patient'
+  get '/patient/me', to: 'patient#get_current_patient'
   post '/authentication', to: 'user#authenticate'
 
   #Routes from in progress refractoring
@@ -47,5 +48,10 @@ Rails.application.routes.draw do
 
   post '/administrator', to:'practitioner#create_admin'
   post '/patient', to: 'practitioner#create_patient'
+
+
+  #Image Recognition Pipeline
+  post '/lab_image_test', to: 'practitioner#upload_lab_test'
+  get '/lab_url', to: 'practitioner#generate_presigned_url'
 
 end
