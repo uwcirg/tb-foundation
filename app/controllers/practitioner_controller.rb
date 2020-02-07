@@ -1,4 +1,6 @@
 require 'aws-sdk'
+require 'securerandom'
+
 class PractitionerController < UserController
     before_action :auth_practitioner, :except => [:upload_lab_test,:generate_presigned_url]
 
@@ -9,6 +11,33 @@ class PractitionerController < UserController
     
         rescue ActiveRecord::RecordNotFound => e
           render json: { errors: "Practitioner Only Route" }, status: :unauthorized
+    end
+
+    def get_current_practitioner
+      render(json: @current_user.to_json, status: 200)
+    end
+
+    def generate_temp_patient
+
+      #This generates a random 4 digit hex
+      code = SecureRandom.hex(10).upcase[0,5]
+
+      newTemp = TempAccount.create(
+          phone_number: params[:phoneNumber],
+          code_digest: BCrypt::Password.create(code),
+          family_name: params[:familyName],
+          given_name: params[:givenName],
+          organization: params[:organization],
+          treatment_start: params[:startDate]
+        )
+
+        if newTemp.save
+          render(json: {account: newTemp.as_json, code: code}, status: 200)
+        else
+          @test = newTemp.errors.as_json
+          @test = @test.as_json.deep_transform_keys! { |key| key.camelize(:lower) }
+          render(json: {error: 422, paramErrors: @test}, status: 422)
+        end
     end
 
     def create_patient

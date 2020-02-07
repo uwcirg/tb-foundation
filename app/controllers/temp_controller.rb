@@ -1,7 +1,7 @@
 require 'zip'
 class TempController < ApplicationController
 
-    skip_before_action :verify_authenticity_token
+    #skip_before_action :verify_authenticity_token
     before_action :decode_temp_token
     
     #Decodes jwt token sent as url parameter

@@ -7,13 +7,13 @@ class ParticipantController < AuthenticatedController
     
     #Require coordinator authentication for user password reset
     before_action :auth_coordinator, :only => [:reset_password]
-    skip_before_action :verify_authenticity_token
+    #skip_before_action :verify_authenticity_token
 
     def get_current_participant
-        current = Participant.find(@current_user.id).attributes
+        current = Participant.find(@current_user.id)
 
         #Add push notification key
-        current[:vapid_key] = ENV['VAPID_PUBLIC_KEY'];
+        #current[:vapid_key] = ENV['VAPID_PUBLIC_KEY'];
 
         render( json: current.to_json, status: 200)
     end
@@ -30,6 +30,9 @@ class ParticipantController < AuthenticatedController
     end
 
     def report_medication
+        puts("DEBUGGIN")
+        puts(params[:timestamp])
+        time = 
         new_report = @current_user.medication_reports.create!({timestamp: params[:timestamp],
          took_medication: params[:took_medication],
           not_taking_medication_reason: params[:not_taking_medication_reason]})

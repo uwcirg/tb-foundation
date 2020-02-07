@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   #New routes for overhual
   post "/participant", to: "login#create_new_participant"
 
+  #OLD Authentication Routes TODO: REMOVE WHEN DEMO IS DOWN
+  post '/auth/login/participant', to: 'login#login_participant'
+  post '/auth/login/coordinator', to: 'login#login_coordinator'
+
   #Currently logged in participant modification routes
   get '/participant/current', to: 'participant#get_current_participant'
   patch '/participant/current', to: 'participant#update_information'
@@ -40,18 +44,24 @@ Rails.application.routes.draw do
   #Testing new data model
   get '/patient/:patientID', to: 'patient#get_patient'
   get '/patient/me', to: 'patient#get_current_patient'
+  get '/practitioner/me', to: 'practitioner#get_current_practitioner'
   post '/authentication', to: 'user#authenticate'
+
+  post '/patient/activation/check', to: 'patient#check_patient_code'
+  post '/patient/activation', to: 'patient#activate_patient'
 
   #Routes from in progress refractoring
   post '/authenticate', to: 'user#login'
   post '/practitioner', to: 'administrator#create_practitioner'
 
   post '/administrator', to:'practitioner#create_admin'
-  post '/patient', to: 'practitioner#create_patient'
+  post '/patient', to: 'practitioner#generate_temp_patient'
 
 
   #Image Recognition Pipeline
   post '/lab_image_test', to: 'practitioner#upload_lab_test'
   get '/lab_url', to: 'practitioner#generate_presigned_url'
+
+  get '/organizations', to: 'user#get_all_organizations'
 
 end

@@ -5,7 +5,7 @@ require "securerandom"
 class CommonController < AuthenticatedController
   #before_action :auth_any_user, :except => [:cors_preflight]
   before_action :auth_any_user
-  skip_before_action :verify_authenticity_token
+  #skip_before_action :verify_authenticity_token
 
   def get_photo
     name = params[:filename]

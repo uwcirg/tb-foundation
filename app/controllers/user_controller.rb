@@ -1,5 +1,5 @@
 class UserController < ApplicationController
-  before_action :decode_token, :except => [:login,:upload_lab_test,:generate_presigned_url]
+  before_action :decode_token, :except => [:login,:upload_lab_test,:generate_presigned_url,:activate_patient,:check_patient_code]
 
   def auth_user
     #Uses @decoded from User Controller(Super Class)
@@ -34,6 +34,11 @@ class UserController < ApplicationController
     end
 
     authenticate()
+  end
+
+  def get_all_organizations
+    organizations = Organization.all();
+    render(json: organizations.to_json, status: 200);
   end
 
   private
