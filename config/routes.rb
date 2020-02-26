@@ -29,15 +29,17 @@ Rails.application.routes.draw do
   post '/strip_report/:userID/status', to: 'coordinator#set_photo_status'
   get '/strip_zip_file', to: 'temp#generate_zip'
 
+  #Notifications
   post '/push', to: 'login#send_push_to_user'
-  get '/push_key', to: 'login#push_key'
-  patch '/update_user_subscription', to: 'login#update_user_subscription'
+  get '/push_key', to: 'user#push_key'
+  patch '/update_user_subscription', to: 'user#update_user_subscription'
+  post '/notify_all', to: 'practitioner#send_notifcation_all'
 
   #post '/message', to: 'message#post_message'
   post '/channel', to: 'channel#new_channel'
   get '/channels', to: 'channel#all_channels'
 
-  post '/channel/:channelID', to: 'channel#post_message'
+  post '/channel/:channelID/messages', to: 'channel#post_message'
   get '/channel/:channelID/messages', to: 'channel#get_recent_messages'
   get '/channel/:channelID/messages/:messageID', to: 'channel#get_messages_before'
 
@@ -51,7 +53,9 @@ Rails.application.routes.draw do
   post '/patient/activation', to: 'patient#activate_patient'
 
   #Routes from in progress refractoring
-  post '/authenticate', to: 'user#login'
+  post '/auth', to: 'user#login'
+  delete '/auth', to: 'user#logout'
+
   post '/practitioner', to: 'administrator#create_practitioner'
 
   post '/administrator', to:'practitioner#create_admin'
@@ -61,7 +65,6 @@ Rails.application.routes.draw do
   #Image Recognition Pipeline
   post '/lab_image_test', to: 'practitioner#upload_lab_test'
   get '/lab_url', to: 'practitioner#generate_presigned_url'
-
   get '/organizations', to: 'user#get_all_organizations'
 
 end

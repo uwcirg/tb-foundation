@@ -11,10 +11,9 @@ class UserController < ApplicationController
 
   #Authenticaiton Functions
   def decode_token
-    header = request.headers["Authorization"]
-    header = header.split(" ").last if header
+    jwt = cookies.signed[:jwt]
     begin
-      @decoded = JsonWebToken.decode(header)
+      @decoded = JsonWebToken.decode(jwt)
     rescue JWT::DecodeError => e
       render json: { errors: e.message }, status: :unauthorized
     end
@@ -41,6 +40,23 @@ class UserController < ApplicationController
     render(json: organizations.to_json, status: 200);
   end
 
+  #Destroy cookie for logout
+  def logout
+    cookies.delete(:jwt)
+    render( json: {message: "Logout Successful"}, status: 200)
+  end
+
+  def update_user_subscription
+    auth_user
+    @current_user.update(push_p256dh: params[:p256dh], push_auth: params[:auth], push_url: params[:endpoint])
+    render json: { message: "update successful"}, status: 200
+  end
+
+  def push_key
+    vapid_key = ENV['VAPID_PUBLIC_KEY']
+    render(json: {key: vapid_key}, status: 200)
+  end
+
   private
 
   def authenticate
@@ -53,7 +69,8 @@ class UserController < ApplicationController
     if @user && BCrypt::Password.new(@user.password_digest) == params[:password]
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 7.days.to_i
-      render json: { token: token, exp: time.iso8601, user_id: @user.id, user_type: @user.type }, status: :ok
+      cookies.signed[:jwt] = {value:  token, httponly: true}
+      render json: {user_id: @user.id, user_type: @user.type }, status: :ok
     else
       render json: { error: "Unauthorized: incorrect password" }, status: :unauthorized
     end

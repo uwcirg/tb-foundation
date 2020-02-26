@@ -20,7 +20,7 @@ module Assemble
   # Initialize configuration defaults for originally generated Rails version.
   config.load_defaults 5.1
   config.api_only = true
-
+  config.middleware.use ActionDispatch::Cookies
   # in config/application.rb
   #config.action_dispatch.default_headers = {
   #  'Access-Control-Allow-Origin' => '*',
@@ -30,9 +30,11 @@ module Assemble
   config.middleware.insert_before 0, Rack::Cors do
     allow do
       origins ENV["URL_CORS"]
-      resource '*', headers: :any, methods: [:get, :post, :options, :patch]
+      resource '*', headers: :any, methods: [:get, :delete, :post, :options, :patch], credentials: true
     end
   end
+
+  
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers

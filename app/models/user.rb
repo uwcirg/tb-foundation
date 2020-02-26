@@ -16,35 +16,33 @@ class User < ApplicationRecord
 
     #TODO: Modify this code to not use Participant.find but to just use the values like in the participant controller
 
-    # def send_push_to_user
-    #   user = Participant.find(params[:uuid]);
-
-    #   #Check to make sure their subscription information is up to date
-    #   if(user.push_url.nil? || user.push_auth.nil? || user.push_p256dh.nil?)
-    #     render(json: { error: 'user has no push data' }, status: :unauthorized)
-    #     return
-    #   end
-
-    #   message = JSON.generate(
-    #     title: params[:message],
-    #     body: "name: #{user.name} uuid: #{user.uuid}",
-    #     icon: "https://images.idgesg.net/images/article/2019/04/google-shift-100794036-large.jpg",
-    #     url: "https://tb-app.cirg.washington.edu"
-    #   )
+    def send_push_to_user(message)
       
-    #   Webpush.payload_send(
-    #     message: message,
-    #     endpoint: user.push_url,
-    #     p256dh: user.push_p256dh,
-    #     auth: user.push_auth,
-    #     ttl: 24 * 60 * 60,
-    #     vapid: {
-    #       subject: 'mailto:sender@example.com',
-    #       public_key: "BMSAvU3i4-87WUvEFijxz-sNq7255ACiF8ubt2196lWu9l0U2eLqXeLt-8ZVUXt4djlQyiiJul23VVt7giO1d_U=",
-    #       private_key: "iE2ZXg3t_IaZrm2noz2Z8uW_N0kgea9oVacU-8uXRGg="
-    #     }
-    #   )
+      #Check to make sure their subscription information is up to date
+      if(self.push_url.nil? || self.push_auth.nil? || self.push_p256dh.nil?)
+        render(json: { error: 'User has no push data' }, status: :unauthorized)
+        return
+      end
 
-    # end
+      message = JSON.generate(
+        title: "#{self.given_name} message",
+        body: "#{self.given_name} Please Take Your Medication",
+        url: ENV['URL_CLIENT']
+      )
+      
+      Webpush.payload_send(
+        message: message,
+        endpoint: self.push_url,
+        p256dh: self.push_p256dh,
+        auth: self.push_auth,
+        ttl: 24 * 60 * 60,
+        vapid: {
+          subject: 'mailto:sender@example.com',
+          public_key: ENV['VAPID_PUBLIC_KEY'],
+          private_key: ENV['VAPID_PRIVATE_KEY']
+        }
+      )
+
+    end
   
   end

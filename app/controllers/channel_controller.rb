@@ -11,19 +11,33 @@ class ChannelController < UserController
     end
 
     def all_channels
-        response = Channel.all().sort_by &:created_at
+        response = Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: @current_user.id)).sort_by &:created_at
         render(json: response.to_json, status: 200)
     end
 
     def post_message
-        newMessage = @current_user.messages.create!(body: params[:body],channel_id: params["channelID"],creator_id: @current_user.uuid)
-        @current_user.testd
+        newMessage = @current_user.messages.create!(body: params[:body],channel_id: params["channelID"],user_id: @current_user.id)
+        #@current_user.testd
         render(json: newMessage.to_json , status: 200)
     end
 
     def get_recent_messages
-        messages = Channel.find(params["channelID"]).messages.order("created_at DESC")
-        render(json: messages.to_json , status: 200)
+        
+        channel = Channel.find(params["channelID"])
+        #TODO Make sure patient is one of practitionser, so that not all practitioners have access
+
+        if(!channel.is_private || ( channel.user_id == @current_user.id) || (@current_user.type == "Practitioner" ))
+
+            if(params.has_key?("lastMessageID"))
+                messages = channel.messages.where("id > ?",params["lastMessageID"]).order("created_at")
+            else
+                messages = channel.messages.order("created_at").limit(100)
+            end
+
+            render(json: messages.to_json , status: 200)
+        else
+            render(json: {message: "You are not authorized to access that channels messages."}, status: 401)
+        end
     end
 
     def get_messages_before

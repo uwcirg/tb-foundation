@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_06_183947) do
+ActiveRecord::Schema.define(version: 2020_02_25_160356) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2020_02_06_183947) do
     t.string "subtitle"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "is_private", default: false, null: false
   end
 
   create_table "coordinators", primary_key: "uuid", id: :string, force: :cascade do |t|
@@ -48,7 +49,7 @@ ActiveRecord::Schema.define(version: 2020_02_06_183947) do
     t.datetime "timestamp", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "took_medication", default: false, null: false
+    t.boolean "took_medication", null: false
     t.string "not_taking_medication_reason"
     t.string "resolution_uuid"
   end

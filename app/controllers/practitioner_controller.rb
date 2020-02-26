@@ -94,4 +94,10 @@ class PractitionerController < UserController
     end
 
 
+    def send_notifcation_all
+      Patient.all.map { |u| u.send_push_to_user("Api triggered all user notification!") }
+      render(json: {message: "success"}, status: 200)
+    end
+
+
 end

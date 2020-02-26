@@ -29,17 +29,7 @@ class AuthenticationController < ApplicationController
     @user_type = "coordinator"
     authenticate()
   end
-  
-  def push_key
-    vapid_key = ENV['VAPID_PUBLIC_KEY']
-    render(json: {key: vapid_key}, status: 200)
-  end
 
-  def update_user_subscription
-    user = Participant.find(params[:uuid])
-    user.update(push_p256dh: params[:p256dh], push_auth: params[:auth], push_url: params[:endpoint])
-    render json: { message: "update successful" }, status: 200
-  end
 
   private
 
