@@ -11,7 +11,8 @@ class ChannelController < UserController
     end
 
     def all_channels
-        response = Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: @current_user.id)).sort_by &:created_at
+        #response = Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: @current_user.id)).sort_by &:created_at
+        response = @current_user.user_specific_channels
         render(json: response.to_json, status: 200)
     end
 

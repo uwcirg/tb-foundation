@@ -2,7 +2,7 @@ require 'aws-sdk'
 require 'securerandom'
 
 class PractitionerController < UserController
-    before_action :auth_practitioner, :except => [:upload_lab_test,:generate_presigned_url]
+    before_action :auth_practitioner, :except => [:upload_lab_test,:generate_presigned_url,:get_all_tests]
 
     def auth_practitioner
         #Uses @decoded from User Controller(Super Class)
@@ -14,7 +14,7 @@ class PractitionerController < UserController
     end
 
     def get_current_practitioner
-      render(json: @current_user.to_json, status: 200)
+      render(json: @current_user.as_fhir_json, status: 200)
     end
 
     def generate_temp_patient
@@ -75,6 +75,10 @@ class PractitionerController < UserController
         render json: {url: url, key: key}
     end
 
+    def get_all_tests
+      render( json: LabTest.all().as_json, status: 200)
+    end
+
     def upload_lab_test
 
     newTest = LabTest.create!(
@@ -95,7 +99,7 @@ class PractitionerController < UserController
 
 
     def send_notifcation_all
-      Patient.all.map { |u| u.send_push_to_user("Api triggered all user notification!") }
+      Patient.all.map { |u| u.send_push_to_user("Api triggered all user notification!","Test body message") }
       render(json: {message: "success"}, status: 200)
     end
 

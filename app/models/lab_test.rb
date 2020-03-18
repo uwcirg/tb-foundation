@@ -7,7 +7,15 @@ class LabTest < ApplicationRecord
         tempURL = signer.presigned_url(:get_object, bucket: "lab-strips", key: photo_url)
 
         return{
-          url: tempURL
+
+          url: tempURL,
+          testID: self.test_id,
+          description: self.description,
+          photoURL: self.photo_url,
+          isPositive: self.is_positive,
+          testWasRun: self.test_was_run,
+          minutesSince: self.minutes_since_test,
+          createdAt: self.created_at 
         }
       end
 

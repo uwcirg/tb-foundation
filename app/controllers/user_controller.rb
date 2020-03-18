@@ -1,5 +1,5 @@
 class UserController < ApplicationController
-  before_action :decode_token, :except => [:login,:upload_lab_test,:generate_presigned_url,:activate_patient,:check_patient_code]
+  before_action :decode_token, :except => [:login,:upload_lab_test,:generate_presigned_url,:activate_patient,:check_patient_codem,:get_all_tests]
 
   def auth_user
     #Uses @decoded from User Controller(Super Class)

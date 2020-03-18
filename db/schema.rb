@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_25_160356) do
+ActiveRecord::Schema.define(version: 2020_02_27_190753) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,13 @@ ActiveRecord::Schema.define(version: 2020_02_25_160356) do
     t.datetime "updated_at", null: false
     t.string "author_id", null: false
     t.index ["author_type", "author_id"], name: "index_notes_on_author_type_and_author_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "channel_id"
+    t.bigint "user_id"
+    t.bigint "last_message_id"
+    t.boolean "push_subscription"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -159,15 +166,21 @@ ActiveRecord::Schema.define(version: 2020_02_25_160356) do
     t.integer "type", default: 0, null: false
     t.string "email"
     t.string "phone_number"
-    t.string "general_practitioner"
     t.datetime "treatment_start"
     t.string "username"
+    t.bigint "practitioner_id"
+    t.string "medication_schedule"
+    t.index ["practitioner_id"], name: "index_users_on_practitioner_id"
   end
 
   add_foreign_key "channels", "users"
   add_foreign_key "medication_reports", "participants", primary_key: "uuid"
   add_foreign_key "messages", "channels"
+  add_foreign_key "notifications", "channels"
+  add_foreign_key "notifications", "messages", column: "last_message_id"
+  add_foreign_key "notifications", "users"
   add_foreign_key "strip_reports", "participants", primary_key: "uuid"
   add_foreign_key "symptom_reports", "participants", primary_key: "uuid"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
+  add_foreign_key "users", "users", column: "practitioner_id"
 end

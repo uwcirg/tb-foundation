@@ -21,6 +21,7 @@ WORKDIR /foundation
 ADD Gemfile* /foundation/
 RUN gem install bundler
 RUN bundle install
+RUN echo 'alias rls="bundle exec rails"' >> ~/.bashrc
 
 # Add code for a generic Assemble Foundation
 ADD . /foundation/

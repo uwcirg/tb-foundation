@@ -12,12 +12,8 @@ class PatientController < UserController
         render json: { errors: "Unauthorized participant" }, status: :unauthorized
     end
 
-    def get_current_patient
-        render(json: @current_user.as_json, status: 200);
-    end
-
     def get_patient
-        render(json: @current_user.as_json, status: 200);
+        render(json: @current_user.as_fhir_json, status: 200);
     end
 
     def new_patient

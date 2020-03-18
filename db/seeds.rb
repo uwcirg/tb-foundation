@@ -15,6 +15,16 @@ when "development"
     Organization.create(title: "University of Washington")
     Organization.create(title: "Hospital One")
 
+    #Test Practitioner
+    practitioner = Practitioner.create!(
+        password_digest: password_hash,
+        family_name: "Practitioner",
+        given_name: "Test",
+        managing_organization: "Hospital One",
+        email: "test@gmail.com",
+        type: "Practitioner"
+    )
+
     #Test Patient
     patient = Patient.create!(
         password_digest: password_hash,
@@ -22,8 +32,9 @@ when "development"
         given_name: "Test",
         managing_organization: "Hospital One",
         phone_number: "123456789",
-        treatment_start: Date.today,
-        type: "Patient"
+        treatment_start: Date.today - 2.months,
+        type: "Patient",
+        practitioner_id: practitioner.id
     )
 
     #Test Patient
@@ -33,18 +44,9 @@ when "development"
         given_name: "TestTwo",
         managing_organization: "Hospital One",
         phone_number: "111111111",
-        treatment_start: Date.today,
-        type: "Patient"
-    )
-
-    #Test Practitioner
-    practitioner = Practitioner.create!(
-        password_digest: password_hash,
-        family_name: "Practitioner",
-        given_name: "Test",
-        managing_organization: "Hospital One",
-        email: "test@gmail.com",
-        type: "Practitioner"
+        treatment_start: Date.today - 1.month,
+        type: "Patient",
+        practitioner_id: practitioner.id
     )
 
     #Test Admin
@@ -79,8 +81,22 @@ when "development"
             break
         end
     end
+
     practitioner.messages.create!(body: "Latest Test message for 1",channel_id: gc.id)
 
+    patient3 = Patient.create!(
+        password_digest: password_hash,
+        family_name: "Patient 3",
+        given_name: "Test",
+        managing_organization: "Hospital One",
+        phone_number: "123456780",
+        treatment_start: Date.today,
+        type: "Patient",
+        practitioner_id: practitioner.id
+    )
+
+    #Patient.create!(password_digest: BCrypt::Password.create(ENV["RAILS_BASE_PASS"]), family_name: "Patient 3", given_name: "Test", managing_organization: "Hospital One", phone_number: "123456781",treatment_start: Date.today,type: "Patient")
+    #Channel.create(title: "TEST",user_id: 6)
 
     
 
