@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_27_190753) do
+ActiveRecord::Schema.define(version: 2020_04_03_161411) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,13 +24,12 @@ ActiveRecord::Schema.define(version: 2020_02_27_190753) do
     t.boolean "is_private", default: false, null: false
   end
 
-  create_table "coordinators", primary_key: "uuid", id: :string, force: :cascade do |t|
-    t.string "name", null: false
-    t.string "email", null: false
-    t.string "password_digest", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["uuid"], name: "index_coordinators_on_uuid"
+  create_table "daily_reports", force: :cascade do |t|
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.date "date"
+    t.index ["user_id"], name: "index_daily_reports_on_user_id"
   end
 
   create_table "lab_tests", force: :cascade do |t|
@@ -45,13 +44,13 @@ ActiveRecord::Schema.define(version: 2020_02_27_190753) do
   end
 
   create_table "medication_reports", force: :cascade do |t|
-    t.string "participant_id", null: false
-    t.datetime "timestamp", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "took_medication", null: false
-    t.string "not_taking_medication_reason"
-    t.string "resolution_uuid"
+    t.bigint "daily_report_id"
+    t.datetime "datetime_taken"
+    t.boolean "medication_was_taken"
+    t.text "why_medication_not_taken"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["daily_report_id"], name: "index_medication_reports_on_daily_report_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -60,16 +59,6 @@ ActiveRecord::Schema.define(version: 2020_02_27_190753) do
     t.text "body", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "notes", force: :cascade do |t|
-    t.string "author_type", null: false
-    t.text "title"
-    t.text "text", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "author_id", null: false
-    t.index ["author_type", "author_id"], name: "index_notes_on_author_type_and_author_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -84,45 +73,16 @@ ActiveRecord::Schema.define(version: 2020_02_27_190753) do
     t.index ["title"], name: "index_organizations_on_title", unique: true
   end
 
-  create_table "participants", primary_key: "uuid", id: :string, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "name", null: false
-    t.date "treatment_start", null: false
-    t.string "phone_number", null: false
-    t.string "password_digest", null: false
-    t.string "push_url"
-    t.string "push_auth"
-    t.string "push_p256dh"
-    t.index ["uuid"], name: "index_participants_on_uuid"
-  end
-
-  create_table "resolutions", primary_key: "uuid", id: :string, force: :cascade do |t|
-    t.string "author_type", null: false
-    t.string "author_id", null: false
-    t.datetime "timestamp"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "note"
-    t.string "participant_uuid"
-    t.string "status"
-    t.index ["uuid"], name: "index_resolutions_on_uuid"
-  end
-
-  create_table "strip_reports", force: :cascade do |t|
-    t.string "participant_id", null: false
-    t.datetime "timestamp", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "status"
-    t.text "photo", null: false
-    t.string "resolution_uuid"
-    t.string "url_photo"
+  create_table "photo_reports", force: :cascade do |t|
+    t.bigint "daily_report_id"
+    t.datetime "captured_at"
+    t.string "photo_url"
+    t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
   end
 
   create_table "symptom_reports", force: :cascade do |t|
-    t.string "participant_id", null: false
-    t.datetime "timestamp"
+    t.bigint "daily_report_id"
+    t.datetime "time_medication_taken"
     t.boolean "nausea"
     t.boolean "redness"
     t.boolean "hives"
@@ -133,13 +93,13 @@ ActiveRecord::Schema.define(version: 2020_02_27_190753) do
     t.boolean "yellow_coloration"
     t.boolean "difficulty_breathing"
     t.boolean "facial_swelling"
-    t.text "other"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "nausea_rating"
-    t.string "resolution_uuid"
     t.boolean "headache"
     t.boolean "dizziness"
+    t.integer "nausea_rating"
+    t.text "other"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["daily_report_id"], name: "index_symptom_reports_on_daily_report_id"
   end
 
   create_table "temp_accounts", force: :cascade do |t|
@@ -151,6 +111,7 @@ ActiveRecord::Schema.define(version: 2020_02_27_190753) do
     t.string "organization", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "practitioner_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -174,13 +135,11 @@ ActiveRecord::Schema.define(version: 2020_02_27_190753) do
   end
 
   add_foreign_key "channels", "users"
-  add_foreign_key "medication_reports", "participants", primary_key: "uuid"
   add_foreign_key "messages", "channels"
   add_foreign_key "notifications", "channels"
   add_foreign_key "notifications", "messages", column: "last_message_id"
   add_foreign_key "notifications", "users"
-  add_foreign_key "strip_reports", "participants", primary_key: "uuid"
-  add_foreign_key "symptom_reports", "participants", primary_key: "uuid"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
+  add_foreign_key "temp_accounts", "users", column: "practitioner_id"
   add_foreign_key "users", "users", column: "practitioner_id"
 end

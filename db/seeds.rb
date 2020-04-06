@@ -40,14 +40,17 @@ when "development"
     #Test Patient
     patient2 = Patient.create!(
         password_digest: password_hash,
-        family_name: "Patient",
-        given_name: "TestTwo",
+        family_name: "Garcia",
+        given_name: "Julio",
         managing_organization: "Hospital One",
         phone_number: "111111111",
         treatment_start: Date.today - 1.month,
         type: "Patient",
         practitioner_id: practitioner.id
     )
+
+    patient.seed_test_reports
+    patient2.seed_test_reports
 
     #Test Admin
     admin = Administrator.create!(
@@ -97,6 +100,8 @@ when "development"
 
     #Patient.create!(password_digest: BCrypt::Password.create(ENV["RAILS_BASE_PASS"]), family_name: "Patient 3", given_name: "Test", managing_organization: "Hospital One", phone_number: "123456781",treatment_start: Date.today,type: "Patient")
     #Channel.create(title: "TEST",user_id: 6)
+
+    #TODO For each patient generate a treatment report ( but skip some days )
 
     
 

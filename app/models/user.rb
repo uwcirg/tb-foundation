@@ -5,6 +5,8 @@ class User < ApplicationRecord
     has_many :channels
     has_many :notifications
 
+    has_many :daily_reports
+
     enum language: { en: 0, es: 1 }
     enum type: { Patient: 0, Practitioner: 1, Administrator: 2 }
 
@@ -24,6 +26,7 @@ class User < ApplicationRecord
         ],
         treatmentStart: treatment_start,
         medicationSchedule: medication_schedule,
+        managingOrganization: managing_organization
       }
     end
 
