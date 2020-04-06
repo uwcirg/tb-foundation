@@ -7,14 +7,14 @@ class PractitionerController < UserController
     def auth_practitioner
         #Uses @decoded from User Controller(Super Class)
         id = @decoded[:user_id].to_i
-        @current_user = Practitioner.find(id)
+        @current_practitoner = Practitioner.find(id)
     
         rescue ActiveRecord::RecordNotFound => e
           render json: { errors: "Practitioner Only Route" }, status: :unauthorized
     end
 
     def get_current_practitioner
-      render(json: @current_user.as_fhir_json, status: 200)
+      render(json: @current_practitoner.as_fhir_json, status: 200)
     end
 
     def generate_temp_patient
@@ -28,7 +28,8 @@ class PractitionerController < UserController
           family_name: params[:familyName],
           given_name: params[:givenName],
           organization: params[:organization],
-          treatment_start: params[:startDate]
+          treatment_start: params[:startDate],
+          practitioner_id: @current_practitoner.id
         )
 
         if newTemp.save
@@ -54,16 +55,12 @@ class PractitionerController < UserController
         render(json: newPatient.as_json, status: 200)
     end
 
-    def generate_presigned_url
+    def get_patients
+      patients = Patient.where(practitioner_id: @current_practitoner.id)
+      render(json: patients.as_json, status: 200)
+    end
 
-      
-      # aws_client = Aws::S3::Client.new(
-      #   endpoint: ENV['URL_MINIO'],
-      #   access_key_id: ENV['MINIO_ACCESS_KEY'],
-      #   secret_access_key: ENV['MINIO_SECRET_KEY'],
-      #   force_path_style: true,
-      #   region: 'us-east-1'
-      # )
+    def generate_presigned_url
 
       s3 = Aws::S3::Resource.new
       bucket = s3.bucket('lab-strips')
@@ -71,7 +68,6 @@ class PractitionerController < UserController
       obj = bucket.object(key)
       url = obj.presigned_url(:put)
         
-
         render json: {url: url, key: key}
     end
 

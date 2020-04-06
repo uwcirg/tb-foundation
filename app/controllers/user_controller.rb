@@ -1,5 +1,7 @@
+require 'aws-sdk'
+
 class UserController < ApplicationController
-  before_action :decode_token, :except => [:login,:upload_lab_test,:generate_presigned_url,:activate_patient,:check_patient_codem,:get_all_tests]
+  before_action :decode_token, :except => [:login,:upload_lab_test,:generate_presigned_url,:activate_patient,:check_patient_code,:get_all_tests]
 
   def auth_user
     #Uses @decoded from User Controller(Super Class)
@@ -28,7 +30,7 @@ class UserController < ApplicationController
     when "Patient"
       @user = Patient.find_by(phone_number: params[:identifier])
     else
-        render json: { error: "Invalid User Type. Possible values: Administrator, Practitioner, or Patient" }, status: :unauthorized
+        render json: { error: "Invalid User Type. Possible values: Administrator, Practitioner, or Patient", status: 422 }, status: 422
         return
     end
 
@@ -62,7 +64,7 @@ class UserController < ApplicationController
   def authenticate
 
     if !@user 
-        render json: { error: "That #{params[:userType].downcase} does not exist" }, status: :unauthorized
+        render json: { error: "That #{params[:userType].downcase} does not exist",status: 422 }, status: 422
         return
     end
 
@@ -72,7 +74,7 @@ class UserController < ApplicationController
       cookies.signed[:jwt] = {value:  token, httponly: true}
       render json: {user_id: @user.id, user_type: @user.type }, status: :ok
     else
-      render json: { error: "Unauthorized: incorrect password" }, status: :unauthorized
+      render json: { error: "Unauthorized: incorrect password", status: :unauthorized }, status: :unauthorized
     end
   end
 

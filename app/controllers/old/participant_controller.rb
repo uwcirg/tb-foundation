@@ -1,7 +1,6 @@
 require "fileutils"
 require "base64"
 
-
 class ParticipantController < AuthenticatedController
     before_action :auth_participant
     

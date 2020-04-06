@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   get '/practitioner/me', to: 'practitioner#get_current_practitioner'
   post '/authentication', to: 'user#authenticate'
 
-  post '/patient/activation/check', to: 'patient#check_patient_code'
+  post '/patient/activation/check', to: 'application#check_patient_code'
   post '/patient/activation', to: 'patient#activate_patient'
 
   #Routes from in progress refractoring
@@ -31,17 +31,18 @@ Rails.application.routes.draw do
   post '/administrator', to:'practitioner#create_admin'
   post '/patient', to: 'practitioner#generate_temp_patient'
 
-
   #Image Recognition Pipeline
-  post '/lab_image_test', to: 'practitioner#upload_lab_test'
-  get '/lab_test/all', to: 'practitioner#get_all_tests'
+  #post '/lab_image_test', to: 'practitioner#upload_lab_test'
+  #get '/lab_test/all', to: 'practitioner#get_all_tests'
 
-
-  get '/lab_url', to: 'practitioner#generate_presigned_url'
+  get '/patient/daily_reports/photo_upload_url', to: 'patient#generate_upload_url'
   get '/organizations', to: 'user#get_all_organizations'
 
   #Tests
   get '/medication_schedule', to: 'application#generate_medication_schedule'
+  get '/practitioner/patients', to: 'practitioner#get_patients'
+  post '/daily_report', to: 'patient#post_daily_report'
+  get '/daily_reports', to: 'patient#get_patient_reports'
 
 
 

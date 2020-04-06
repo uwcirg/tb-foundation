@@ -1,18 +1,16 @@
 class SymptomReport < ApplicationRecord
-  belongs_to :participant
-  belongs_to :resolution, optional: true
+  #belongs_to :daily_report
 
-  def as_json(*args)
-    {
-      id: id,
-      created_at: created_at,
-      reported_symptoms: reported_symptoms,
-      nausea_rating: nausea_rating,
-      timestamp: timestamp,
-      other: other,
-      resolution_uuid: resolution_uuid,
-    }
-  end
+   def as_json(*args)
+     hash = {
+       symptomList: reported_symptoms,
+       nausea_rating: nausea_rating
+     }
+
+     
+
+     hash["otherSymptoms"] = other if other.nil? || other.empty?
+   end
 
   def reported_symptoms
     %w[
