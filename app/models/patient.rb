@@ -58,14 +58,12 @@ class Patient < User
     end
   end
 
-  def test_method(params)
-    puts("IN TEST METHOD")
-    puts(params)
+  def test_method
+    puts("#{self.given_name} #{self.family_name}")
   end
 
   def post_daily_report(day)
     new_report = self.daily_reports.create(date: day)
-
 
     datetime = DateTime.new(day.year,day.month,day.day,4,5,6,'-04:00')
 

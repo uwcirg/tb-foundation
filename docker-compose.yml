@@ -5,8 +5,6 @@ services:
     restart: on-failure
     ports:
       - $PORT_CLIENT:80
-    build:
-      context: '.'
     image: 'uwcirg/tb-mobile-app:$API_DOCKER_TAG'
     environment:
       NODE_ENV: development
@@ -44,6 +42,7 @@ services:
       - URL_API=$URL_API
       - URL_CORS=$URL_CORS
       - URL_MINIO=$URL_MINIO
+      - REDIS_URL=redis://redis:$PORT_REDIS/12
       - MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
       - MINIO_SECRET_KEY=$MINIO_SECRET_KEY
       - RAILS_BASE_PASS=$RAILS_BASE_PASS
@@ -52,14 +51,41 @@ services:
     ports:
       - $PORT_API:3000
     depends_on:
+      - redis
       - db
     restart: always
+
+  redis:
+    image: redis
+    restart: always
     volumes:
-      - source: user-documents
-        target: /ruby/backend/upload/
+      - source: redis-files
+        target: /redis/
         type: volume
+        
+  sidekiq:
+    image: uwcirg/tb-foundation:$API_DOCKER_TAG
+    command: 'sidekiq'
+    environment:
+      - DATA=postgres://postgres:postgres@db
+      - PASSWORD
+      - PORT=3000
+      - RAILS_ENV=$ENVIRONMENT
+      - SECRET_KEY_BASE=$SECRET_KEY_BASE
+      - URL_API=$URL_API
+      - URL_CORS=$URL_CORS
+      - URL_MINIO=$URL_MINIO
+      - REDIS_URL=redis://redis:$PORT_REDIS/12
+      - MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
+      - MINIO_SECRET_KEY=$MINIO_SECRET_KEY
+      - RAILS_BASE_PASS=$RAILS_BASE_PASS
+      - VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
+      - VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
+    depends_on:
+      - redis
+      - db
 
 
 volumes:
     user-files: {}
-    user-documents: {}
+    redis-files: {}

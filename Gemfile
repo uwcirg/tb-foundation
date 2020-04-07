@@ -16,6 +16,8 @@ gem 'jwt'
 gem 'rubyzip'
 gem 'webpush'
 gem 'aws-sdk', '~> 3'
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console

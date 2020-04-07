@@ -1,11 +1,16 @@
 version: '3.3'
 services:
   web:
+    build: ./
     volumes:
-      - source: ../tb-foundation/
+      - source: ./
         target: /foundation/
         type: bind
         read_only: false
-      - source: user-documents
-        target: /ruby/backend/upload/
-        type: volume
+  sidekiq: 
+    build: ./
+    volumes:
+      - source: ./
+        target: /foundation/
+        type: bind
+        read_only: false

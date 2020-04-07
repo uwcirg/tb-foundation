@@ -21,6 +21,10 @@ module Assemble
   config.load_defaults 5.1
   config.api_only = true
   config.middleware.use ActionDispatch::Cookies
+
+  #So that sidekiq worker classes are loaded
+  config.autoload_paths += %W(#{config.root}/app/workers)
+
   # in config/application.rb
   #config.action_dispatch.default_headers = {
   #  'Access-Control-Allow-Origin' => '*',
