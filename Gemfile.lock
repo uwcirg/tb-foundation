@@ -992,8 +992,9 @@ GEM
       method_source (~> 0.9.0)
     puma (3.12.4)
     raabro (1.1.6)
-    rack (2.0.7)
-    rack-cors (1.0.3)
+    rack (2.2.2)
+    rack-cors (1.0.5)
+      rack (>= 1.6.0)
     rack-protection (2.0.8.1)
       rack
     rack-test (1.1.0)
