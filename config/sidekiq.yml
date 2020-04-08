@@ -1,4 +1,4 @@
 :schedule:
   test_notify:
-    every: 10m   # Runs once per minute
+    every: 1m  # Runs once per minute
     class: NotificationWorker

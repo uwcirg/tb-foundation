@@ -106,4 +106,18 @@ class PatientController < UserController
       render(json: old_report.as_json, status: 200)
     end
   end
+
+
+  def update_notification_time
+    if(@current_user.daily_notification.nil?)
+      @current_user.create_daily_notification
+    else
+      @current_user.daily_notification.update_time(Time.parse(params["time"]))
+    end
+
+    obj = @current_user.daily_notification
+    render(json: obj.as_json, status: 200 )
+  end
+
+
 end

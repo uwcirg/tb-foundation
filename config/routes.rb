@@ -38,11 +38,17 @@ Rails.application.routes.draw do
   get '/patient/daily_reports/photo_upload_url', to: 'patient#generate_upload_url'
   get '/organizations', to: 'user#get_all_organizations'
 
-  #Tests
-  get '/medication_schedule', to: 'application#generate_medication_schedule'
+  #List of patients for practitioner
   get '/practitioner/patients', to: 'practitioner#get_patients'
+
+  #Medication Reports
   post '/daily_report', to: 'patient#post_daily_report'
   get '/daily_reports', to: 'patient#get_patient_reports'
+
+  #Notification Reminder
+  patch '/patient/reminder', to: 'patient#update_notification_time'
+
+
 
 
 

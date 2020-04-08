@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_03_161411) do
+ActiveRecord::Schema.define(version: 2020_04_07_181713) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,13 @@ ActiveRecord::Schema.define(version: 2020_04_03_161411) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_private", default: false, null: false
+  end
+
+  create_table "daily_notifications", force: :cascade do |t|
+    t.boolean "active"
+    t.time "time"
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_daily_notifications_on_user_id"
   end
 
   create_table "daily_reports", force: :cascade do |t|
@@ -59,6 +66,13 @@ ActiveRecord::Schema.define(version: 2020_04_03_161411) do
     t.text "body", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "notificaiton_status", force: :cascade do |t|
+    t.datetime "time_delivered"
+    t.datetime "time_interacted"
+    t.bigint "daily_notification_id"
+    t.index ["daily_notification_id"], name: "index_notificaiton_status_on_daily_notification_id"
   end
 
   create_table "notifications", force: :cascade do |t|

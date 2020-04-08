@@ -6,6 +6,7 @@ class User < ApplicationRecord
     has_many :notifications
 
     has_many :daily_reports
+    has_one :daily_notification
 
     enum language: { en: 0, es: 1 }
     enum type: { Patient: 0, Practitioner: 1, Administrator: 2 }
