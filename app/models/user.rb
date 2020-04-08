@@ -27,7 +27,9 @@ class User < ApplicationRecord
         ],
         treatmentStart: treatment_start,
         medicationSchedule: medication_schedule,
-        managingOrganization: managing_organization
+        managingOrganization: managing_organization,
+        reminderTime: daily_notification.formatted_time
+
       }
     end
 

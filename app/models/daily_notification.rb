@@ -12,8 +12,12 @@ class DailyNotification < ApplicationRecord
     def as_json(*args)
         {
             time: self.time,
-            test: (self.time + 1.day).zone
+            isoTime: self.formatted_time
         }
+    end
+
+    def formatted_time
+        return self.time.strftime("%T%:z")
     end
 
 end
