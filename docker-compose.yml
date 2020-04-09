@@ -16,7 +16,12 @@ services:
 
   db:
     restart: always
-    image: postgres
+    image: postgres:9.5.18
+    volumes:
+      - source: postgres-files
+        target: /var/lib/postgresql/data
+        type: volume
+
 
   bucket:
     image: minio/minio
@@ -27,7 +32,8 @@ services:
       - source: user-files
         target: /files
         type: volume
-    command: server /files
+    entrypoint: sh
+    command: -c 'mkdir -p /files/patient-test-photos && /usr/bin/minio server /files'
     ports: 
        - $PORT_MINIO:9000
 
@@ -89,3 +95,4 @@ services:
 volumes:
     user-files: {}
     redis-files: {}
+    postgres-files: {}

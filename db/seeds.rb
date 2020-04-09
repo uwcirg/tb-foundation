@@ -50,6 +50,7 @@ when "development"
     )
 
     patient.seed_test_reports
+    patient.photo_day_override
     patient2.seed_test_reports
 
     #Test Admin
@@ -72,7 +73,7 @@ when "development"
     loop do
         i = i + 1;
 
-        admin.messages.create!(body: "Test message from seed for channel 1",channel_id: gc.id)
+        admin.messages.create!(body: "Test message from seed for channel TEST",channel_id: gc.id)
         admin.messages.create!(body: "Test message from seed for channel 2",channel_id: sc.id)
         patient.messages.create!(body: "Patient test 1",channel_id: gc.id,user_id: admin.id)
         patient.messages.create!(body: "Patient test 1 two",channel_id: gc.id)

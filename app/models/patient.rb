@@ -48,8 +48,23 @@ class Patient < User
       list_of_lists.append(list)
       i += 1
     end
-
+    puts("Med Gen")
     self.medication_schedule = list_of_lists.as_json
+  end
+
+  def photo_day_override
+    i = 0
+    list_of_lists = []
+
+    #26 weeks of treatment
+    while i < 26
+      n = 0
+      list = [1,2,3,4,5,6,7]
+      list_of_lists.append(list)
+      i += 1
+    end
+    puts("OVERRIDE")
+    self.update(medication_schedule: list_of_lists.as_json)
   end
 
   def seed_test_reports
