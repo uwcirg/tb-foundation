@@ -18,6 +18,32 @@ class Patient < User
     channel.messages.create!(body: "Welcome, this is the first TEST message!", user_id: self.id)
   end
 
+
+  def as_fhir_json(*args)
+
+    if(!self.daily_notification.nil?)
+      reminderTime = self.daily_notification.formatted_time
+    else
+      reminderTime = ""
+    end
+
+    return {
+      givenName: given_name,
+      familyName: family_name,
+      identifier: [
+          {value: id,use: "official"},
+          {value: "test",use: "messageboard"}
+      ],
+      phoneNumber: phone_number,
+      treatmentStart: treatment_start,
+      medicationSchedule: medication_schedule,
+      managingOrganization: managing_organization,
+      reminderTime: reminderTime,
+      lastReport: latest_report
+
+    }
+  end
+
   #Algorithim to Randomize day that Patients Have to Report Their Test Strips
   def generate_medication_schedule
     i = 0
@@ -113,4 +139,9 @@ class Patient < User
     end
     return hash
   end
+
+  def latest_report
+    self.daily_reports.last
+  end
+
 end

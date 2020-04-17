@@ -57,7 +57,21 @@ class PractitionerController < UserController
 
     def get_patients
       patients = Patient.where(practitioner_id: @current_practitoner.id)
-      render(json: patients.as_json, status: 200)
+      response = []
+      patients.each do |patient| 
+        response.push(patient.as_fhir_json)
+    end
+
+      render(json: response, status: 200)
+    end
+
+    def get_temp_accounts
+      temp_accounts = TempAccount.all()
+      response = []
+      temp_accounts.each do |account| 
+        response.push(account.as_fhir_json)
+      end
+      render(json: response,status: 200)
     end
 
     def generate_presigned_url

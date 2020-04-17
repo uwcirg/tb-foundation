@@ -40,6 +40,7 @@ Rails.application.routes.draw do
 
   #List of patients for practitioner
   get '/practitioner/patients', to: 'practitioner#get_patients'
+  get '/practitioner/temporary_patients', to: 'practitioner#get_temp_accounts'
 
   #Medication Reports
   post '/daily_report', to: 'patient#post_daily_report'
