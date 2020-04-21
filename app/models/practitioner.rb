@@ -4,15 +4,17 @@ class Practitioner < User
     validates :email, presence: true
 
     def get_photos
-        pr = DailyReport.where.not(photo_report: nil)
-        hash = {}
+        pr = DailyReport.all.joins(:photo_report)
+        list = []
         num = 0
+        puts("Query Length")
+        puts(pr.length)
         pr.each do |report|
-            hash["#{report.id}"] = report
-            num+=1
+            if(!report.photo_report.nil?)
+                list.push({"url":report.photo_report.get_url, "photo_id": report.photo_report.id})
+            end
         end
-        hash["num"]= {"num": num}
-        return hash
+        return list
     end
 
 end
