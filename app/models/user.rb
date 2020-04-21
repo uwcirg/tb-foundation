@@ -39,6 +39,37 @@ class User < ApplicationRecord
       }
     end
 
+    def seed_test_reports
+      (treatment_start.to_date..DateTime.current.to_date).each do |day|
+        #daily_reports.create(date: day)
+        post_daily_report(day)
+      end
+    end
+  
+    def post_daily_report(day)
+  
+      datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
+  
+      med_report = MedicationReport.create!(medication_was_taken: [true, true, true, false].sample, datetime_taken: datetime)
+      symptom_report = SymptomReport.create!(
+        nausea: [true, false].sample,
+        nausea_rating: [true, false].sample,
+        redness: [true, false].sample,
+        hives: [true, false].sample,
+        fever: [true, false].sample,
+        appetite_loss: [true, false].sample,
+        blurred_vision: [true, false].sample,
+        sore_belly: [true, false].sample,
+        other: "Other text would go here!",
+      )
+  
+      new_report = DailyReport.create(date: day,user_id: self.id);
+
+      new_report.medication_report = med_report
+      new_report.symptom_report = symptom_report
+      new_report.save
+    end
+
     def user_specific_channels
       #Modify this to attach a users notifications / push settings for each channel
       channelList = Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).sort_by &:created_at

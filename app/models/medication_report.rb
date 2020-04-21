@@ -1,4 +1,5 @@
 class MedicationReport < ApplicationRecord
-  #belongs_to :daily_report
-  has_one :user, through: :daily_report
+  belongs_to :daily_report, optional: true
+  #has_one :daily_report
+
 end

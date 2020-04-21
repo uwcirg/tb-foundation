@@ -107,9 +107,14 @@ class PractitionerController < UserController
       render(json: newTest.as_json, status: 200)
     end
 
+    def get_photos
+      test = @current_practitoner.get_photos
+      render(json: test.as_json,status: 200)
+    end
+
 
     def send_notifcation_all
-      Patient.all.map { |u| u.send_push_to_user("Api triggered all user notification!","Test body message") }
+      Patient.all.map { |u| u.send_push_to_user("Please Take Your Medication","Click Here to Complete Report") }
       render(json: {message: "success"}, status: 200)
     end
 

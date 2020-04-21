@@ -50,6 +50,10 @@ Rails.application.routes.draw do
   patch '/patient/reminder', to: 'patient#update_notification_time'
 
 
+  #New Ones
+  get '/patients/photo_reports', to: 'practitioner#get_photos'
+
+
 
 
 

@@ -1,6 +1,6 @@
 class PhotoReport < ApplicationRecord
-    #belongs_to :daily_report
-    has_one :user, through: :daily_report
+    belongs_to :daily_report, optional: true
+    #has_one :daily_report
 
     def get_url
         if(self.photo_url.nil?)
@@ -12,5 +12,13 @@ class PhotoReport < ApplicationRecord
 
         return tempURL
     end
+
+
+    def pretty_json
+        return {
+            url: get_url
+          }
+    end
+
   end
   

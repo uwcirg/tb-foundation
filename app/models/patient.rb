@@ -1,7 +1,7 @@
 class Patient < User
   has_one :practitioner
   #has_one :daily_notification
-  #has_many :daily_reports
+
 
   #validates :user_type, value:
   validates :family_name, presence: true
@@ -93,38 +93,8 @@ class Patient < User
     self.update(medication_schedule: list_of_lists.as_json)
   end
 
-  def seed_test_reports
-    (treatment_start.to_date..DateTime.current.to_date).each do |day|
-      #daily_reports.create(date: day)
-      post_daily_report(day)
-    end
-  end
-
   def test_method
     puts("#{self.given_name} #{self.family_name}")
-  end
-
-  def post_daily_report(day)
-    new_report = self.daily_reports.create(date: day)
-
-    datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
-
-    med_report = MedicationReport.create!(medication_was_taken: [true, true, true, false].sample, datetime_taken: datetime)
-    symptom_report = SymptomReport.create!(
-      nausea: [true, false].sample,
-      nausea_rating: [true, false].sample,
-      redness: [true, false].sample,
-      hives: [true, false].sample,
-      fever: [true, false].sample,
-      appetite_loss: [true, false].sample,
-      blurred_vision: [true, false].sample,
-      sore_belly: [true, false].sample,
-      other: "Other text would go here!",
-    )
-
-    new_report.medication_report = med_report
-    new_report.symptom_report = symptom_report
-    new_report.save!
   end
 
   def create_daily_notification
@@ -134,9 +104,11 @@ class Patient < User
 
   def proper_reports
     hash = {}
+
     self.daily_reports.each do |report|
       hash["#{report.date}"] = report
     end
+
     return hash
   end
 
