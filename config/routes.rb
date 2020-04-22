@@ -52,6 +52,7 @@ Rails.application.routes.draw do
 
   #New Ones
   get '/patients/photo_reports', to: 'practitioner#get_photos'
+  patch '/photo_submission/:photo_id', to: 'practitioner#audit_photo'
 
 
 

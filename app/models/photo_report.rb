@@ -7,6 +7,18 @@ class PhotoReport < ApplicationRecord
         return self.user.practitioner_id
     end
 
+
+    def approve
+        self.update(approved: true)
+        self.save
+    end
+
+    def deny
+        self.update(approved: false)
+        self.save
+    end
+
+
     def get_url
         if(self.photo_url.nil?)
             tempURL = nil

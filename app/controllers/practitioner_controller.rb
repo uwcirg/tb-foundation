@@ -112,10 +112,27 @@ class PractitionerController < UserController
       render(json: test.as_json,status: 200)
     end
 
+    def audit_photo
+      photo = PhotoReport.find(params[:photo_id])
+
+      if(photo.nil?)
+        render(json: {error: "That Photo Does Not Exist"}, status: 422 )
+        return
+      end
+
+      if(params[:approved])
+        photo.approve
+      else(!params[:approved])
+        photo.deny
+      end
+
+      render(json: {message: "Photo status updated"}, status: 200)
+    
+    end
 
     def send_notifcation_all
       Patient.all.map { |u| u.send_push_to_user("Please Take Your Medication","Click Here to Complete Report") }
-      render(json: {message: "success"}, status: 200)
+      render(json: {message: "Success"}, status: 200)
     end
 
 
