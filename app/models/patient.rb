@@ -28,6 +28,7 @@ class Patient < User
     end
 
     return {
+      id: id,
       givenName: given_name,
       familyName: family_name,
       identifier: [

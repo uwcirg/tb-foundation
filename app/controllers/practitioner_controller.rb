@@ -112,6 +112,11 @@ class PractitionerController < UserController
       render(json: test.as_json,status: 200)
     end
 
+    def get_historical_photos
+      test = @current_practitoner.get_historical_photos
+      render(json: test.as_json,status: 200)
+    end
+
     def audit_photo
       photo = PhotoReport.find(params[:photo_id])
 
@@ -133,6 +138,34 @@ class PractitionerController < UserController
     def send_notifcation_all
       Patient.all.map { |u| u.send_push_to_user("Please Take Your Medication","Click Here to Complete Report") }
       render(json: {message: "Success"}, status: 200)
+    end
+
+
+    def get_patient_reports
+      patient = get_patient_by_id(params[:patient_id])
+
+      if(patient.nil?)
+        return
+      end
+
+      render(json: patient.proper_reports, status: 200)
+
+
+    end
+
+    private
+
+    def get_patient_by_id(id)
+      patient = Patient.find(id)
+      
+      #Practitioners should only be able to access their own patients
+      if(patient.practitioner_id == @current_practitoner.id)
+        return patient
+      else
+        render(json: {message: "Cannot access patients outside of your care"},status: 401)
+        return nil
+      end
+
     end
 
 
