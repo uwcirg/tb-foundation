@@ -6,6 +6,10 @@ class User < ApplicationRecord
     has_many :notifications
 
     has_many :daily_reports
+    has_many :photo_reports
+    has_many :medication_reports
+    has_many :symptom_reports
+    
     has_one :daily_notification
 
     enum language: { en: 0, es: 1 }
@@ -50,8 +54,9 @@ class User < ApplicationRecord
   
       datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
   
-      med_report = MedicationReport.create!(medication_was_taken: [true, true, true, false].sample, datetime_taken: datetime)
+      med_report = MedicationReport.create!(user_id: self.id,medication_was_taken: [true, true, true, false].sample, datetime_taken: datetime)
       symptom_report = SymptomReport.create!(
+        user_id: self.id,
         nausea: [true, false].sample,
         nausea_rating: [true, false].sample,
         redness: [true, false].sample,

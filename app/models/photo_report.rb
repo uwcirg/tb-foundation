@@ -1,6 +1,11 @@
 class PhotoReport < ApplicationRecord
     belongs_to :daily_report, optional: true
+    belongs_to :user
     #has_one :daily_report
+
+    def assigned_practitioner
+        return self.user.practitioner_id
+    end
 
     def get_url
         if(self.photo_url.nil?)

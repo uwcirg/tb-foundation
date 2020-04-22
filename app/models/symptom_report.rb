@@ -1,5 +1,6 @@
 class SymptomReport < ApplicationRecord
   belongs_to :daily_report, optional: true
+  belongs_to :user
   #has_one :daily_report
 
    def as_json(*args)

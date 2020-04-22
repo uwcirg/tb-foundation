@@ -4,15 +4,15 @@ class Practitioner < User
     validates :email, presence: true
 
     def get_photos
-        pr = DailyReport.all.joins(:photo_report)
+        #pr = DailyReport.joins(:user).joins(:photo_report)
+        pr = PhotoReport.where(approved: nil).joins(:user).where(users: {practitioner_id: self.id})
+        puts(pr)
         list = []
         num = 0
         puts("Query Length")
         puts(pr.length)
         pr.each do |report|
-            if(!report.photo_report.nil?)
-                list.push({"url":report.photo_report.get_url, "photo_id": report.photo_report.id})
-            end
+                list.push({"url":report.get_url, "photo_id": report.id,"p_id": report.assigned_practitioner})
         end
         return list
     end

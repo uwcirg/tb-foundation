@@ -67,8 +67,8 @@ class PatientController < UserController
 
   def post_daily_report
 
-    med_report = MedicationReport.create!(medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"]) 
-    symptom_report = SymptomReport.create!(
+    med_report = MedicationReport.create!(user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"]) 
+    symptom_report = SymptomReport.create!(user_id: @current_user.id,
       nausea: params["nausea"],
       nausea_rating: params["nausea_rating"],
       redness: params["redness"],
@@ -87,7 +87,7 @@ class PatientController < UserController
 
     photo_report = nil
     if (!params["photoURL"].nil?)
-      photo_report = PhotoReport.create!(photo_url: params["photoURL"])
+      photo_report = PhotoReport.create!(user_id: @current_user.id,photo_url: params["photoURL"])
     end
 
 
