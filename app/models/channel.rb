@@ -7,10 +7,11 @@ class Channel < ApplicationRecord
 
     #When Creating a new channel initalize notifications for that channel
     #TODO allow notifications for coordinator on private channel
+    #TODO move this to a worker becuase it will be intensive, might be a better method to update
     def create_notifications
         User.all.map do |u| 
             if(!self.is_private || self.user_id == u.id || self.user.practitioner_id == u.id)
-                u.notifications.create!(channel_id: self.id, user_id: u.id, push_subscription: true )
+                u.unread_messages.create!(channel_id: self.id, user_id: u.id )
             end
         end
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_22_140341) do
+ActiveRecord::Schema.define(version: 2020_04_24_142403) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,13 +76,6 @@ ActiveRecord::Schema.define(version: 2020_04_22_140341) do
     t.index ["daily_notification_id"], name: "index_notificaiton_status_on_daily_notification_id"
   end
 
-  create_table "notifications", force: :cascade do |t|
-    t.bigint "channel_id"
-    t.bigint "user_id"
-    t.bigint "last_message_id"
-    t.boolean "push_subscription"
-  end
-
   create_table "organizations", force: :cascade do |t|
     t.string "title", null: false
     t.index ["title"], name: "index_organizations_on_title", unique: true
@@ -134,6 +127,14 @@ ActiveRecord::Schema.define(version: 2020_04_22_140341) do
     t.boolean "activated", default: false
   end
 
+  create_table "unread_messages", force: :cascade do |t|
+    t.bigint "channel_id"
+    t.bigint "user_id"
+    t.bigint "last_message_id"
+    t.boolean "push_subscription"
+    t.bigint "number_unread", default: 0
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "password_digest", null: false
     t.boolean "active", default: true, null: false
@@ -156,10 +157,10 @@ ActiveRecord::Schema.define(version: 2020_04_22_140341) do
 
   add_foreign_key "channels", "users"
   add_foreign_key "messages", "channels"
-  add_foreign_key "notifications", "channels"
-  add_foreign_key "notifications", "messages", column: "last_message_id"
-  add_foreign_key "notifications", "users"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"
+  add_foreign_key "unread_messages", "channels"
+  add_foreign_key "unread_messages", "messages", column: "last_message_id"
+  add_foreign_key "unread_messages", "users"
   add_foreign_key "users", "users", column: "practitioner_id"
 end

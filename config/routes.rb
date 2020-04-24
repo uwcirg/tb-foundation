@@ -9,10 +9,10 @@ Rails.application.routes.draw do
   #post '/message', to: 'message#post_message'
   post '/channel', to: 'channel#new_channel'
   get '/channels', to: 'channel#all_channels'
-
   post '/channel/:channelID/messages', to: 'channel#post_message'
   get '/channel/:channelID/messages', to: 'channel#get_recent_messages'
   get '/channel/:channelID/messages/:messageID', to: 'channel#get_messages_before'
+  get '/messages/unread', to: 'channel#get_unread_message_numbers'
 
   #Testing new data model
   get '/patient/:patientID', to: 'patient#get_patient'
@@ -53,9 +53,7 @@ Rails.application.routes.draw do
   #New Ones
   get '/patients/photo_reports', to: 'practitioner#get_photos'
   get '/patients/photo_reports/processed', to: 'practitioner#get_historical_photos'
-
   get '/patient/:patient_id/reports', to: 'practitioner#get_patient_reports'
-
   patch '/photo_submission/:photo_id', to: 'practitioner#audit_photo'
 
 

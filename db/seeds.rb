@@ -28,10 +28,22 @@ when "development"
     #Test Patient
     patient = Patient.create!(
         password_digest: password_hash,
-        family_name: "Patient",
-        given_name: "Test",
+        family_name: "Goodwin",
+        given_name: "Kyle",
         managing_organization: "Hospital One",
         phone_number: "123456789",
+        treatment_start: Date.today - 2.months,
+        type: "Patient",
+        practitioner_id: practitioner.id
+    )
+
+    #Test Patient
+    newPatient = Patient.create!(
+        password_digest: password_hash,
+        family_name: "Brown",
+        given_name: "Jimmy",
+        managing_organization: "Hospital One",
+        phone_number: "012345678",
         treatment_start: Date.today - 2.months,
         type: "Patient",
         practitioner_id: practitioner.id
@@ -51,6 +63,8 @@ when "development"
 
     patient.seed_test_reports
     patient.photo_day_override
+    newPatient.seed_test_reports
+    newPatient.photo_day_override
     patient2.seed_test_reports
 
     #Test Admin
