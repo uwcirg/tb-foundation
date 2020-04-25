@@ -107,11 +107,15 @@ class User < ApplicationRecord
     )
   end
 
+  def update_last_message_seen(channel_id,number)
+    UnreadMessage.where(channel_id: channel_id, user_id: self.id).first.update(read_message_count: number);
+  end
+
   def create_unread_messages
     Channel.all.map do |c|
       #TODO make sure coordinator would also get unread message here
-      if (!c.is_private || self.id == c.user_id)
-        self.unread_messages.create!(channel_id: c.id, user_id: self.id, push_subscription: true,number_unread: 0)
+      if (!c.is_private || (c.is_private  && self.id == c.user_id))
+        self.unread_messages.create!(channel_id: c.id, user_id: self.id, push_subscription: true,read_message_count: 0)
       end
     end
   end

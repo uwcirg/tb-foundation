@@ -24,7 +24,6 @@ module Assemble
 
   #So that sidekiq worker classes are loaded
   config.autoload_paths += %W(#{config.root}/app/workers)
-  config.autoload_paths += %W(#{config.root}/app/serializers)
 
   # in config/application.rb
   #config.action_dispatch.default_headers = {

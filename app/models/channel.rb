@@ -15,4 +15,6 @@ class Channel < ApplicationRecord
             end
         end
     end
+
+
 end

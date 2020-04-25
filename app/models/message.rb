@@ -1,6 +1,6 @@
 class Message < ApplicationRecord
     belongs_to :user
-    belongs_to :channel
+    belongs_to :channel, counter_cache: true
     after_create :update_unread_messages
 
     def update_unread_messages
@@ -13,13 +13,15 @@ class Message < ApplicationRecord
 
         #Update all users that have a thing for this channel
 
-        UnreadMessage.find_each do |unread| 
+        
+        # UnreadMessage.find_each() do |unread| 
             
-            unread.update_attributes(
-                                channel_id: self.channel_id, 
-                                number_unread: unread.number_unread + 1
-                               )
-          end
+        #     unread.update_attributes(
+        #                         number_unread: unread.number_unread + 1
+        #                        )
+        #   end
+
+
 
 
     end

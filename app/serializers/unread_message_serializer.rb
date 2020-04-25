@@ -1,3 +1,6 @@
 class UnreadMessageSerializer < ActiveModel::Serializer
-    attributes :number_unread, :channel_id
+    
+    attributes :read_message_count, :channel_id, :unread_messages
+    
+
 end

@@ -4,10 +4,9 @@ class ChannelController < UserController
   before_action :auth_user
 
   def get_unread_message_numbers
-    unread = UnreadMessage.where(user_id: @current_user.id )
-
-    #res =  UnreadMessageSerializer.new(unread).as_json
-    render(json: unread.as_json ,status: 200)
+    #unread = UnreadMessage.where(user_id: @current_user.id )
+    unread = UnreadMessage.where(user_id: @current_user.id)
+    render(json: unread,status: 200)
    
   end
 
@@ -21,7 +20,7 @@ class ChannelController < UserController
   def all_channels
     #response = Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: @current_user.id)).sort_by &:created_at
     response = @current_user.user_specific_channels
-    render(json: response.to_json, status: 200)
+    render(json: response, user_id: @current_user.id, status: 200)
   end
 
   def post_message
@@ -41,6 +40,7 @@ class ChannelController < UserController
         messages = channel.messages.order("created_at").limit(100)
       end
 
+      @current_user.update_last_message_seen(channel.id,channel.messages_count)
       render(json: messages.to_json, status: 200)
     else
       render(json: { message: "You are not authorized to access that channels messages." }, status: 401)

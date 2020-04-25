@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_24_142403) do
+ActiveRecord::Schema.define(version: 2020_04_24_211158) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2020_04_24_142403) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_private", default: false, null: false
+    t.integer "messages_count", default: 0, null: false
   end
 
   create_table "daily_notifications", force: :cascade do |t|
@@ -132,7 +133,7 @@ ActiveRecord::Schema.define(version: 2020_04_24_142403) do
     t.bigint "user_id"
     t.bigint "last_message_id"
     t.boolean "push_subscription"
-    t.bigint "number_unread", default: 0
+    t.integer "read_message_count", default: 0, null: false
   end
 
   create_table "users", force: :cascade do |t|

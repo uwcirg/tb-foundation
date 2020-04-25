@@ -18,6 +18,7 @@ gem 'webpush'
 gem 'aws-sdk', '~> 3'
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
+gem 'active_model_serializers'
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console
