@@ -103,7 +103,6 @@ class PatientController < UserController
     end
   end
 
-
   def update_notification_time
     if(@current_user.daily_notification.nil?)
       @current_user.create_daily_notification

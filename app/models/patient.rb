@@ -2,7 +2,6 @@ class Patient < User
   has_one :practitioner
   #has_one :daily_notification
 
-
   #validates :user_type, value:
   validates :family_name, presence: true
   validates :given_name, presence: true
@@ -18,31 +17,29 @@ class Patient < User
     channel.messages.create!(body: "Welcome, this is the first TEST message!", user_id: self.id)
   end
 
-
   def as_fhir_json(*args)
-
-    if(!self.daily_notification.nil?)
+    if (!self.daily_notification.nil?)
       reminderTime = self.daily_notification.formatted_time
     else
       reminderTime = ""
     end
 
     return {
-      id: id,
-      givenName: given_name,
-      familyName: family_name,
-      identifier: [
-          {value: id,use: "official"},
-          {value: "test",use: "messageboard"}
-      ],
-      phoneNumber: phone_number,
-      treatmentStart: treatment_start,
-      medicationSchedule: medication_schedule,
-      managingOrganization: managing_organization,
-      reminderTime: reminderTime,
-      lastReport: latest_report
+             id: id,
+             givenName: given_name,
+             familyName: family_name,
+             identifier: [
+               { value: id, use: "official" },
+               { value: "username", use: "messageboard" },
+             ],
+             phoneNumber: phone_number,
+             treatmentStart: treatment_start,
+             medicationSchedule: medication_schedule,
+             managingOrganization: managing_organization,
+             reminderTime: reminderTime,
+             lastReport: latest_report,
 
-    }
+           }
   end
 
   #Algorithim to Randomize day that Patients Have to Report Their Test Strips
@@ -75,7 +72,7 @@ class Patient < User
       list_of_lists.append(list)
       i += 1
     end
-    puts("Med Gen")
+    puts("Generating Medication Schedule")
     self.medication_schedule = list_of_lists.as_json
   end
 
@@ -86,16 +83,12 @@ class Patient < User
     #26 weeks of treatment
     while i < 26
       n = 0
-      list = [1,2,3,4,5,6,7]
+      list = [1, 2, 3, 4, 5, 6, 7]
       list_of_lists.append(list)
       i += 1
     end
-    puts("OVERRIDE")
+    puts("Overriding Medication Schedule For Testing")
     self.update(medication_schedule: list_of_lists.as_json)
-  end
-
-  def test_method
-    puts("#{self.given_name} #{self.family_name}")
   end
 
   def create_daily_notification
@@ -116,5 +109,4 @@ class Patient < User
   def latest_report
     self.daily_reports.last
   end
-
 end

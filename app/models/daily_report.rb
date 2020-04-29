@@ -41,7 +41,7 @@ class DailyReport < ApplicationRecord
       symptoms: symptom_report.reported_symptoms,
     }
     if (!self.photo_report.nil?)
-      report[:photoURL] = photo_report.photo_url
+      report[:photoURL] = photo_report.get_url
     end
     return report
   end

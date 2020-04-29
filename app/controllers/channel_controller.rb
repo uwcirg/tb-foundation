@@ -20,7 +20,7 @@ class ChannelController < UserController
   def all_channels
     #response = Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: @current_user.id)).sort_by &:created_at
     response = @current_user.user_specific_channels
-    render(json: response, user_id: @current_user.id, status: 200)
+    render(json: response.as_json, user_id: @current_user.id, status: 200)
   end
 
   def post_message

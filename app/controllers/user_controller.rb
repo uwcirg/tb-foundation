@@ -3,6 +3,13 @@ require 'aws-sdk'
 class UserController < ApplicationController
   before_action :decode_token, :except => [:login,:upload_lab_test,:generate_presigned_url,:activate_patient,:check_patient_code,:get_all_tests]
 
+  def auth_patient
+    @decoded = decode_token
+    @current_user = Patient.find(@decoded[:user_id])
+  rescue ActiveRecord::RecordNotFound => e
+    render json: { errors: "Unauthorized participant" }, status: :unauthorized
+  end
+
   def auth_user
     #Uses @decoded from User Controller(Super Class)
     id = @decoded[:user_id]
