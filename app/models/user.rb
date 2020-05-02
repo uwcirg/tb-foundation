@@ -44,8 +44,12 @@ class User < ApplicationRecord
 
   def seed_test_reports
     (treatment_start.to_date..DateTime.current.to_date).each do |day|
-      #daily_reports.create(date: day)
-      post_daily_report(day)
+      should_report = [true, true, true, true, false].sample
+
+      if(should_report)
+        post_daily_report(day)
+      end
+
     end
   end
 

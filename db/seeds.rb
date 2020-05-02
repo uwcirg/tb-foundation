@@ -52,10 +52,10 @@ when "development"
     #Test Patient
     patient2 = Patient.create!(
         password_digest: password_hash,
-        family_name: "Garcia",
-        given_name: "Julio",
+        family_name: "Prueba",
+        given_name: "Hugo",
         managing_organization: "Hospital One",
-        phone_number: "111111111",
+        phone_number: "111222333",
         treatment_start: Date.today - 1.month,
         type: "Patient",
         practitioner_id: practitioner.id
@@ -66,6 +66,7 @@ when "development"
     newPatient.seed_test_reports
     newPatient.photo_day_override
     patient2.seed_test_reports
+    patient2.photo_day_override
 
     #Test Admin
     admin = Administrator.create!(

@@ -13,8 +13,8 @@ class Patient < User
   before_create :generate_medication_schedule
 
   def create_private_message_channel
-    channel = self.channels.create!(title: "Coordinator Chat #{self.id} ", is_private: true)
-    channel.messages.create!(body: "Welcome, this is the first TEST message!", user_id: self.id)
+    channel = self.channels.create!(title: "Coordinator #{self.id} ", is_private: true)
+    channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.id)
   end
 
   def as_fhir_json(*args)
@@ -76,11 +76,11 @@ class Patient < User
     self.medication_schedule = list_of_lists.as_json
   end
 
+  #Make Patients Need Photo Everyday
   def photo_day_override
     i = 0
     list_of_lists = []
 
-    #26 weeks of treatment
     while i < 26
       n = 0
       list = [1, 2, 3, 4, 5, 6, 7]

@@ -67,7 +67,7 @@ class PatientController < UserController
 
   def post_daily_report
 
-    med_report = MedicationReport.create!(user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"]) 
+    med_report = MedicationReport.create!(user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"], why_medication_not_taken: params["whyMedicationNotTaken"]) 
     symptom_report = SymptomReport.create!(user_id: @current_user.id,
       nausea: params["nausea"],
       nausea_rating: params["nausea_rating"],
@@ -91,13 +91,15 @@ class PatientController < UserController
     end
 
 
-    if (@current_user.daily_reports.today.count < 1)
+    existing_report = @current_user.daily_reports.where(date: params["date"])
+
+    if (existing_report.count < 1)
       new_report = @current_user.daily_reports.create(date: params["date"], medication_report: med_report, symptom_report: symptom_report)
       new_report.photo_report = photo_report
       new_report.save!
       render(json: new_report.as_json, status: 200)
     else
-      old_report = @current_user.daily_reports.where(date: params["date"]).first
+      old_report = existing_report.first
       old_report.update!(medication_report: med_report, symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
       render(json: old_report.as_json, status: 200)
     end
