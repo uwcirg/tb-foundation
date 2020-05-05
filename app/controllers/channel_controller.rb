@@ -5,8 +5,20 @@ class ChannelController < UserController
 
   def get_unread_message_numbers
     #unread = UnreadMessage.where(user_id: @current_user.id )
-    unread = UnreadMessage.where(user_id: @current_user.id)
-    render(json: unread,status: 200)
+    #unread = UnreadMessage.where(user_id: @current_user.id).serializable_hash
+    unread = ActiveModel::SerializableResource.new(UnreadMessage.where(user_id: @current_user.id )).serializable_hash
+    channel_hash = {}
+    total = 0;
+    unread.each do |item|
+      total += item[:unreadMessages]
+      channel_hash[item[:channelId]] = item
+    end
+
+    hash = {
+      channels: channel_hash,
+      total: total
+    }
+    render(json: hash,status: 200)
    
   end
 
@@ -20,7 +32,7 @@ class ChannelController < UserController
   def all_channels
     #response = Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: @current_user.id)).sort_by &:created_at
     response = @current_user.user_specific_channels
-    render(json: response.as_json, user_id: @current_user.id, status: 200)
+    render(json: response, user_id: @current_user.id, status: 200)
   end
 
   def post_message
