@@ -79,7 +79,17 @@ class User < ApplicationRecord
 
   def user_specific_channels
     #Modify this to attach a users notifications / push settings for each channel
-    channelList = Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).sort_by &:created_at
+    
+    if(self.type == "Patient")
+      return Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).sort_by &:created_at
+    end
+
+    if(self.type == "Practitioner")
+      return Channel.joins(:user).where(is_private: true, users: {practitioner_id: self.id}).or(Channel.joins(:user).where(is_private: false)).sort_by &:created_at
+    end
+
+    return []
+
   end
 
   def send_push_to_user(title, body)
