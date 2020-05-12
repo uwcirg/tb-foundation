@@ -56,6 +56,14 @@ class PractitionerController < UserController
     end
 
     def get_patients
+
+      #TODO Clean this up, there is duplicated code
+      if (params.has_key?("namesOnly"))
+        render(json: @current_practitoner.patient_names, status: 200)
+        return
+      end
+
+
       patients = Patient.where(practitioner_id: @current_practitoner.id)
       response = []
       patients.each do |patient| 
@@ -149,8 +157,6 @@ class PractitionerController < UserController
       end
 
       render(json: patient.proper_reports, status: 200)
-
-
     end
 
     private

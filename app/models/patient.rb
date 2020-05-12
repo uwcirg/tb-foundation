@@ -13,8 +13,8 @@ class Patient < User
   before_create :generate_medication_schedule
 
   def create_private_message_channel
-    channel = self.channels.create!(title: "Coordinator #{self.id} ", is_private: true)
-    channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.id)
+    channel = self.channels.create!(title: self.full_name, is_private: true)
+    channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.practitioner_id)
   end
 
   def as_fhir_json(*args)

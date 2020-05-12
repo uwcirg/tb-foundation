@@ -1,7 +1,7 @@
 class Channel < ApplicationRecord
     has_many :messages
     belongs_to :user
-    validates :title, presence: true, uniqueness: true  
+    validates :title, presence: true
 
     after_create :create_notifications
 
@@ -11,7 +11,7 @@ class Channel < ApplicationRecord
     def create_notifications
         User.all.map do |u| 
             if(!self.is_private || self.user_id == u.id || self.user.practitioner_id == u.id)
-                u.unread_messages.create!(channel_id: self.id, user_id: u.id )
+                u.messaging_notifications.create!(channel_id: self.id, user_id: u.id )
             end
         end
     end

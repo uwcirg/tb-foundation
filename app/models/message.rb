@@ -1,29 +1,22 @@
 class Message < ApplicationRecord
     belongs_to :user
     belongs_to :channel, counter_cache: true
-    after_create :update_unread_messages
+    after_create :send_notifications
 
-    def update_unread_messages
+    attr_accessor :skip_notify
+    skip_callback :create, :after, :send_notifications, if: :skip_notify
 
+    def send_notifications
+
+        puts("Message Callback")
+        ::MessageWorker.perform_async(self.channel_id,self.channel.title,self.user_id)
+        
         # Notification.where(channel_id: self.channel_id).map do |notification|
         #     if(notification.user.push_url.present?)
         #         notification.user.send_push_to_user(self.channel.title,self.body)
         #     end
         # end
-
-        #Update all users that have a thing for this channel
-
         
-        # UnreadMessage.find_each() do |unread| 
-            
-        #     unread.update_attributes(
-        #                         number_unread: unread.number_unread + 1
-        #                        )
-        #   end
-
-
-
-
     end
 
 end

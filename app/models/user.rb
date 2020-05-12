@@ -3,7 +3,7 @@ require "webpush"
 class User < ApplicationRecord
   has_many :messages
   has_many :channels
-  has_many :unread_messages
+  has_many :messaging_notifications
 
   has_many :daily_reports
   has_many :photo_reports
@@ -20,6 +20,10 @@ class User < ApplicationRecord
   validates :phone_number, uniqueness: true, allow_nil: true
 
   after_create :create_unread_messages
+
+  def full_name
+    "#{self.given_name} #{self.family_name}"
+  end
 
   def as_fhir_json(*args)
     if (!self.daily_notification.nil?)
@@ -122,16 +126,22 @@ class User < ApplicationRecord
   end
 
   def update_last_message_seen(channel_id,number)
-    UnreadMessage.where(channel_id: channel_id, user_id: self.id).first.update(read_message_count: number);
+    MessagingNotification.where(channel_id: channel_id, user_id: self.id).first.update(read_message_count: number);
   end
 
   def create_unread_messages
     Channel.all.map do |c|
       #TODO make sure coordinator would also get unread message here
       if (!c.is_private || (c.is_private  && self.id == c.user_id))
-        self.unread_messages.create!(channel_id: c.id, user_id: self.id, push_subscription: true,read_message_count: 0)
+        self.messaging_notifications.create!(channel_id: c.id, user_id: self.id,read_message_count: 0)
       end
     end
+  end
+
+  def send_message_no_push(body,channel_id)
+    one = self.messages.new(body: body,channel_id: channel_id)
+    one.skip_notify = true
+    one.save
   end
 
 end

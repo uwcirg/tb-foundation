@@ -25,4 +25,12 @@ class Practitioner < User
 
     end
 
+    def patient_names
+        hash = {}
+        Patient.where(practitioner_id: self.id).each do |patient|
+            hash[patient.id] = "#{patient.given_name} #{patient.family_name}"
+        end
+        return hash
+    end
+
 end

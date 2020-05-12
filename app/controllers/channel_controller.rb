@@ -4,9 +4,8 @@ class ChannelController < UserController
   before_action :auth_user
 
   def get_unread_message_numbers
-    #unread = UnreadMessage.where(user_id: @current_user.id )
-    #unread = UnreadMessage.where(user_id: @current_user.id).serializable_hash
-    unread = ActiveModel::SerializableResource.new(UnreadMessage.where(user_id: @current_user.id )).serializable_hash
+    unread = ActiveModel::SerializableResource.new(MessagingNotification.where(user_id: @current_user.id )).serializable_hash
+
     channel_hash = {}
     total = 0;
     unread.each do |item|
@@ -24,13 +23,11 @@ class ChannelController < UserController
 
   #Message CRUG
   def new_channel
-    #chan = Channel.create!(title: params[:title], subtitle: params[:subtitle], creator_id: @current_user.uuid, creator_type: "Participant")
     chan = @current_user.channels.create!(title: params[:title], subtitle: params[:subtitle])
     render(json: chan.to_json, status: 200)
   end
 
   def all_channels
-    #response = Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: @current_user.id)).sort_by &:created_at
     response = @current_user.user_specific_channels
     render(json: response, user_id: @current_user.id, status: 200)
   end
@@ -44,7 +41,7 @@ class ChannelController < UserController
   def get_recent_messages
     channel = Channel.find(params["channelID"])
     #TODO Make sure patient is one of practitionser, so that not all practitioners have access
-
+    
     if (!channel.is_private || (channel.user_id == @current_user.id) || (@current_user.type == "Practitioner"))
       if (params.has_key?("lastMessageID"))
         messages = channel.messages.where("id > ?", params["lastMessageID"]).order("created_at")

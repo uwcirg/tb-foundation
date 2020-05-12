@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_27_140936) do
+ActiveRecord::Schema.define(version: 2020_05_12_161731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,14 @@ ActiveRecord::Schema.define(version: 2020_04_27_140936) do
     t.text "body", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "messaging_notifications", force: :cascade do |t|
+    t.bigint "channel_id"
+    t.bigint "user_id"
+    t.bigint "last_message_id"
+    t.integer "read_message_count", default: 0, null: false
+    t.boolean "is_subscribed", default: true, null: false
   end
 
   create_table "milestones", force: :cascade do |t|
@@ -137,14 +145,6 @@ ActiveRecord::Schema.define(version: 2020_04_27_140936) do
     t.boolean "activated", default: false
   end
 
-  create_table "unread_messages", force: :cascade do |t|
-    t.bigint "channel_id"
-    t.bigint "user_id"
-    t.bigint "last_message_id"
-    t.boolean "push_subscription"
-    t.integer "read_message_count", default: 0, null: false
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "password_digest", null: false
     t.boolean "active", default: true, null: false
@@ -167,10 +167,10 @@ ActiveRecord::Schema.define(version: 2020_04_27_140936) do
 
   add_foreign_key "channels", "users"
   add_foreign_key "messages", "channels"
+  add_foreign_key "messaging_notifications", "channels"
+  add_foreign_key "messaging_notifications", "messages", column: "last_message_id"
+  add_foreign_key "messaging_notifications", "users"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"
-  add_foreign_key "unread_messages", "channels"
-  add_foreign_key "unread_messages", "messages", column: "last_message_id"
-  add_foreign_key "unread_messages", "users"
   add_foreign_key "users", "users", column: "practitioner_id"
 end
