@@ -9,7 +9,7 @@ class MilestoneController < UserController
         location: params[:location],
         user_id: @current_user.id
     )
-    render(json: new_milestone}, status: 200)
+    render(json: new_milestone.as_json, status: 200)
   end
 
 end

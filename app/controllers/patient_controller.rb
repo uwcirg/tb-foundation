@@ -105,6 +105,11 @@ class PatientController < UserController
     end
   end
 
+  def get_milestones
+    response = @current_user.milestones.order(datetime: :desc)
+    render(json: response.as_json, status: 200)
+  end
+
   def update_notification_time
     if(@current_user.daily_notification.nil?)
       @current_user.create_daily_notification

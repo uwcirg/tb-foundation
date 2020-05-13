@@ -2,6 +2,8 @@ class Patient < User
   has_one :practitioner
   #has_one :daily_notification
 
+  has_many :milestones, :foreign_key=> :user_id
+
   #validates :user_type, value:
   validates :family_name, presence: true
   validates :given_name, presence: true
@@ -9,7 +11,7 @@ class Patient < User
   validates :treatment_start, presence: true
   validates :practitioner_id, presence: true
 
-  after_create :create_private_message_channel
+  after_create :create_private_message_channel, :create_milestone
   before_create :generate_medication_schedule
 
   def create_private_message_channel
@@ -108,5 +110,11 @@ class Patient < User
 
   def latest_report
     self.daily_reports.last
+  end
+
+  def create_milestone
+     self.milestones.create(title: "Treatment Start",datetime: self.treatment_start,all_day: true)
+     self.milestones.create(title: "One Month of Treatment",datetime: self.treatment_start + 1.month ,all_day: true)
+     self.milestones.create(title: "End of Treatment",datetime: self.treatment_start + 6.month ,all_day: true)
   end
 end
