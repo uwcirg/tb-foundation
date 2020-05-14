@@ -7,16 +7,7 @@ class Message < ApplicationRecord
     skip_callback :create, :after, :send_notifications, if: :skip_notify
 
     def send_notifications
-
-        puts("Message Callback")
-        ::MessageWorker.perform_async(self.channel_id,self.channel.title,self.user_id)
-        
-        # Notification.where(channel_id: self.channel_id).map do |notification|
-        #     if(notification.user.push_url.present?)
-        #         notification.user.send_push_to_user(self.channel.title,self.body)
-        #     end
-        # end
-        
+        ::MessageWorker.perform_async(self.channel_id,self.channel.title,self.user_id)   
     end
 
 end

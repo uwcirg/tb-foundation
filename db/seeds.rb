@@ -89,21 +89,21 @@ when "development"
       )
 
 
-    gc = admin.channels.create!(title: "General Channel",subtitle: "Channel for general discussion")
-    sc = admin.channels.create!(title: "Symptom Channel",subtitle: "Channel for symptom discussion")
-
-
+    gc = admin.channels.create!(title: "Discusión General",subtitle: "Un lugar para discusión general")
+    sc = admin.channels.create!(title: "Romper el hielo",subtitle: "Que les parece esta oportunidad de poder compartir este foro?")
+    ib = admin.channels.create!(title: "Mejoras en la aplicación",subtitle: "Quién mejor sabe cómo mejorar la aplicación es quien la usa, por eso te invito a dejar tu propuesta de mejora y que los demás participantes puedan ver tu idea.")
+    
     #Messages
     i = 0
     loop do
         i = i + 1;
-        admin.send_message_no_push("Admin Test message from seed for channel TEST", gc.id)
-        admin.send_message_no_push("Admin Test message from seed for channel 2", sc.id)
-        patient.send_message_no_push("Patient one, This is a very long message. It is supposed to take up mulitple lines. Hopefully thi swill work. I hope that this takes up multiple lines so that I can see what that might look like. I wonder if I should be using some other type of storage for this instead of just a string. What is a good db field for multiline input?",gc.id)
+        admin.send_message_no_push("Hola", gc.id)
+        admin.send_message_no_push("Que tal", sc.id)
+        patient.send_message_no_push("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur?",gc.id)
         patient.send_message_no_push("Patient test 2",channel_id: gc.id)
 
-        admin.send_message_no_push("Test message from seed for channel 2",sc.id)
-        patient.send_message_no_push("Patient test 1",gc.id)
+        admin.send_message_no_push("Hola a todos, soy Admin y estoy probando esta función. Saludos a todos",sc.id)
+        patient.send_message_no_push("Probando dos",gc.id)
         # patient.messages.create!(body: "Patient test 1 two",channel_id: gc.id)
         # patient.messages.create!(body: " Patient one, This is a very long message. It is supposed to take up mulitple lines. Hopefully thi swill work. I hope that this takes up multiple lines so that I can see what that might look like. I wonder if I should be using some other type of storage for this instead of just a string. What is a good db field for multiline input?",channel_id: gc.id)
         # admin.messages.create!(body: "This is a very long message. It is supposed to take up mulitple lines. Hopefully thi swill work. I hope that this takes up multiple lines so that I can see what that might look like. I wonder if I should be using some other type of storage for this instead of just a string. What is a good db field for multiline input?",channel_id: sc.id)

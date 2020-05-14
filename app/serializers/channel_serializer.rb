@@ -7,7 +7,13 @@ class ChannelSerializer < ActiveModel::Serializer
     end
 
     def last_message_time
-        return(object.messages.last.created_at)
+        message = object.messages.last
+        if(!message.nil?)
+            return(message.created_at)
+        end
+
+        return(object.created_at)
+
     end
 
 end
