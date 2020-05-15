@@ -13,7 +13,7 @@ class NotificationWorker
             notifications.each do |notification|
                 user = notification.user
                 puts(user.given_name)
-                user.send_push_to_user("Medication Reminder!", "Sent from server at #{Time.now.strftime("%H:%M")} to #{user.given_name} ")
+                user.send_push_to_user("Medication Reminder!", "Sent from server at #{Time.now.strftime("%H:%M")} to #{user.given_name} ", "/home/report/0")
                 puts("Sent notification to #{user.given_name} at #{Time.now.strftime("%H:%M")}")
             end
         else

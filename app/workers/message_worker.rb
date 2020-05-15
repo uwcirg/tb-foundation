@@ -7,7 +7,7 @@ class MessageWorker
 
             if(item.user_id != sender_id)
                 puts("Sending push notification to #{item.user.given_name} for new message in #{channel_title}")
-                item.user.send_push_to_user("Nuevos Mensajes", "#{channel_title} tiene un nuevo mensaje")
+                item.user.send_push_to_user("Nuevos Mensajes", "#{channel_title} tiene un nuevo mensaje", "/messaging", "messaging")
             begin
                 puts("Not sending to the sender")
             rescue => exception

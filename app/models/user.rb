@@ -97,19 +97,25 @@ class User < ApplicationRecord
 
   end
 
-  def send_push_to_user(title, body)
+  def send_push_to_user(title, body, app_url="/", type = nil)
 
     #Check to make sure their subscription information is up to date
     if (self.push_url.nil? || self.push_auth.nil? || self.push_p256dh.nil?)
-      #render(json: { error: 'User has no push data' }, status: :unauthorized)
-      #Dont send a notification
       return
+    end
+
+
+    data = {url: app_url}
+
+    if(!type.nil?)
+      data[:type] = type
     end
 
     message = JSON.generate(
       title: "#{title}",
       body: "#{body}",
-      url: ENV["URL_CLIENT"],
+      url: "#{ENV["URL_CLIENT"]}",
+      data: data
     )
 
     Webpush.payload_send(
