@@ -1,5 +1,5 @@
 class DailyReport < ApplicationRecord
-  belongs_to :user
+  belongs_to :patient, :foreign_key=> :user_id
   has_one :medication_report
   has_one :symptom_report
   has_one :photo_report

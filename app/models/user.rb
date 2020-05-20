@@ -6,13 +6,6 @@ class User < ApplicationRecord
   has_many :channels
   has_many :messaging_notifications
 
-  has_many :daily_reports
-  has_many :photo_reports
-  has_many :medication_reports
-  has_many :symptom_reports
-
-  has_one :daily_notification
-
   enum language: { en: 0, es: 1 }
   enum type: { Patient: 0, Practitioner: 1, Administrator: 2 }
 
@@ -47,43 +40,7 @@ class User < ApplicationRecord
            }
   end
 
-  def seed_test_reports
-    (treatment_start.to_date..DateTime.current.to_date).each do |day|
-      should_report = [true, true, true, true, false].sample
-
-      if(should_report)
-        post_daily_report(day)
-      end
-
-    end
-  end
-
-  def post_daily_report(day)
-    datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
-
-    med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: [true, true, true, false].sample, datetime_taken: datetime)
-    symptom_report = SymptomReport.create!(
-      user_id: self.id,
-      nausea: [true, false].sample,
-      nausea_rating: [true, false].sample,
-      redness: [true, false].sample,
-      hives: [true, false].sample,
-      fever: [true, false].sample,
-      appetite_loss: [true, false].sample,
-      blurred_vision: [true, false].sample,
-      sore_belly: [true, false].sample,
-      other: "Other text would go here!",
-    )
-
-    new_report = DailyReport.create(date: day, user_id: self.id)
-
-    new_report.medication_report = med_report
-    new_report.symptom_report = symptom_report
-    new_report.save
-  end
-
   def user_specific_channels
-    #Modify this to attach a users notifications / push settings for each channel
     
     if(self.type == "Patient")
       return Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).sort_by &:created_at

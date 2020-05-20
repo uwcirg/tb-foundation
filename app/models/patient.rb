@@ -3,6 +3,11 @@ class Patient < User
   #has_one :daily_notification
 
   has_many :milestones, :foreign_key=> :user_id
+  has_many :daily_reports, :foreign_key=> :user_id
+  has_many :photo_reports, :foreign_key=> :user_id
+  has_many :medication_reports, :foreign_key=> :user_id
+  has_many :symptom_reports, :foreign_key=> :user_id
+  has_one :daily_notification, :foreign_key=> :user_id
 
   #validates :user_type, value:
   validates :family_name, presence: true
@@ -117,4 +122,40 @@ class Patient < User
      self.milestones.create(title: "One Month of Treatment",datetime: self.treatment_start + 1.month ,all_day: true)
      self.milestones.create(title: "End of Treatment",datetime: self.treatment_start + 6.month ,all_day: true)
   end
+
+  def seed_test_reports
+    (treatment_start.to_date..DateTime.current.to_date).each do |day|
+      should_report = [true, true, true, true, false].sample
+
+      if(should_report)
+        create_seed_report(day)
+      end
+
+    end
+  end
+
+  def create_seed_report(day)
+    datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
+
+    med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: [true, true, true, false].sample, datetime_taken: datetime)
+    symptom_report = SymptomReport.create!(
+      user_id: self.id,
+      nausea: [true, false].sample,
+      nausea_rating: [true, false].sample,
+      redness: [true, false].sample,
+      hives: [true, false].sample,
+      fever: [true, false].sample,
+      appetite_loss: [true, false].sample,
+      blurred_vision: [true, false].sample,
+      sore_belly: [true, false].sample,
+      other: "Other text would go here!",
+    )
+
+    new_report = DailyReport.create(date: day, user_id: self.id)
+
+    new_report.medication_report = med_report
+    new_report.symptom_report = symptom_report
+    new_report.save
+  end
+
 end
