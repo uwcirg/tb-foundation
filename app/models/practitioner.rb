@@ -10,7 +10,7 @@ class Practitioner < User
     end
 
     def get_historical_photos
-        historical_photos = PhotoReport.where.not(approved: nil).joins(:daily_report).joins(:user).where(users: {practitioner_id: self.id})
+        historical_photos = PhotoReport.where.not(approved: nil).joins(:daily_report).joins(:patient).where(users: {practitioner_id: self.id})
         return( process_photos(historical_photos))
     end
 
