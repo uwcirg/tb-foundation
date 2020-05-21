@@ -1,5 +1,5 @@
 class ChannelController < UserController
-  #before_action :auth_any_user, :except => [:cors_preflight]
+
   #TODO: make sure each user level has access to only thier proper functions
   before_action :auth_user
 
@@ -21,7 +21,6 @@ class ChannelController < UserController
    
   end
 
-  #Message CRUG
   def new_channel
     chan = @current_user.channels.create!(title: params[:title], subtitle: params[:subtitle])
     render(json: chan.to_json, status: 200)
@@ -40,9 +39,9 @@ class ChannelController < UserController
 
   def get_recent_messages
     channel = Channel.find(params["channelID"])
-    #TODO Make sure patient is one of practitionser, so that not all practitioners have access
     
-    if (!channel.is_private || (channel.user_id == @current_user.id) || (@current_user.type == "Practitioner"))
+    #Allow all user to have access to public channels, limit access to practitioner for private ones
+    if (!channel.is_private || (channel.user_id == @current_user.id) || (@current_user.type == "Practitioner" && channel.user.practitioner_id == @current_user.id))
       if (params.has_key?("lastMessageID"))
         messages = channel.messages.where("id > ?", params["lastMessageID"]).order("created_at")
       else

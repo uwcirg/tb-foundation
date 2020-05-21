@@ -1,31 +1,32 @@
-require 'aws-sdk'
+require "aws-sdk"
 
 class UserController < ApplicationController
-  before_action :decode_token, :except => [:login,:upload_lab_test,:generate_presigned_url,:activate_patient,:check_patient_code,:get_all_tests]
+  before_action :decode_token, :except => [:login, :generate_presigned_url, :activate_patient, :check_patient_code, :get_all_tests]
 
-  def auth_patient
-    @decoded = decode_token
-    @current_user = Patient.find(@decoded[:user_id])
-  rescue ActiveRecord::RecordNotFound => e
-    render json: { errors: "Unauthorized participant" }, status: :unauthorized
-  end
-
+  #Find user based on :user_id from the JWT, stored in cookie
   def auth_user
-    #Uses @decoded from User Controller(Super Class)
     id = @decoded[:user_id]
     @current_user = User.find(id)
   rescue ActiveRecord::RecordNotFound => e
     render json: { errors: "User Not Found" }, status: :unauthorized
   end
 
-  #Authenticaiton Functions
-  def decode_token
-    jwt = cookies.signed[:jwt]
-    begin
-      @decoded = JsonWebToken.decode(jwt)
-    rescue JWT::DecodeError => e
-      render json: { errors: e.message }, status: :unauthorized
+  def auth_patient
+    auth_user
+
+    if (@current_user.type != "Patient")
+      render json: { errors: "Must have type Patient to access route" }, status: :unauthorized
     end
+  end
+
+  def auth_practitioner
+    auth_user
+
+    if (@current_user.type != "Practitioner")
+      render json: { errors: "Must have type Practitioner to access route" }, status: :unauthorized
+    end
+
+    @current_practitoner = @current_user
   end
 
   def login
@@ -37,49 +38,61 @@ class UserController < ApplicationController
     when "Patient"
       @user = Patient.find_by(phone_number: params[:identifier])
     else
-        render json: { error: "Invalid User Type. Possible values: Administrator, Practitioner, or Patient", status: 422 }, status: 422
-        return
+      render json: { error: "Invalid User Type. Possible values: Administrator, Practitioner, or Patient", status: 422 }, status: 422
+      return
     end
 
     authenticate()
   end
 
   def get_all_organizations
-    organizations = Organization.all();
-    render(json: organizations.to_json, status: 200);
+    organizations = Organization.all()
+    render(json: organizations.to_json, status: 200)
   end
 
   #Destroy cookie for logout
   def logout
     cookies.delete(:jwt)
-    render( json: {message: "Logout Successful"}, status: 200)
+    render(json: { message: "Logout Successful" }, status: 200)
   end
 
   def update_user_subscription
     auth_user
     @current_user.update(push_p256dh: params[:p256dh], push_auth: params[:auth], push_url: params[:endpoint])
-    render json: { message: "update successful"}, status: 200
+    render json: { message: "Update successful" }, status: 200
   end
 
   def push_key
-    vapid_key = ENV['VAPID_PUBLIC_KEY']
-    render(json: {key: vapid_key}, status: 200)
+    vapid_key = ENV["VAPID_PUBLIC_KEY"]
+    render(json: { key: vapid_key }, status: 200)
   end
 
   private
 
+  #Authenticaiton Functions
+  def decode_token
+    jwt = cookies.signed[:jwt]
+    begin
+      @decoded = JsonWebToken.decode(jwt)
+    rescue JWT::DecodeError => e
+      render json: { errors: e.message }, status: :unauthorized
+    end
+  end
+
   def authenticate
 
-    if !@user 
-        render json: { error: "That #{params[:userType].downcase} does not exist",status: 422 }, status: 422
-        return
+    #User does not exits, return error
+    if !@user
+      render json: { error: "That #{params[:userType].downcase} does not exist", status: 422 }, status: 422
+      return
     end
 
+    #Check if the user has the correct password
     if @user && BCrypt::Password.new(@user.password_digest) == params[:password]
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 7.days.to_i
-      cookies.signed[:jwt] = {value:  token, httponly: true, expires: Time.now + 1.week}
-      render json: {user_id: @user.id, user_type: @user.type }, status: :ok
+      cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week }
+      render json: { user_id: @user.id, user_type: @user.type }, status: :ok
     else
       render json: { error: "Unauthorized: incorrect password", status: :unauthorized }, status: :unauthorized
     end

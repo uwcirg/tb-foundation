@@ -4,13 +4,6 @@ require "base64"
 class PatientController < UserController
   before_action :auth_patient, :except => [:activate_patient, :check_patient_code]
 
-  def auth_patient
-    @decoded = decode_token
-    @current_user = Patient.find(@decoded[:user_id])
-  rescue ActiveRecord::RecordNotFound => e
-    render json: { errors: "Unauthorized participant" }, status: :unauthorized
-  end
-
   def get_patient
     render(json: @current_user.as_fhir_json, status: 200)
   end

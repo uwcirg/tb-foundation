@@ -4,15 +4,6 @@ require 'securerandom'
 class PractitionerController < UserController
     before_action :auth_practitioner, :except => [:upload_lab_test,:generate_presigned_url,:get_all_tests]
 
-    def auth_practitioner
-        #Uses @decoded from User Controller(Super Class)
-        id = @decoded[:user_id].to_i
-        @current_practitoner = Practitioner.find(id)
-    
-        rescue ActiveRecord::RecordNotFound => e
-          render json: { errors: "Practitioner Only Route" }, status: :unauthorized
-    end
-
     def get_current_practitioner
       render(json: @current_practitoner.as_fhir_json, status: 200)
     end
