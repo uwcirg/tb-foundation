@@ -25,15 +25,15 @@ when "development"
         type: "Practitioner"
     )
 
-        #Test Practitioner
-        practitioner_two = Practitioner.create!(
-            password_digest: password_hash,
-            family_name: "Hugo",
-            given_name: "Test",
-            managing_organization: "University of Washington",
-            email: "test@test.com",
-            type: "Practitioner"
-        )
+    #Test Practitioner
+    practitioner_two = Practitioner.create!(
+        password_digest: password_hash,
+        family_name: "Hugo",
+        given_name: "Test",
+        managing_organization: "University of Washington",
+        email: "test@test.com",
+        type: "Practitioner"
+    )
 
     #Test Patient
     patient = Patient.create!(
@@ -46,6 +46,7 @@ when "development"
         type: "Patient",
         practitioner_id: practitioner.id
     )
+
 
     #Test Patient
     newPatient = Patient.create!(

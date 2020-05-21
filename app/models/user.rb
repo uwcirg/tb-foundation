@@ -1,6 +1,5 @@
 require "webpush"
 
-
 class User < ApplicationRecord
   has_many :messages
   has_many :channels
@@ -20,11 +19,7 @@ class User < ApplicationRecord
   end
 
   def as_fhir_json(*args)
-    if (!self.daily_notification.nil?)
-      reminderTime = self.daily_notification.formatted_time
-    else
-      reminderTime = ""
-    end
+
     return {
              givenName: given_name,
              familyName: family_name,
@@ -32,10 +27,7 @@ class User < ApplicationRecord
                { value: id, use: "official" },
                { value: "test", use: "messageboard" },
              ],
-             treatmentStart: treatment_start,
-             medicationSchedule: medication_schedule,
              managingOrganization: managing_organization,
-             reminderTime: reminderTime,
 
            }
   end

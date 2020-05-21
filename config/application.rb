@@ -22,6 +22,8 @@ module Assemble
   config.api_only = true
   config.middleware.use ActionDispatch::Cookies
 
+  config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
+
   #So that sidekiq worker classes are loaded
   config.autoload_paths += %W(#{config.root}/app/workers)
 

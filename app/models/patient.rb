@@ -1,7 +1,9 @@
 class Patient < User
-  has_one :practitioner
-  #has_one :daily_notification
 
+  #Medicaiton Schedules are defined in this file ./medication_scheudle.rb
+  include PhotoSchedule
+
+  has_one :practitioner
   has_many :milestones, :foreign_key=> :user_id
   has_many :daily_reports, :foreign_key=> :user_id
   has_many :photo_reports, :foreign_key=> :user_id
@@ -49,53 +51,16 @@ class Patient < User
            }
   end
 
-  #Algorithim to Randomize day that Patients Have to Report Their Test Strips
   def generate_medication_schedule
-    i = 0
-    list_of_lists = []
-
-    #26 weeks of treatment
-    while i < 26
-      n = 0
-      list = []
-
-      #Account for changing frequency after 2 months
-      if i < 8
-        mod = 0
-      else
-        mod = 1
-      end
-
-      #Can vary from 1 to 3 Times a week
-      while n < rand(2 - mod..3 - mod)
-        day = -1
-        until day != -1 && !(list.include? day)
-          day = rand(1..5)
-        end
-        list.append(day)
-        n += 1
-      end
-
-      list_of_lists.append(list)
-      i += 1
-    end
+    schedule = random_schedule
     puts("Generating Medication Schedule")
-    self.medication_schedule = list_of_lists.as_json
+    self.medication_schedule = schedule.as_json
   end
 
-  #Make Patients Need Photo Everyday
   def photo_day_override
-    i = 0
-    list_of_lists = []
-
-    while i < 26
-      n = 0
-      list = [1, 2, 3, 4, 5, 6, 7]
-      list_of_lists.append(list)
-      i += 1
-    end
+    schedule = every_day_schedule
     puts("Overriding Medication Schedule For Testing")
-    self.update(medication_schedule: list_of_lists.as_json)
+    self.update(medication_schedule: schedule.as_json)
   end
 
   def create_daily_notification
@@ -125,12 +90,11 @@ class Patient < User
 
   def seed_test_reports
     (treatment_start.to_date..DateTime.current.to_date).each do |day|
+      #Decide if the user will report at all that day
       should_report = [true, true, true, true, false].sample
-
       if(should_report)
         create_seed_report(day)
       end
-
     end
   end
 
@@ -148,7 +112,7 @@ class Patient < User
       appetite_loss: [true, false].sample,
       blurred_vision: [true, false].sample,
       sore_belly: [true, false].sample,
-      other: "Other text would go here!",
+      other: "I didnt want to!",
     )
 
     new_report = DailyReport.create(date: day, user_id: self.id)
