@@ -102,7 +102,6 @@ class PractitionerController < UserController
       signer = Aws::S3::Presigner.new
       url = signer.presigned_url(:get_object, bucket: "lab-strips", key: newTest.photo_url)
 
-
       render(json: newTest.as_json, status: 200)
     end
 
@@ -149,6 +148,14 @@ class PractitionerController < UserController
 
       render(json: patient.proper_reports, status: 200)
     end
+
+    def patients_with_symptoms
+      #TODO - might be an inefficent query here
+      severe = Patient.where(daily_reports: DailyReport.where(user_id: @current_practitoner.patients.select("id"), symptom_report: SymptomReport.has_symptom).last_week)
+      render(json: severe, status: 200)
+    end
+
+    
 
     private
 

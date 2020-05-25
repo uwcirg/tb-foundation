@@ -9,6 +9,7 @@ class DailyReport < ApplicationRecord
   validates :date, presence: true
 
   scope :today, -> { where(:date => (Time.now.to_date)) }
+  scope :last_week, ->{where("date > ?", Time.now - 1.week) }
 
   def limit_one
     if self.daily_reports.today.count == 1

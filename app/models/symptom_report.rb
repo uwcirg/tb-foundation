@@ -1,7 +1,8 @@
 class SymptomReport < ApplicationRecord
   belongs_to :daily_report, optional: true
   belongs_to :patient, :foreign_key=> :user_id
-  #has_one :daily_report
+
+  scope :has_symptom, -> { where("redness=true OR hives=TRUE OR fever=TRUE OR appetite_loss=TRUE OR blurred_vision=TRUE OR sore_belly=TRUE OR yellow_coloration=TRUE OR difficulty_breathing=TRUE OR facial_swelling=TRUE OR nausea=TRUE") }
 
    def as_json(*args)
      hash = {
@@ -9,9 +10,8 @@ class SymptomReport < ApplicationRecord
        nausea_rating: nausea_rating
      }
 
-     
-
      hash["otherSymptoms"] = other if other.nil? || other.empty?
+     return hash
    end
 
   def reported_symptoms
