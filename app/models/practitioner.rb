@@ -6,7 +6,7 @@ class Practitioner < User
     def get_photos
         #If you need more information from the DailyReport change this query to use DailyReport as the base, then join the other tables
         photos_needing_approval = PhotoReport.where(approved: nil).joins(:daily_report).joins(:patient).where(users: {practitioner_id: self.id})
-        return(process_photos(photos_needing_approval))
+        return(photos_needing_approval)
     end
 
     def get_historical_photos

@@ -31,6 +31,10 @@ class DailyReport < ApplicationRecord
     return hash
   end
 
+  def symptom_summary
+    return symptom_report
+  end
+
   def as_json(*args)
     report = {
       date: date,

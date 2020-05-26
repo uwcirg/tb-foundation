@@ -122,4 +122,12 @@ class Patient < User
     new_report.save
   end
 
+  def weekly_symptom_summary
+    list = []
+    self.daily_reports.last_week.each do |report|
+      list += report.symptom_report.reported_symptoms
+    end
+    return list
+  end
+
 end

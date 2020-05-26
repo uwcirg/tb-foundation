@@ -106,13 +106,13 @@ class PractitionerController < UserController
     end
 
     def get_photos
-      test = @current_practitoner.get_photos
-      render(json: test.as_json,status: 200)
+      photos = @current_practitoner.get_photos
+      render(json: photos,status: 200)
     end
 
     def get_historical_photos
-      test = @current_practitoner.get_historical_photos
-      render(json: test.as_json,status: 200)
+      photos = @current_practitoner.get_historical_photos
+      render(json: photos,status: 200)
     end
 
     def audit_photo
@@ -152,10 +152,13 @@ class PractitionerController < UserController
     def patients_with_symptoms
       #TODO - might be an inefficent query here
       severe = Patient.where(daily_reports: DailyReport.where(user_id: @current_practitoner.patients.select("id"), symptom_report: SymptomReport.has_symptom).last_week)
-      render(json: severe, status: 200)
+      render(json: severe,include_symptom_summary: true, status: 200)
     end
 
-    
+    def patients_missed_reporting
+      
+    end
+
 
     private
 
