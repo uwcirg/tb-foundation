@@ -130,4 +130,22 @@ class Patient < User
     return list
   end
 
+  def number_reports_past_week
+    return (self.daily_reports.last_week.count)
+  end
+
+  def days_in_treatment
+    days = (DateTime.current.to_date - self.treatment_start.to_date).to_i
+
+    if( days > 0)
+      return days
+    end
+
+    return 1
+  end
+
+  def adherence
+    return (self.daily_reports.was_taken.count.to_f / self.days_in_treatment)
+  end
+
 end

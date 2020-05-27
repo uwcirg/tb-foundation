@@ -10,6 +10,7 @@ class DailyReport < ApplicationRecord
 
   scope :today, -> { where(:date => (Time.now.to_date)) }
   scope :last_week, ->{where("date > ?", Time.now - 1.week) }
+  scope :was_taken, ->{joins(:medication_report).where(medication_reports:{medication_was_taken: true}) }
 
   def limit_one
     if self.daily_reports.today.count == 1
@@ -32,7 +33,7 @@ class DailyReport < ApplicationRecord
   end
 
   def symptom_summary
-    return symptom_report
+    return symptom_report.as_json
   end
 
   def as_json(*args)

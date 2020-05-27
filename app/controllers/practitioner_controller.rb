@@ -156,9 +156,15 @@ class PractitionerController < UserController
     end
 
     def patients_missed_reporting
-      
-    end
+      start = DateTime.now - 1.week
+      stop = DateTime.now - 1.day
+      list = (start..stop).to_a
 
+      #rp = DailyReport.where(date: list)
+      list = @current_practitoner.patients.where.not(daily_reports: DailyReport.last_week.group("user_id").having('count(user_id) = 7'))
+      #list = @current_practitoner.patients.where(daily_reports: daily_reports.last_week.count) #.first.is_missing_report_for_week
+      render(json: list,include_missing_reports: true, status: 200)
+    end
 
     private
 

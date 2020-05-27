@@ -57,8 +57,8 @@ Rails.application.routes.draw do
   patch '/photo_submission/:photo_id', to: 'practitioner#audit_photo'
   post '/patient/:patientID/milestones', to: 'milestone#create'
   get '/patient/me/milestones', to: 'patient#get_milestones'
-
   get '/patients/severe', to: 'practitioner#patients_with_symptoms'
+  get '/patients/missed', to: 'practitioner#patients_missed_reporting'
 
 
 
