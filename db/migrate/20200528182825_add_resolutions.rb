@@ -3,9 +3,10 @@ class AddResolutions < ActiveRecord::Migration[6.0]
     create_table :resolutions do |t|
       t.timestamps
       t.string :note
-      t.integer :type, null: false
+      t.integer :kind, null: false
       t.bigint :practitioner_id
       t.bigint :patient_id
     end
+    add_index :resolutions, [:practitioner_id, :patient_id,:kind], unique: true
   end
 end

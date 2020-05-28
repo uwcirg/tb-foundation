@@ -113,9 +113,10 @@ ActiveRecord::Schema.define(version: 2020_05_28_182825) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "note"
-    t.integer "type", null: false
+    t.integer "kind", null: false
     t.bigint "practitioner_id"
     t.bigint "patient_id"
+    t.index ["practitioner_id", "patient_id", "kind"], name: "index_resolutions_on_practitioner_id_and_patient_id_and_kind", unique: true
   end
 
   create_table "symptom_reports", force: :cascade do |t|

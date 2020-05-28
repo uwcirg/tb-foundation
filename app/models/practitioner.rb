@@ -23,7 +23,20 @@ class Practitioner < User
         end
 
         return list
+    end
 
+    def missed_since_last_resolution
+
+        #Daily reports where time > than last resolution, where patients are in the coordinators list of patients
+        #Where reports are less than number of days since last resolution
+        start = DateTime.now - 1.week
+        stop = DateTime.now - 1.day
+        list = (start..stop).to_a
+
+        return self.resolutions.find_by(kind: "MissedMedication").created_at
+  
+        #rp = DailyReport.where(date: list)
+        #list = @current_practitoner.patients.where.not(daily_reports: DailyReport.after().group("user_id").having('count(user_id) = 7'))
     end
 
     def patient_names
