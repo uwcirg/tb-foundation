@@ -1,7 +1,5 @@
 class Resolution < ApplicationRecord
-  belongs_to :author, polymorphic: true
-
-  has_many :medication_reports, foreign_key: :resolution_uuid
-  has_many :strip_reports, foreign_key: :resolution_uuid
-  has_many :symptom_reports, foreign_key: :resolution_uuid
+  belongs_to :practitioner
+  belongs_to :patient
+  enum type: { Symptom: 0, MissedMedication: 1, MissedPhoto: 2 }
 end

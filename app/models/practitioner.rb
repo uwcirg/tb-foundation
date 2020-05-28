@@ -1,5 +1,6 @@
 class Practitioner < User
-    has_many  :patients
+    has_many :patients
+    has_many :resolutions
     validates :type, inclusion: { in: ["Practitioner"] }
     validates :email, presence: true
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_12_161731) do
+ActiveRecord::Schema.define(version: 2020_05_28_182825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,6 +107,15 @@ ActiveRecord::Schema.define(version: 2020_05_12_161731) do
     t.datetime "approval_timestamp"
     t.bigint "user_id", null: false
     t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
+  end
+
+  create_table "resolutions", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "note"
+    t.integer "type", null: false
+    t.bigint "practitioner_id"
+    t.bigint "patient_id"
   end
 
   create_table "symptom_reports", force: :cascade do |t|

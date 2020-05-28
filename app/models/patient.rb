@@ -3,13 +3,15 @@ class Patient < User
   #Medicaiton Schedules are defined in this file ./medication_scheudle.rb
   include PhotoSchedule
 
-  has_one :practitioner
+  belongs_to :practitioner, :foreign_key=> :practitioner_id
   has_many :milestones, :foreign_key=> :user_id
   has_many :daily_reports, :foreign_key=> :user_id
   has_many :photo_reports, :foreign_key=> :user_id
   has_many :medication_reports, :foreign_key=> :user_id
   has_many :symptom_reports, :foreign_key=> :user_id
   has_one :daily_notification, :foreign_key=> :user_id
+
+  has_many :resolutions
 
   #validates :user_type, value:
   validates :family_name, presence: true
