@@ -60,6 +60,8 @@ Rails.application.routes.draw do
   get '/patients/severe', to: 'practitioner#patients_with_symptoms'
   get '/patients/missed', to: 'practitioner#patients_missed_reporting'
 
+  get '/test/patients', to: 'practitioner#patients_with_adherence'
+
 
 
 

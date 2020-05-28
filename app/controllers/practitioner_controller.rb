@@ -54,12 +54,12 @@ class PractitionerController < UserController
         return
       end
 
-
       patients = Patient.where(practitioner_id: @current_practitoner.id)
       response = []
       patients.each do |patient| 
         response.push(patient.as_fhir_json)
     end
+
 
       render(json: response, status: 200)
     end
@@ -164,6 +164,10 @@ class PractitionerController < UserController
       list = @current_practitoner.patients.where.not(daily_reports: DailyReport.last_week.group("user_id").having('count(user_id) = 7'))
       #list = @current_practitoner.patients.where(daily_reports: daily_reports.last_week.count) #.first.is_missing_report_for_week
       render(json: list,include_missing_reports: true, status: 200)
+    end
+
+    def patients_with_adherence
+      render(json: @current_practitoner.patients,status: 200)
     end
 
     private

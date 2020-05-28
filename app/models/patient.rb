@@ -135,6 +135,7 @@ class Patient < User
   end
 
   def days_in_treatment
+
     days = (DateTime.current.to_date - self.treatment_start.to_date).to_i
 
     if( days > 0)
@@ -145,7 +146,11 @@ class Patient < User
   end
 
   def adherence
-    return (self.daily_reports.was_taken.count.to_f / self.days_in_treatment)
+    return (self.daily_reports.was_taken.count.to_f / self.days_in_treatment).round(2)
+  end
+
+  def percentage_complete
+    return (self.days_in_treatment.to_f / 180).round(2)
   end
 
 end

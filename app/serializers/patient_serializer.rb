@@ -1,6 +1,6 @@
 class PatientSerializer < ActiveModel::Serializer
     
-    attributes :id, :full_name, :adherence
+    attributes :id, :full_name, :adherence, :percentage_complete, :days_in_treatment
     attribute :daily_reports, if: -> { @instance_options[:include_daily_reports].present?}
     attribute :symptom_summary, if: -> { @instance_options[:include_symptom_summary].present?}
     attribute :number_missing_reports, if: -> { @instance_options[:include_missing_reports].present?}
