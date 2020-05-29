@@ -33,7 +33,24 @@ class Practitioner < User
         stop = DateTime.now - 1.day
         list = (start..stop).to_a
 
-        return self.resolutions.find_by(kind: "MissedMedication").created_at
+
+        #.includes will join the tables so you have access to tall of the reports alrady
+        hash = {}
+        # self.patients.inincludes(:resolutions).where("resolutions.patient_id": self.patients, "resolutions.kind": "MissedMedication").each do |u| 
+        #     #puts(u.full_name)
+        #     hash[u.id] = u.full_name
+        # end
+
+        self.patients.includes(:resolutions).each do |u| 
+            #puts(u.full_name)
+            hash[u.id] = u.full_name
+        end
+
+        return(hash)
+
+        #puts( DailyReport.where(patient: self.patients).where("updated_at > ?",DateTime.now - 1.days).count )
+
+        #return self.patients.where(daily_reports: Dailyself.resolutions.find_by(kind: "MissedMedication").updated_at
   
         #rp = DailyReport.where(date: list)
         #list = @current_practitoner.patients.where.not(daily_reports: DailyReport.after().group("user_id").having('count(user_id) = 7'))
