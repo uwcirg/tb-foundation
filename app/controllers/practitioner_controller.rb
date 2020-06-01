@@ -151,7 +151,9 @@ class PractitionerController < UserController
 
     def patients_with_symptoms
       #TODO - might be an inefficent query here
-      severe = Patient.where(daily_reports: DailyReport.where(user_id: @current_practitoner.patients.select("id"), symptom_report: SymptomReport.has_symptom).last_week)
+      #This way worked for the 7 day approach
+      #severe = Patient.where(daily_reports: DailyReport.where(user_id: @current_practitoner.patients.select("id"), symptom_report: SymptomReport.has_symptom).last_week)
+      severe = Patient.where(daily_reports: DailyReport.unresolved_symptoms)
       render(json: severe,include_symptom_summary: true, status: 200)
     end
 

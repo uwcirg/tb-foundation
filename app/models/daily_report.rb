@@ -15,10 +15,7 @@ class DailyReport < ApplicationRecord
   #scope :since_last_med_resolution, -> {where("date > ?", patient.resolution.where(kind: "MissedMedication"))}
   #scope :test, -> {includes(:patient).where("date > ?", object.patient.treatment_start)}
 
-  scope :unresolved_symptoms, -> {joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, "resolutions.kind" => "Symptom").where("daily_reports.date > resolutions.updated_at" )}
-
-
-
+  scope :unresolved_symptoms, -> {joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, resolutions:{kind:"Symptom", }).where("daily_reports.date > resolutions.resolved_at" )}
 
   def limit_one
     if self.daily_reports.today.count == 1

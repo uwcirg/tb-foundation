@@ -128,7 +128,7 @@ class Patient < User
 
   def weekly_symptom_summary
     list = []
-    self.daily_reports.last_week.each do |report|
+    self.daily_reports.unresolved_symptoms.each do |report|
       list += report.symptom_report.reported_symptoms
     end
     return list
@@ -173,6 +173,10 @@ class Patient < User
     puts(self.full_name)
     puts("#{days}days - #{number_since }reports = #{days-number_since}")
     return( days > number_since)
+  end
+
+  def resolve_symptoms
+    self.resolutions.find_by_kind("Symptom").update(updated_at: DateTime.now)
   end
 
 end
