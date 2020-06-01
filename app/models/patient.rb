@@ -3,13 +3,13 @@ class Patient < User
   #Medicaiton Schedules are defined in this file ./medication_scheudle.rb
   include PhotoSchedule
 
-  belongs_to :practitioner, :foreign_key=> :practitioner_id
-  has_many :milestones, :foreign_key=> :user_id
-  has_many :daily_reports, :foreign_key=> :user_id
-  has_many :photo_reports, :foreign_key=> :user_id
-  has_many :medication_reports, :foreign_key=> :user_id
-  has_many :symptom_reports, :foreign_key=> :user_id
-  has_one :daily_notification, :foreign_key=> :user_id
+  belongs_to :practitioner, :foreign_key => :practitioner_id
+  has_many :milestones, :foreign_key => :user_id
+  has_many :daily_reports, :foreign_key => :user_id
+  has_many :photo_reports, :foreign_key => :user_id
+  has_many :medication_reports, :foreign_key => :user_id
+  has_many :symptom_reports, :foreign_key => :user_id
+  has_one :daily_notification, :foreign_key => :user_id
 
   has_many :resolutions
 
@@ -22,6 +22,8 @@ class Patient < User
 
   after_create :create_private_message_channel, :create_milestone
   before_create :generate_medication_schedule
+
+  #Where
 
   def create_private_message_channel
     channel = self.channels.create!(title: self.full_name, is_private: true)
@@ -85,16 +87,16 @@ class Patient < User
   end
 
   def create_milestone
-     self.milestones.create(title: "Treatment Start",datetime: self.treatment_start,all_day: true)
-     self.milestones.create(title: "One Month of Treatment",datetime: self.treatment_start + 1.month ,all_day: true)
-     self.milestones.create(title: "End of Treatment",datetime: self.treatment_start + 6.month ,all_day: true)
+    self.milestones.create(title: "Treatment Start", datetime: self.treatment_start, all_day: true)
+    self.milestones.create(title: "One Month of Treatment", datetime: self.treatment_start + 1.month, all_day: true)
+    self.milestones.create(title: "End of Treatment", datetime: self.treatment_start + 6.month, all_day: true)
   end
 
   def seed_test_reports
     (treatment_start.to_date..DateTime.current.to_date).each do |day|
       #Decide if the user will report at all that day
       should_report = [true, true, true, true, false].sample
-      if(should_report)
+      if (should_report)
         create_seed_report(day)
       end
     end
@@ -137,10 +139,9 @@ class Patient < User
   end
 
   def days_in_treatment
-
     days = (DateTime.current.to_date - self.treatment_start.to_date).to_i
 
-    if( days > 0)
+    if (days > 0)
       return days
     end
 
@@ -153,6 +154,25 @@ class Patient < User
 
   def percentage_complete
     return (self.days_in_treatment.to_f / 180).round(2)
+  end
+
+  def last_medication_resolution
+    res = self.resolutions.where(kind: "MissedMedication").first
+    if (res.nil?)
+      puts("HERE #{self.full_name}")
+      return self.treatment_start
+    end
+    return self.resolutions.where(kind: "MissedMedication").first.updated_at
+  end
+
+  def has_missed_report
+    last_res = self.last_medication_resolution
+
+    days = ((DateTime.current- 1).to_date - last_res.to_date).to_i 
+    number_since = self.daily_reports.where("date > ?", last_res).count
+    puts(self.full_name)
+    puts("#{days}days - #{number_since }reports = #{days-number_since}")
+    return( days > number_since)
   end
 
 end

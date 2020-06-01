@@ -156,14 +156,47 @@ class PractitionerController < UserController
     end
 
     def patients_missed_reporting
-      start = DateTime.now - 1.week
-      stop = DateTime.now - 1.day
-      list = (start..stop).to_a
-
+      # start = DateTime.now - 1.week
+      # stop = DateTime.now - 1.day
+      # list = (start..stop).to_a
       #rp = DailyReport.where(date: list)
-      list = @current_practitoner.patients.where.not(daily_reports: DailyReport.last_week.group("user_id").having('count(user_id) = 7'))
+      #list = @current_practitoner.patients.where.not(daily_reports: DailyReport.last_week.group("user_id").having('count(user_id) = 7'))
       #list = @current_practitoner.patients.where(daily_reports: daily_reports.last_week.count) #.first.is_missing_report_for_week
-      render(json: list,include_missing_reports: true, status: 200)
+
+      #TODO figure out a way to do this with SQL - this is an ineficient method that will poll the DB many times
+      #Maybe DailyReport.where( "date > ?", Resolution.where(patient: Practitioner.all.first.patients).select(:created_at)).
+
+      #Resolution.where(patient: Practitioner.first.patients,kind: "MissedMedication").select(:patient_id,:updated_at) -> Patient ids and last updated
+      #https://medium.com/@llmaddox/getting-started-with-active-record-querying-part-iii-189b97446982
+
+      #Find .where("daily_reports.date > resolutions.created_at")
+      #DailyReport.joins("INNER JOIN users ON memberships.group_id = posts.group_id").where("date > ?","patients.created_at")
+      #.distinct.count("resolutions.id")
+      #Patient.joins(:daily_reports,:resolutions).where("resolutions.kind": "MissedMedication").where("daily_reports.date > resolutions.updated_at").group("users.id").count("daily_reports.id")
+      #Resolution.where(patient: Practitioner.all.first.patients).select(:updated_at).each do |up|
+     
+      #Old Way
+      list = []
+      @current_practitoner.patients.each do |patient|
+        if(patient.has_missed_report)
+          list.push(patient)
+        end
+      end
+      render(json: list, status: 200)
+
+      # reports_since_res = Patient.joins(:daily_reports,:resolutions).where("resolutions.kind": "MissedMedication").where("daily_reports.date > resolutions.updated_at").group("users.id").count("daily_reports.id")
+
+      # list = []
+      # render(json: reports_since_res,status: 200)
+      # return
+      # Resolution.where(patient: Practitioner.all.first.patients,kind: "MissedMedication").each do |res|
+      #   good = ((DateTime.now - 1.day).to_date - res.updated_at.to_date).to_i
+      #   puts(reports_since_res["#{res.patient_id}"])
+      #   if(good - reports_since_res["#{res.patient_id}"] > 0)
+      #     list.push(res.patient_id)
+      #   end
+      # end
+      # render(json: list.as_json, status: 200)
     end
 
     def patients_with_adherence
