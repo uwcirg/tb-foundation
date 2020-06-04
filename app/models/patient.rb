@@ -126,12 +126,12 @@ class Patient < User
     new_report.save
   end
 
-  def weekly_symptom_summary
-    list = []
+  def symptom_summary
+    hash = {}
     self.daily_reports.unresolved_symptoms.each do |report|
-      list += report.symptom_report.reported_symptoms
+      hash["#{report.date}"] = report.symptom_report.reported_symptoms
     end
-    return list
+    return hash
   end
 
   def number_reports_past_week
@@ -159,7 +159,6 @@ class Patient < User
   def last_medication_resolution
     res = self.resolutions.where(kind: "MissedMedication").first
     if (res.nil?)
-      puts("HERE #{self.full_name}")
       return self.treatment_start
     end
     return self.resolutions.where(kind: "MissedMedication").first.updated_at
@@ -168,15 +167,14 @@ class Patient < User
   def has_missed_report
     last_res = self.last_medication_resolution
 
-    days = ((DateTime.current- 1).to_date - last_res.to_date).to_i 
+    days = ((DateTime.current - 1).to_date - last_res.to_date).to_i
     number_since = self.daily_reports.where("date > ?", last_res).count
     puts(self.full_name)
-    puts("#{days}days - #{number_since }reports = #{days-number_since}")
-    return( days > number_since)
+    puts("#{days}days - #{number_since}reports = #{days - number_since}")
+    return(days > number_since)
   end
 
   def resolve_symptoms
-    self.resolutions.find_by_kind("Symptom").update(updated_at: DateTime.now)
+    self.resolutions.create!(kind: "Symptom", practitioner: self.practitioner, resolved_at: DateTime.now)
   end
-
 end

@@ -10,7 +10,7 @@ class PatientSerializer < ActiveModel::Serializer
     end
 
     def symptom_summary
-        object.weekly_symptom_summary
+        object.daily_reports
     end
 
     def number_missing_reports

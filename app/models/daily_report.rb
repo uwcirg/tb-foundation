@@ -15,12 +15,20 @@ class DailyReport < ApplicationRecord
   #scope :since_last_med_resolution, -> {where("date > ?", patient.resolution.where(kind: "MissedMedication"))}
   #scope :test, -> {includes(:patient).where("date > ?", object.patient.treatment_start)}
 
-  scope :unresolved_symptoms, -> {joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, resolutions:{kind:"Symptom", }).where("daily_reports.date > resolutions.resolved_at" )}
+  #scope :unresolved_symptoms, -> {joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, resolutions:{kind:"Symptom" }).where("daily_reports.date > resolutions.resolved_at" ).group("users.id","daily_reports.id","resolutions.resolved_at").having('Max(resolutions.resolved_at) >= resolutions.resolved_at')}
+  scope :unresolved_symptoms, -> {joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, "resolutions.id": Resolution.last_symptom_from_user).where("daily_reports.created_at > resolutions.resolved_at")}
 
   def limit_one
     if self.daily_reports.today.count == 1
       errors.add(:base, "Exceeds daily limit")
     end
+  end
+
+  def get_photo
+    if (!self.photo_report.nil?)
+      return self.photo_report.get_url
+    end
+    return nil
   end
 
   def get_photo_ref

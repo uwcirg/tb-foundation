@@ -15,7 +15,7 @@ class SymptomReport < ApplicationRecord
    end
 
   def reported_symptoms
-    %w[
+    list = %w[
       redness
       hives
       fever
@@ -27,5 +27,10 @@ class SymptomReport < ApplicationRecord
       facial_swelling
       nausea
     ].select { |symptom| self.send(symptom) }
+
+    if(!(self.other.nil? || self.other.empty?))
+      list.push("other: #{self.other}")
+    end
+    return list
   end
 end

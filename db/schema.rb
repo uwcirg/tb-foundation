@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(version: 2020_06_01_191313) do
     t.bigint "practitioner_id"
     t.bigint "patient_id"
     t.datetime "resolved_at"
-    t.index ["practitioner_id", "patient_id", "kind"], name: "index_resolutions_on_practitioner_id_and_patient_id_and_kind", unique: true
+    t.index ["practitioner_id", "patient_id", "kind"], name: "index_resolutions_on_practitioner_id_and_patient_id_and_kind"
   end
 
   create_table "symptom_reports", force: :cascade do |t|

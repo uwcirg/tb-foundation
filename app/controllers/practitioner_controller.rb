@@ -153,8 +153,8 @@ class PractitionerController < UserController
       #TODO - might be an inefficent query here
       #This way worked for the 7 day approach
       #severe = Patient.where(daily_reports: DailyReport.where(user_id: @current_practitoner.patients.select("id"), symptom_report: SymptomReport.has_symptom).last_week)
-      severe = Patient.where(daily_reports: DailyReport.unresolved_symptoms)
-      render(json: severe,include_symptom_summary: true, status: 200)
+      patients = Patient.where(daily_reports: DailyReport.unresolved_symptoms)
+      render(json: patients, status: 200)
     end
 
     def patients_missed_reporting
@@ -203,6 +203,21 @@ class PractitionerController < UserController
 
     def patients_with_adherence
       render(json: @current_practitoner.patients,status: 200)
+    end
+
+    def patient_symptom_summary
+      render(json: @current_practitoner.patients.find(params["patient_id"]).symptom_summary, status: 200)
+    end
+
+    def recent_reports
+      render(json: DailyReport.where(patient: @current_practitoner.patients).where("date > ?",(DateTime.now - 1.month).to_date).order( 'date DESC' ), status: 200)
+    end
+
+    def create_resolution
+      if(params["type"] == "symptom")
+        resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_symptoms
+      end
+      render(json: resolution,status: 200)
     end
 
     private
