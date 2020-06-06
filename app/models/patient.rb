@@ -177,4 +177,9 @@ class Patient < User
   def resolve_symptoms
     self.resolutions.create!(kind: "Symptom", practitioner: self.practitioner, resolved_at: DateTime.now)
   end
+
+  def resolve_missing_report
+    self.resolutions.create!(kind: "MissedMedication", practitioner: self.practitioner, resolved_at: DateTime.now)
+  end
+
 end

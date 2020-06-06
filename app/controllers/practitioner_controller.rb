@@ -158,32 +158,22 @@ class PractitionerController < UserController
     end
 
     def patients_missed_reporting
-      # start = DateTime.now - 1.week
-      # stop = DateTime.now - 1.day
-      # list = (start..stop).to_a
-      #rp = DailyReport.where(date: list)
-      #list = @current_practitoner.patients.where.not(daily_reports: DailyReport.last_week.group("user_id").having('count(user_id) = 7'))
-      #list = @current_practitoner.patients.where(daily_reports: daily_reports.last_week.count) #.first.is_missing_report_for_week
 
-      #TODO figure out a way to do this with SQL - this is an ineficient method that will poll the DB many times
-      #Maybe DailyReport.where( "date > ?", Resolution.where(patient: Practitioner.all.first.patients).select(:created_at)).
-
-      #Resolution.where(patient: Practitioner.first.patients,kind: "MissedMedication").select(:patient_id,:updated_at) -> Patient ids and last updated
-      #https://medium.com/@llmaddox/getting-started-with-active-record-querying-part-iii-189b97446982
-
-      #Find .where("daily_reports.date > resolutions.created_at")
-      #DailyReport.joins("INNER JOIN users ON memberships.group_id = posts.group_id").where("date > ?","patients.created_at")
-      #.distinct.count("resolutions.id")
-      #Patient.joins(:daily_reports,:resolutions).where("resolutions.kind": "MissedMedication").where("daily_reports.date > resolutions.updated_at").group("users.id").count("daily_reports.id")
-      #Resolution.where(patient: Practitioner.all.first.patients).select(:updated_at).each do |up|
-     
       #Old Way
-      list = []
-      @current_practitoner.patients.each do |patient|
-        if(patient.has_missed_report)
-          list.push(patient)
-        end
-      end
+      # list = []
+      # @current_practitoner.patients.each do |patient|
+      #   if(patient.has_missed_report)
+      #     list.push(patient)
+      #   end
+      # end
+
+      #Resolution.select('MAX(resolved_at), patient_id, resolved_at').group(:patient_id)
+
+      #Number of reports since last resolution for each user
+
+      list = Patient.where( id: @current_practitoner.test_func)
+
+
       render(json: list, status: 200)
 
       # reports_since_res = Patient.joins(:daily_reports,:resolutions).where("resolutions.kind": "MissedMedication").where("daily_reports.date > resolutions.updated_at").group("users.id").count("daily_reports.id")
@@ -214,9 +204,18 @@ class PractitionerController < UserController
     end
 
     def create_resolution
-      if(params["type"] == "symptom")
+
+      case params["type"]
+
+      when "symptom"
         resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_symptoms
+      when "medication"
+        resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_missing_report
+      else
+        render(json: {error: "#{params["type"]} is not a resolution type", status: 422})
       end
+
+
       render(json: resolution,status: 200)
     end
 
