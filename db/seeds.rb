@@ -72,7 +72,7 @@ when "development"
         practitioner_id: practitioner.id
     )
 
-    patient.seed_test_reports
+    patient.seed_test_reports(true)
     patient.photo_day_override
     newPatient.seed_test_reports
     newPatient.photo_day_override

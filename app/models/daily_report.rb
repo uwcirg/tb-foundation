@@ -41,12 +41,6 @@ class DailyReport < ApplicationRecord
     end
   end
 
-  def test_json(*args)
-    hash = {}
-    hash["#{date}"] = as_json
-    return hash
-  end
-
   def symptom_summary
     return symptom_report.as_json
   end

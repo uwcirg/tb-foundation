@@ -20,7 +20,7 @@ class Patient < User
   validates :treatment_start, presence: true
   validates :practitioner_id, presence: true
 
-  after_create :create_private_message_channel, :create_milestone
+  after_create :create_private_message_channel, :create_milestone, :create_resolutions
   before_create :generate_medication_schedule
 
   #Where
@@ -55,6 +55,13 @@ class Patient < User
            }
   end
 
+  def create_resolutions
+    kinds = ["MissedMedication", "Symptom", "MissedPhoto"]
+    kinds.each do |kind|
+      resolution = self.resolutions.create!(practitioner: self.practitioner, kind: kind, resolved_at: self.treatment_start)
+    end
+  end
+
   def generate_medication_schedule
     schedule = random_schedule
     puts("Generating Medication Schedule")
@@ -72,16 +79,6 @@ class Patient < User
     self.daily_notification = newNotification
   end
 
-  def proper_reports
-    hash = {}
-
-    self.daily_reports.each do |report|
-      hash["#{report.date}"] = report
-    end
-
-    return hash
-  end
-
   def latest_report
     self.daily_reports.last
   end
@@ -92,33 +89,42 @@ class Patient < User
     self.milestones.create(title: "End of Treatment", datetime: self.treatment_start + 6.month, all_day: true)
   end
 
-  def seed_test_reports
+  def seed_test_reports(is_good = false)
     (treatment_start.to_date..DateTime.current.to_date).each do |day|
       #Decide if the user will report at all that day
-      should_report = [true, true, true, true, false].sample
+      if (is_good)
+        should_report = true
+      else
+        should_report = [true, true, true, true, false].sample
+      end
+
       if (should_report)
-        create_seed_report(day)
+        create_seed_report(day, is_good)
       end
     end
   end
 
-  def create_seed_report(day)
+  def create_seed_report(day, is_good)
     datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
 
-    med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: [true, true, true, false].sample, datetime_taken: datetime)
-    symptom_report = SymptomReport.create!(
-      user_id: self.id,
-      nausea: [true, false].sample,
-      nausea_rating: [true, false].sample,
-      redness: [true, false].sample,
-      hives: [true, false].sample,
-      fever: [true, false].sample,
-      appetite_loss: [true, false].sample,
-      blurred_vision: [true, false].sample,
-      sore_belly: [true, false].sample,
-      other: "I didnt want to!",
-    )
-
+    if (!is_good)
+      med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: [true, true, true, false].sample, datetime_taken: datetime)
+      symptom_report = SymptomReport.create!(
+        user_id: self.id,
+        nausea: [true, false].sample,
+        nausea_rating: [true, false].sample,
+        redness: [true, false].sample,
+        hives: [true, false].sample,
+        fever: [true, false].sample,
+        appetite_loss: [true, false].sample,
+        blurred_vision: [true, false].sample,
+        sore_belly: [true, false].sample,
+        other: "Other symptom",
+      )
+    else
+      med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: true, datetime_taken: datetime)
+      symptom_report = SymptomReport.create!(user_id: self.id)
+    end
     new_report = DailyReport.create(date: day, user_id: self.id)
 
     new_report.medication_report = med_report
@@ -142,7 +148,7 @@ class Patient < User
     days = (DateTime.current.to_date - self.treatment_start.to_date).to_i
 
     if (days > 0)
-      return days
+      return days + 1
     end
 
     return 1
@@ -181,5 +187,4 @@ class Patient < User
   def resolve_missing_report
     self.resolutions.create!(kind: "MissedMedication", practitioner: self.practitioner, resolved_at: DateTime.now)
   end
-
 end

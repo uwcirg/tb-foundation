@@ -1,11 +1,15 @@
 class DailyReportSerializer < ActiveModel::Serializer
-    attributes :id, :date, :user_id, :photo_url, :took_medication
+    attributes :id, :date, :user_id, :photo_url, :medication_was_taken, :symptoms
 
     def photo_url
         object.get_photo
     end
 
-    def took_medication
+    def symptoms
+        object.symptom_report.reported_symptoms
+    end
+
+    def medication_was_taken
         object.medication_report.medication_was_taken
     end
 
