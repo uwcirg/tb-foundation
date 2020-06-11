@@ -5,7 +5,7 @@ class PractitionerController < UserController
     before_action :auth_practitioner, :except => [:upload_lab_test,:generate_presigned_url,:get_all_tests]
 
     def get_current_practitioner
-      render(json: @current_practitoner.as_fhir_json, status: 200)
+      render(json: @current_practitoner, status: 200)
     end
 
     def generate_temp_patient
@@ -48,20 +48,11 @@ class PractitionerController < UserController
 
     def get_patients
 
-      #TODO Clean this up, there is duplicated code
-      if (params.has_key?("namesOnly"))
-        render(json: @current_practitoner.patient_names, status: 200)
-        return
-      end
-
-      patients = Patient.where(practitioner_id: @current_practitoner.id)
-      response = []
-      patients.each do |patient| 
-        response.push(patient.as_fhir_json)
+    hash = {}
+    @current_practitoner.patients.each do |patient|
+      hash[patient.id] = serialization = ActiveModelSerializers::SerializableResource.new(patient)
     end
-
-
-      render(json: response, status: 200)
+      render(json: hash, status: 200)
     end
 
     def get_temp_accounts
@@ -146,7 +137,7 @@ class PractitionerController < UserController
         return
       end
 
-      render(json: patient.proper_reports, status: 200)
+      render(json: patient.formatted_reports, status: 200)
     end
 
     def patients_with_symptoms
@@ -200,7 +191,7 @@ class PractitionerController < UserController
     end
 
     def recent_reports
-      render(json: DailyReport.where(patient: @current_practitoner.patients).where("date > ?",(DateTime.now - 1.month).to_date).order( 'date DESC' ), status: 200)
+      render(json: DailyReport.where(patient: @current_practitoner.patients).where("date > ?",(DateTime.now - 1.month).to_date).order( 'date DESC' ).limit(50), status: 200)
     end
 
     def create_resolution

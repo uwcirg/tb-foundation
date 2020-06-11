@@ -2,6 +2,7 @@ class Patient < User
 
   #Medicaiton Schedules are defined in this file ./medication_scheudle.rb
   include PhotoSchedule
+  include SeedPatient
 
   belongs_to :practitioner, :foreign_key => :practitioner_id
   has_many :milestones, :foreign_key => :user_id
@@ -30,31 +31,6 @@ class Patient < User
     channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.practitioner_id)
   end
 
-  def as_fhir_json(*args)
-    if (!self.daily_notification.nil?)
-      reminderTime = self.daily_notification.formatted_time
-    else
-      reminderTime = ""
-    end
-
-    return {
-             id: id,
-             givenName: given_name,
-             familyName: family_name,
-             identifier: [
-               { value: id, use: "official" },
-               { value: "username", use: "messageboard" },
-             ],
-             phoneNumber: phone_number,
-             treatmentStart: treatment_start,
-             medicationSchedule: medication_schedule,
-             managingOrganization: managing_organization,
-             reminderTime: reminderTime,
-             lastReport: latest_report,
-
-           }
-  end
-
   def create_resolutions
     kinds = ["MissedMedication", "Symptom", "MissedPhoto"]
     kinds.each do |kind|
@@ -79,7 +55,7 @@ class Patient < User
     self.daily_notification = newNotification
   end
 
-  def latest_report
+  def last_report
     self.daily_reports.last
   end
 
@@ -87,49 +63,6 @@ class Patient < User
     self.milestones.create(title: "Treatment Start", datetime: self.treatment_start, all_day: true)
     self.milestones.create(title: "One Month of Treatment", datetime: self.treatment_start + 1.month, all_day: true)
     self.milestones.create(title: "End of Treatment", datetime: self.treatment_start + 6.month, all_day: true)
-  end
-
-  def seed_test_reports(is_good = false)
-    (treatment_start.to_date..DateTime.current.to_date).each do |day|
-      #Decide if the user will report at all that day
-      if (is_good)
-        should_report = true
-      else
-        should_report = [true, true, true, true, false].sample
-      end
-
-      if (should_report)
-        create_seed_report(day, is_good)
-      end
-    end
-  end
-
-  def create_seed_report(day, is_good)
-    datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
-
-    if (!is_good)
-      med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: [true, true, true, false].sample, datetime_taken: datetime)
-      symptom_report = SymptomReport.create!(
-        user_id: self.id,
-        nausea: [true, false].sample,
-        nausea_rating: [true, false].sample,
-        redness: [true, false].sample,
-        hives: [true, false].sample,
-        fever: [true, false].sample,
-        appetite_loss: [true, false].sample,
-        blurred_vision: [true, false].sample,
-        sore_belly: [true, false].sample,
-        other: "Other symptom",
-      )
-    else
-      med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: true, datetime_taken: datetime)
-      symptom_report = SymptomReport.create!(user_id: self.id)
-    end
-    new_report = DailyReport.create(date: day, user_id: self.id)
-
-    new_report.medication_report = med_report
-    new_report.symptom_report = symptom_report
-    new_report.save
   end
 
   def symptom_summary
@@ -172,11 +105,8 @@ class Patient < User
 
   def has_missed_report
     last_res = self.last_medication_resolution
-
     days = ((DateTime.current - 1).to_date - last_res.to_date).to_i
     number_since = self.daily_reports.where("date > ?", last_res).count
-    puts(self.full_name)
-    puts("#{days}days - #{number_since}reports = #{days - number_since}")
     return(days > number_since)
   end
 
@@ -186,5 +116,39 @@ class Patient < User
 
   def resolve_missing_report
     self.resolutions.create!(kind: "MissedMedication", practitioner: self.practitioner, resolved_at: DateTime.now)
+  end
+
+  def formatted_reports
+    hash = {}
+    self.daily_reports.each do |report|
+      serialization = ActiveModelSerializers::SerializableResource.new(report)
+      hash["#{report["date"]}"] = serialization
+    end
+    return hash
+  end
+
+  def get_streak
+
+      sql = `WITH report_dates AS (
+        SELECT DISTINCT date
+        FROM daily_reports
+        WHERE user_id=3
+        ),
+        report_dates_group AS (
+        SELECT
+          date,
+          date::DATE - CAST(row_number() OVER (ORDER BY date) as INT) AS grp
+        FROM pomo_dates
+          )
+        SELECT
+          max(date) - min(date) + 1 AS length
+        FROM pomo_date_groups
+        GROUP BY grp
+        ORDER BY length DESC
+        LIMIT 1`
+
+        tst = 'SELECT * FROM daily_reports'
+
+        results = ActiveRecord::Base.connection.exec_query(sql)
   end
 end

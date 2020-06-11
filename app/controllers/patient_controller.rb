@@ -5,7 +5,7 @@ class PatientController < UserController
   before_action :auth_patient, :except => [:activate_patient, :check_patient_code]
 
   def get_patient
-    render(json: @current_user.as_fhir_json, status: 200)
+    render(json: @current_user, status: 200)
   end
 
   def activate_patient
@@ -54,15 +54,8 @@ class PatientController < UserController
   end
 
   def get_patient_reports
-    reports = @current_user.daily_reports
-    #serialization = ActiveModelSerializers::SerializableResource.new(reports)
-    hash = {}
-    reports.each do |report|
-      serialization = ActiveModelSerializers::SerializableResource.new(report)
-      hash["#{report["date"]}"] = serialization
-    end
-
-    render(json: hash)
+    reports = @current_user.formatted_reports
+    render(json: reports)
   end
 
   def post_daily_report
@@ -84,8 +77,8 @@ class PatientController < UserController
                                            other: params["other"])
 
     photo_report = nil
-    if (!params["photoURL"].nil?)
-      photo_report = PhotoReport.create!(user_id: @current_user.id, photo_url: params["photoURL"])
+    if (!params["photoUrl"].nil?)
+      photo_report = PhotoReport.create!(user_id: @current_user.id, photo_url: params["photoUrl"])
     end
 
     existing_report = @current_user.daily_reports.where(date: params["date"])
