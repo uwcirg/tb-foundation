@@ -40,6 +40,8 @@ module Assemble
     end
   end
 
+  config.filter_parameters += [:password_digest,:push_url]
+
   
 
     # Settings in config/environments/* take precedence over those specified here.

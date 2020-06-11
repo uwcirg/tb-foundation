@@ -5,7 +5,7 @@ class PractitionerController < UserController
     before_action :auth_practitioner, :except => [:upload_lab_test,:generate_presigned_url,:get_all_tests]
 
     def get_current_practitioner
-      render(json: @current_practitoner.as_fhir_json, status: 200)
+      render(json: @current_practitoner, status: 200)
     end
 
     def generate_temp_patient
@@ -48,20 +48,11 @@ class PractitionerController < UserController
 
     def get_patients
 
-      #TODO Clean this up, there is duplicated code
-      if (params.has_key?("namesOnly"))
-        render(json: @current_practitoner.patient_names, status: 200)
-        return
-      end
-
-
-      patients = Patient.where(practitioner_id: @current_practitoner.id)
-      response = []
-      patients.each do |patient| 
-        response.push(patient.as_fhir_json)
+    hash = {}
+    @current_practitoner.patients.each do |patient|
+      hash[patient.id] = serialization = ActiveModelSerializers::SerializableResource.new(patient)
     end
-
-      render(json: response, status: 200)
+      render(json: hash, status: 200)
     end
 
     def get_temp_accounts
@@ -102,18 +93,17 @@ class PractitionerController < UserController
       signer = Aws::S3::Presigner.new
       url = signer.presigned_url(:get_object, bucket: "lab-strips", key: newTest.photo_url)
 
-
       render(json: newTest.as_json, status: 200)
     end
 
     def get_photos
-      test = @current_practitoner.get_photos
-      render(json: test.as_json,status: 200)
+      photos = @current_practitoner.get_photos
+      render(json: photos,status: 200)
     end
 
     def get_historical_photos
-      test = @current_practitoner.get_historical_photos
-      render(json: test.as_json,status: 200)
+      photos = @current_practitoner.get_historical_photos
+      render(json: photos,status: 200)
     end
 
     def audit_photo
@@ -147,7 +137,77 @@ class PractitionerController < UserController
         return
       end
 
-      render(json: patient.proper_reports, status: 200)
+      render(json: patient.formatted_reports, status: 200)
+    end
+
+    def patients_with_symptoms
+      #TODO - might be an inefficent query here
+      #This way worked for the 7 day approach
+      #severe = Patient.where(daily_reports: DailyReport.where(user_id: @current_practitoner.patients.select("id"), symptom_report: SymptomReport.has_symptom).last_week)
+      patients = Patient.where(daily_reports: DailyReport.unresolved_symptoms)
+      render(json: patients, status: 200)
+    end
+
+    def patients_missed_reporting
+
+      #Old Way
+      # list = []
+      # @current_practitoner.patients.each do |patient|
+      #   if(patient.has_missed_report)
+      #     list.push(patient)
+      #   end
+      # end
+
+      #Resolution.select('MAX(resolved_at), patient_id, resolved_at').group(:patient_id)
+
+      #Number of reports since last resolution for each user
+
+      list = Patient.where( id: @current_practitoner.test_func)
+
+
+      render(json: list, status: 200)
+
+      # reports_since_res = Patient.joins(:daily_reports,:resolutions).where("resolutions.kind": "MissedMedication").where("daily_reports.date > resolutions.updated_at").group("users.id").count("daily_reports.id")
+
+      # list = []
+      # render(json: reports_since_res,status: 200)
+      # return
+      # Resolution.where(patient: Practitioner.all.first.patients,kind: "MissedMedication").each do |res|
+      #   good = ((DateTime.now - 1.day).to_date - res.updated_at.to_date).to_i
+      #   puts(reports_since_res["#{res.patient_id}"])
+      #   if(good - reports_since_res["#{res.patient_id}"] > 0)
+      #     list.push(res.patient_id)
+      #   end
+      # end
+      # render(json: list.as_json, status: 200)
+    end
+
+    def patients_with_adherence
+      render(json: @current_practitoner.patients,status: 200)
+    end
+
+    def patient_symptom_summary
+      render(json: @current_practitoner.patients.find(params["patient_id"]).symptom_summary, status: 200)
+    end
+
+    def recent_reports
+      render(json: DailyReport.where(patient: @current_practitoner.patients).where("date > ?",(DateTime.now - 1.month).to_date).order( 'date DESC' ).limit(50), status: 200)
+    end
+
+    def create_resolution
+
+      case params["type"]
+
+      when "symptom"
+        resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_symptoms
+      when "medication"
+        resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_missing_report
+      else
+        render(json: {error: "#{params["type"]} is not a resolution type", status: 422})
+      end
+
+
+      render(json: resolution,status: 200)
     end
 
     private

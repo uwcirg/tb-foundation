@@ -1,5 +1,4 @@
 class PractitionerSerializer < ActiveModel::Serializer
-    
-    attributes :id
+    attributes :id, :given_name, :family_name
 
 end

@@ -5,7 +5,7 @@ class PatientController < UserController
   before_action :auth_patient, :except => [:activate_patient, :check_patient_code]
 
   def get_patient
-    render(json: @current_user.as_fhir_json, status: 200)
+    render(json: @current_user, status: 200)
   end
 
   def activate_patient
@@ -54,35 +54,32 @@ class PatientController < UserController
   end
 
   def get_patient_reports
-    reports = @current_user.proper_reports
+    reports = @current_user.formatted_reports
     render(json: reports)
   end
 
   def post_daily_report
-
-    med_report = MedicationReport.create!(user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"], why_medication_not_taken: params["whyMedicationNotTaken"]) 
+    med_report = MedicationReport.create!(user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"], why_medication_not_taken: params["whyMedicationNotTaken"])
     symptom_report = SymptomReport.create!(user_id: @current_user.id,
-      nausea: params["nausea"],
-      nausea_rating: params["nausea_rating"],
-      redness: params["redness"],
-      hives: params["hives"],
-      fever: params["fever"],
-      appetite_loss: params["appetite_loss"],
-      blurred_vision: params["blurred_vision"],
-      sore_belly: params["sore_belly"],
-      yellow_coloration: params["yellow_coloration"],
-      difficulty_breathing: params["difficulty_breathing"],
-      facial_swelling: params["facial_swelling"],
-      dizziness: params["dizziness"],
-      headache: params["headache"],
-      other: params["other"],
-    )
+                                           nausea: params["nausea"],
+                                           nausea_rating: params["nausea_rating"],
+                                           redness: params["redness"],
+                                           hives: params["hives"],
+                                           fever: params["fever"],
+                                           appetite_loss: params["appetite_loss"],
+                                           blurred_vision: params["blurred_vision"],
+                                           sore_belly: params["sore_belly"],
+                                           yellow_coloration: params["yellow_coloration"],
+                                           difficulty_breathing: params["difficulty_breathing"],
+                                           facial_swelling: params["facial_swelling"],
+                                           dizziness: params["dizziness"],
+                                           headache: params["headache"],
+                                           other: params["other"])
 
     photo_report = nil
-    if (!params["photoURL"].nil?)
-      photo_report = PhotoReport.create!(user_id: @current_user.id,photo_url: params["photoURL"])
+    if (!params["photoUrl"].nil?)
+      photo_report = PhotoReport.create!(user_id: @current_user.id, photo_url: params["photoUrl"])
     end
-
 
     existing_report = @current_user.daily_reports.where(date: params["date"])
 
@@ -104,15 +101,13 @@ class PatientController < UserController
   end
 
   def update_notification_time
-    if(@current_user.daily_notification.nil?)
+    if (@current_user.daily_notification.nil?)
       @current_user.create_daily_notification
     else
       @current_user.daily_notification.update_time(Time.parse(params["time"]))
     end
 
     obj = @current_user.daily_notification
-    render(json: obj.as_json, status: 200 )
+    render(json: obj.as_json, status: 200)
   end
-
-
 end

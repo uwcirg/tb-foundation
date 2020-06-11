@@ -7,6 +7,9 @@
 #Organization.create(title: "University of Washington")
 #Organization.create(title: "Hospital One")
 
+first_names = ["Santiago","Mateo","Juan","Matias","Nicolas","Benjamin","Pedro","Tomas","Thiago","Santino"]
+last_names = ["Gonzalez","Rodriguez","Fernandez","Lopez","Gomez","Martinez","Garcia","Diaz","Perez","Sanchez"]
+
 case Rails.env
 when "development"
     password_hash = BCrypt::Password.create(ENV["RAILS_BASE_PASS"])
@@ -72,12 +75,15 @@ when "development"
         practitioner_id: practitioner.id
     )
 
-    patient.seed_test_reports
+    patient.seed_test_reports(true)
     patient.photo_day_override
     newPatient.seed_test_reports
     newPatient.photo_day_override
     patient2.seed_test_reports
     patient2.photo_day_override
+
+ ["Santiago","Mateo","Juan","Matias","Nicolas","Benjamin","Pedro","Tomas","Thiago","Santino"]
+ ["Gonzalez","Rodriguez","Fernandez","Lopez","Gomez","Martinez","Garcia","Diaz","Perez","Sanchez"]
 
     #Test Admin
     admin = Administrator.create!(
@@ -128,10 +134,21 @@ when "development"
         practitioner_id: practitioner.id
     )
 
-    #Patient.create!(password_digest: BCrypt::Password.create(ENV["RAILS_BASE_PASS"]), family_name: "Patient 3", given_name: "Test", managing_organization: "Hospital One", phone_number: "123456781",treatment_start: Date.today,type: "Patient")
-    #Channel.create(title: "TEST",user_id: 6)
-
-    #TODO For each patient generate a treatment report ( but skip some days )
+    i = 0
+    first_names.each do |name|
+        new_patient = Patient.create!(
+            password_digest: password_hash,
+            family_name: last_names[i],
+            given_name: name,
+            managing_organization: "Hospital One" ,
+            phone_number: "12312312#{i}",
+            treatment_start: Date.today - rand(1..24).weeks,
+            type: "Patient",
+            practitioner_id: practitioner.id
+        )
+        new_patient.seed_test_reports(true)
+        i += 1
+    end
 
     
 

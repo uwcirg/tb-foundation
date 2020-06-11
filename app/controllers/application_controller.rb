@@ -28,4 +28,5 @@ class ApplicationController < ActionController::Base
     @temp_account = TempAccount.where(phone_number: params["phoneNumber"]).first()
     return (@temp_account && BCrypt::Password.new(@temp_account.code_digest) == params["activationCode"])
   end
+
 end
