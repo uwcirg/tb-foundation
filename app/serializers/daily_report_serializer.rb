@@ -1,5 +1,6 @@
 class DailyReportSerializer < ActiveModel::Serializer
-    attributes :id, :date, :user_id, :photo_url, :medication_was_taken, :symptoms, :taken_at
+
+    attributes :id, :date, :user_id, :photo_url, :medication_was_taken, :symptoms, :taken_at, :updated_at
 
     def photo_url
         object.get_photo

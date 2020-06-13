@@ -110,4 +110,5 @@ class PatientController < UserController
     obj = @current_user.daily_notification
     render(json: obj.as_json, status: 200)
   end
+
 end

@@ -79,4 +79,17 @@ class Practitioner < User
     puts(new_list)
     return(new_list)
   end
+
+  def patients_where_photo_day
+    to_send = []
+    select = self.patients.active
+    select.each do |patient|
+      list = JSON.parse(patient.medication_schedule)
+      puts("items #{list[patient.weeks_in_treatment]}")
+      puts(DateTime.now.in_time_zone("America/Argentina/Buenos_Aires"))
+
+    end
+
+  end
+
 end

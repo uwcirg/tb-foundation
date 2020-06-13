@@ -191,7 +191,7 @@ class PractitionerController < UserController
     end
 
     def recent_reports
-      render(json: DailyReport.where(patient: @current_practitoner.patients).where("date > ?",(DateTime.now - 1.month).to_date).order( 'date DESC' ).limit(50), status: 200)
+      render(json: DailyReport.two_days.where(patient: @current_practitoner.patients).order( 'date DESC, updated_at DESC' ).limit(50), status: 200)
     end
 
     def create_resolution
