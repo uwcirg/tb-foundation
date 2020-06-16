@@ -21,21 +21,27 @@ class DailyReport < ApplicationRecord
   scope :since_last_missing_resolution, -> { joins(:resolutions).where("resolutions.id": Resolution.last_medication_from_user).where("daily_reports.created_at > resolutions.resolved_at") }
 
 
+#TODO adapt this to match the users timezone
 USER_STREAK_DAYS_SQL = <<-SQL
-    SELECT ((CURRENT_DATE-1 )- series_date::date) AS days
+    SELECT (((current_date at time zone 'ART')::date )- series_date::date) AS days
     FROM generate_series(
           ( SELECT date::date FROM daily_reports
             WHERE daily_reports.user_id = :user_id
             ORDER BY date ASC
             LIMIT 1
-          ),
-          (CURRENT_DATE - 1),
+          ) - 1,
+          ((current_date at time zone 'ART')::date ),
           '1 day'
         ) AS series_date
-    LEFT OUTER JOIN daily_reports ON daily_reports.user_id = :user_id AND
-                             daily_reports.date::date = series_date
+    LEFT OUTER JOIN (
+      SELECT daily_reports.* FROM daily_reports
+      LEFT JOIN medication_reports on daily_reports.id =  medication_reports.daily_report_id
+      WHERE medication_reports.medication_was_taken = true
+      
+    ) as combined ON combined.user_id = :user_id AND
+                             combined.date::date = series_date
     GROUP BY series_date
-    HAVING COUNT(daily_reports.id) = 0
+    HAVING COUNT(combined.id) = 0
     ORDER BY series_date DESC
     LIMIT 1
   SQL
@@ -73,19 +79,4 @@ USER_STREAK_DAYS_SQL = <<-SQL
     return symptom_report.as_json
   end
 
-  # def as_json(*args)
-  #   report = {
-  #     date: date,
-  #     takenAt: medication_report.datetime_taken,
-  #     createdAt: created_at,
-  #     updatedAt: updated_at,
-  #     medicationTaken: medication_report.medication_was_taken,
-  #     whyMedicationNotTaken: medication_report.why_medication_not_taken,
-  #     symptoms: symptom_report.reported_symptoms,
-  #   }
-  #   if (!self.photo_report.nil?)
-  #     report[:photoURL] = photo_report.get_url
-  #   end
-  #   return report
-  # end
 end
