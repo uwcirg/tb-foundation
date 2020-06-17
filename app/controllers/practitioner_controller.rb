@@ -8,6 +8,10 @@ class PractitionerController < UserController
       render(json: @current_practitoner, status: 200)
     end
 
+    def get_patient
+      render(json: @current_practitoner.patients.find(params[:patient_id]),all_details: true, status: 200)
+    end
+
     def generate_temp_patient
 
       #This generates a random 4 digit hex
@@ -162,7 +166,7 @@ class PractitionerController < UserController
 
       #Number of reports since last resolution for each user
 
-      list = Patient.where( id: @current_practitoner.test_func)
+      list = Patient.where( id: @current_practitoner.patients_missed_medication)
 
 
       render(json: list, status: 200)
@@ -191,7 +195,7 @@ class PractitionerController < UserController
     end
 
     def recent_reports
-      render(json: DailyReport.where(patient: @current_practitoner.patients).where("date > ?",(DateTime.now - 1.month).to_date).order( 'date DESC' ).limit(50), status: 200)
+      render(json: DailyReport.two_days.where(patient: @current_practitoner.patients).order( 'date DESC, updated_at DESC' ).limit(50), status: 200)
     end
 
     def create_resolution

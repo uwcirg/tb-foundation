@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   get '/messages/unread', to: 'channel#get_unread_message_numbers'
 
   #Testing new data model
-  get '/patient/:patientID', to: 'patient#get_patient'
+  get '/patient/me', to: 'patient#get_patient'
   get '/practitioner/me', to: 'practitioner#get_current_practitioner'
   post '/authentication', to: 'user#authenticate'
 
@@ -40,6 +40,7 @@ Rails.application.routes.draw do
 
   #List of patients for practitioner
   get '/practitioner/patients', to: 'practitioner#get_patients'
+  get '/practitioner/patient/:patient_id', to: 'practitioner#get_patient'
   get '/practitioner/temporary_patients', to: 'practitioner#get_temp_accounts'
 
   #Medication Reports

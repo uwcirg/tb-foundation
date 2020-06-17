@@ -24,7 +24,8 @@ class Patient < User
   after_create :create_private_message_channel, :create_milestone, :create_resolutions
   before_create :generate_medication_schedule
 
-  #Where
+  scope :active, -> { where(:active => (true)) }
+
 
   def create_private_message_channel
     channel = self.channels.create!(title: self.full_name, is_private: true)
@@ -87,6 +88,10 @@ class Patient < User
     return 1
   end
 
+  def weeks_in_treatment
+    return(days_in_treatment/7)
+  end
+
   def adherence
     return (self.daily_reports.was_taken.count.to_f / self.days_in_treatment).round(2)
   end
@@ -127,28 +132,33 @@ class Patient < User
     return hash
   end
 
+  def current_streak
+      streak = DailyReport.user_streak_days(self)
+  end
+
   def get_streak
 
-      sql = `WITH report_dates AS (
+      sql = "WITH report_dates AS (
         SELECT DISTINCT date
         FROM daily_reports
         WHERE user_id=3
         ),
-        report_dates_group AS (
+        report_dates_groups AS (
         SELECT
           date,
           date::DATE - CAST(row_number() OVER (ORDER BY date) as INT) AS grp
-        FROM pomo_dates
+        FROM report_dates
           )
         SELECT
           max(date) - min(date) + 1 AS length
-        FROM pomo_date_groups
+        FROM report_dates_groups
         GROUP BY grp
-        ORDER BY length DESC
-        LIMIT 1`
+        ORDER BY max(date) DESC
+        LIMIT  1"
 
         tst = 'SELECT * FROM daily_reports'
 
         results = ActiveRecord::Base.connection.exec_query(sql)
+        puts(results)
   end
 end
