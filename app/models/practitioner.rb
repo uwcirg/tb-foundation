@@ -62,7 +62,7 @@ class Practitioner < User
     return hash
   end
 
-  def test_func
+  def patients_missed_medication
     latest_resolutions = Resolution.where(kind: "MissedMedication", patient: self.patients).select("MAX(resolved_at) as last_resolution, patient_id").group(:patient_id)
     new_list = []
 
