@@ -84,13 +84,13 @@ class PatientController < UserController
     existing_report = @current_user.daily_reports.where(date: params["date"])
 
     if (existing_report.count < 1)
-      new_report = @current_user.daily_reports.create(date: params["date"], medication_report: med_report, symptom_report: symptom_report)
+      new_report = @current_user.daily_reports.create(date: params["date"],doing_okay: params["doingOkay"], medication_report: med_report, symptom_report: symptom_report)
       new_report.photo_report = photo_report
       new_report.save!
       render(json: new_report.as_json, status: 200)
     else
       old_report = existing_report.first
-      old_report.update!(medication_report: med_report, symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
+      old_report.update!(medication_report: med_report, doing_okay: params["doingOkay"], symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
       render(json: old_report.as_json, status: 200)
     end
   end

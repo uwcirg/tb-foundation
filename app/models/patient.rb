@@ -136,6 +136,10 @@ class Patient < User
       streak = DailyReport.user_streak_days(self)
   end
 
+  def feeling_healthy_days
+    return self.daily_reports.where(doing_okay: true).count();
+  end
+
   def get_streak
 
       sql = "WITH report_dates AS (
