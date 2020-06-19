@@ -44,7 +44,8 @@ module SeedPatient
       
     end
 
-    new_report = DailyReport.create(date: day, user_id: self.id)
+
+    new_report = DailyReport.create(date: day, user_id: self.id,doing_okay: [true,true,true,false].sample)
     new_report.medication_report = med_report
     new_report.symptom_report = symptom_report
     new_report.photo_report = photo_report
