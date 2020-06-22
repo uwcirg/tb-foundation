@@ -17,9 +17,9 @@ class PractitionerController < UserController
       #This generates a random 4 digit hex
       code = SecureRandom.hex(10).upcase[0,5]
 
-      newTemp = TempAccount.create(
+      new_patient = Patient.create(
           phone_number: params[:phoneNumber],
-          code_digest: BCrypt::Password.create(code),
+          password_digest: BCrypt::Password.create(code),
           family_name: params[:familyName],
           given_name: params[:givenName],
           organization: params[:organization],
@@ -27,27 +27,13 @@ class PractitionerController < UserController
           practitioner_id: @current_practitoner.id
         )
 
-        if newTemp.save
-          render(json: {account: newTemp.as_json, code: code}, status: 200)
+        if new_patient.save
+          render(json: {account: new_patient, code: code}, status: 200)
         else
           @test = newTemp.errors.as_json
           @test = @test.as_json.deep_transform_keys! { |key| key.camelize(:lower) }
           render(json: {error: 422, paramErrors: @test}, status: 422)
         end
-    end
-
-    def create_patient
-        newPatient = Patient.create!(
-        phone_number: params[:phoneNumber],
-          password_digest: BCrypt::Password.create(params[:password]),
-          family_name: params[:familyName],
-          given_name: params[:givenName],
-          managing_organization: params[:managingOrganization],
-          treatment_start: params[:treatmentStart],
-          type: "Patient"
-        )
-    
-        render(json: newPatient.as_json, status: 200)
     end
 
     def get_patients
