@@ -23,18 +23,19 @@ class Patient < User
   after_create :create_private_message_channel, :create_milestone, :create_resolutions
   before_create :generate_medication_schedule
 
-  scope :active, -> { where(:active => (true)) }
+  scope :active, -> { where(:status => ("Active")) }
+  scope :pending, -> { where(:status => ("Pending")) }
 
 
   def create_private_message_channel
     channel = self.channels.create!(title: self.full_name, is_private: true)
-    channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.practitioner_id)
+    channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.organization.practitioners.first.id)
   end
 
   def create_resolutions
     kinds = ["MissedMedication", "Symptom", "MissedPhoto"]
     kinds.each do |kind|
-      resolution = self.resolutions.create!(practitioner: self.practitioner, kind: kind, resolved_at: self.treatment_start)
+      resolution = self.resolutions.create!(practitioner: self.organization.practitioners.first, kind: kind, resolved_at: self.treatment_start)
     end
   end
 

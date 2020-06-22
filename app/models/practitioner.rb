@@ -1,4 +1,5 @@
 class Practitioner < User
+  belongs_to :organization
   has_many :patients, through: :organization
   has_many :resolutions
   validates :type, inclusion: { in: ["Practitioner"] }

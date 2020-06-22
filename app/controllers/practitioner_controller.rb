@@ -22,8 +22,9 @@ class PractitionerController < UserController
           password_digest: BCrypt::Password.create(code),
           family_name: params[:familyName],
           given_name: params[:givenName],
-          organization: params[:organization],
-          treatment_start: params[:startDate]
+          organization: @current_practitoner.organization,
+          treatment_start: DateTime.now(),
+          status: "Pending"
         )
 
         if new_patient.save
@@ -38,19 +39,15 @@ class PractitionerController < UserController
     def get_patients
 
     hash = {}
-    @current_practitoner.patients.each do |patient|
+    @current_practitoner.patients.active.each do |patient|
       hash[patient.id] = serialization = ActiveModelSerializers::SerializableResource.new(patient)
     end
       render(json: hash, status: 200)
     end
 
     def get_temp_accounts
-      temp_accounts = TempAccount.all()
-      response = []
-      temp_accounts.each do |account| 
-        response.push(account.as_fhir_json)
-      end
-      render(json: response,status: 200)
+      temp_accounts = @current_practitoner.patients.pending
+      render(json: temp_accounts,status: 200)
     end
 
     def generate_presigned_url
