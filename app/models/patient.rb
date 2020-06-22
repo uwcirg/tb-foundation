@@ -4,7 +4,7 @@ class Patient < User
   include PhotoSchedule
   include SeedPatient
 
-  belongs_to :practitioner, :foreign_key => :practitioner_id
+  belongs_to :organization
   has_many :milestones, :foreign_key => :user_id
   has_many :daily_reports, :foreign_key => :user_id
   has_many :photo_reports, :foreign_key => :user_id
@@ -19,7 +19,6 @@ class Patient < User
   validates :given_name, presence: true
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
   validates :treatment_start, presence: true
-  validates :practitioner_id, presence: true
 
   after_create :create_private_message_channel, :create_milestone, :create_resolutions
   before_create :generate_medication_schedule

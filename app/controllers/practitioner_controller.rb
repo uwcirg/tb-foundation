@@ -23,8 +23,7 @@ class PractitionerController < UserController
           family_name: params[:familyName],
           given_name: params[:givenName],
           organization: params[:organization],
-          treatment_start: params[:startDate],
-          practitioner_id: @current_practitoner.id
+          treatment_start: params[:startDate]
         )
 
         if new_patient.save
@@ -203,16 +202,7 @@ class PractitionerController < UserController
     private
 
     def get_patient_by_id(id)
-      patient = Patient.find(id)
-      
-      #Practitioners should only be able to access their own patients
-      if(patient.practitioner_id == @current_practitoner.id)
-        return patient
-      else
-        render(json: {message: "Cannot access patients outside of your care"},status: 401)
-        return nil
-      end
-
+      patient = @current_practitoner.patients.find(id)
     end
 
 

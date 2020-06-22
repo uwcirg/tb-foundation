@@ -1,6 +1,7 @@
 require "webpush"
 
 class User < ApplicationRecord
+  belongs_to :organization
   has_many :messages
   has_many :channels
   has_many :messaging_notifications
@@ -39,7 +40,7 @@ class User < ApplicationRecord
     end
 
     if(self.type == "Practitioner")
-      return Channel.joins(:user).where(is_private: true, users: {practitioner_id: self.id}).or(Channel.joins(:user).where(is_private: false)).sort_by &:created_at
+      return Channel.joins(:user).where(is_private: true, users: {organization_id: self.organization_id}).or(Channel.joins(:user).where(is_private: false)).sort_by &:created_at
     end
 
     return []

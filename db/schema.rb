@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_22_153600) do
+ActiveRecord::Schema.define(version: 2020_06_22_160919) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -162,7 +162,6 @@ ActiveRecord::Schema.define(version: 2020_06_22_153600) do
     t.boolean "active", default: true, null: false
     t.string "family_name", null: false
     t.string "given_name", null: false
-    t.string "managing_organization", null: false
     t.integer "language", default: 0, null: false
     t.string "push_url"
     t.string "push_auth"
@@ -172,10 +171,10 @@ ActiveRecord::Schema.define(version: 2020_06_22_153600) do
     t.string "phone_number"
     t.datetime "treatment_start"
     t.string "username"
-    t.bigint "practitioner_id"
     t.string "medication_schedule"
     t.integer "status", default: 1, null: false
-    t.index ["practitioner_id"], name: "index_users_on_practitioner_id"
+    t.bigint "organization_id", default: 1, null: false
+    t.index ["organization_id"], name: "index_users_on_organization_id"
   end
 
   add_foreign_key "channels", "users"
@@ -185,5 +184,4 @@ ActiveRecord::Schema.define(version: 2020_06_22_153600) do
   add_foreign_key "messaging_notifications", "users"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"
-  add_foreign_key "users", "users", column: "practitioner_id"
 end

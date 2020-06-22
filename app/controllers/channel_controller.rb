@@ -41,7 +41,7 @@ class ChannelController < UserController
     channel = Channel.find(params["channelID"])
     
     #Allow all user to have access to public channels, limit access to practitioner for private ones
-    if (!channel.is_private || (channel.user_id == @current_user.id) || (@current_user.type == "Practitioner" && channel.user.practitioner_id == @current_user.id))
+    if (!channel.is_private || (channel.user_id == @current_user.id) || (@current_user.type == "Practitioner" && channel.user.organization_id == @current_user.organization_id))
       if (params.has_key?("lastMessageID"))
         messages = channel.messages.where("id > ?", params["lastMessageID"]).order("created_at")
       else
