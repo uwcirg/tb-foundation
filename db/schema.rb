@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_22_160919) do
+ActiveRecord::Schema.define(version: 2020_06_22_192109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -174,6 +174,9 @@ ActiveRecord::Schema.define(version: 2020_06_22_160919) do
     t.string "medication_schedule"
     t.integer "status", default: 1, null: false
     t.bigint "organization_id", default: 1, null: false
+    t.integer "gender"
+    t.string "medication_type"
+    t.text "profile_note"
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
 

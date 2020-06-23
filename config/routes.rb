@@ -67,6 +67,8 @@ Rails.application.routes.draw do
 
   post '/patient/:patient_id/resolutions', to: 'practitioner#create_resolution'
 
+  patch '/patient/:patient_id/activation_code', to: 'practitioner#reset_temp_password'
+
 
 
 

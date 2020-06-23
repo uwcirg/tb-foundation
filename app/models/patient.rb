@@ -5,14 +5,16 @@ class Patient < User
   include SeedPatient
 
   belongs_to :organization
+
   has_many :milestones, :foreign_key => :user_id
   has_many :daily_reports, :foreign_key => :user_id
   has_many :photo_reports, :foreign_key => :user_id
   has_many :medication_reports, :foreign_key => :user_id
   has_many :symptom_reports, :foreign_key => :user_id
-  has_one :daily_notification, :foreign_key => :user_id
-
   has_many :resolutions
+
+  has_one :daily_notification, :foreign_key => :user_id
+  has_one :patient_details
 
   #validates :user_type, value:
   validates :family_name, presence: true
@@ -140,29 +142,8 @@ class Patient < User
     return self.daily_reports.where(doing_okay: true).count();
   end
 
-  def get_streak
-
-      sql = "WITH report_dates AS (
-        SELECT DISTINCT date
-        FROM daily_reports
-        WHERE user_id=3
-        ),
-        report_dates_groups AS (
-        SELECT
-          date,
-          date::DATE - CAST(row_number() OVER (ORDER BY date) as INT) AS grp
-        FROM report_dates
-          )
-        SELECT
-          max(date) - min(date) + 1 AS length
-        FROM report_dates_groups
-        GROUP BY grp
-        ORDER BY max(date) DESC
-        LIMIT  1"
-
-        tst = 'SELECT * FROM daily_reports'
-
-        results = ActiveRecord::Base.connection.exec_query(sql)
-        puts(results)
+  def update_password(new_password_string)
+    self.update(password_digest: BCrypt::Password.create(new_password_string))
   end
+
 end
