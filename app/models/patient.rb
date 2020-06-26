@@ -14,7 +14,7 @@ class Patient < User
   has_many :resolutions
 
   has_one :daily_notification, :foreign_key => :user_id
-  has_one :patient_details
+  has_one :contact_tracing
 
   #validates :user_type, value:
   validates :family_name, presence: true
@@ -53,9 +53,10 @@ class Patient < User
     self.update(medication_schedule: schedule.as_json)
   end
 
-  def create_daily_notification
-    newNotification = DailyNotification.create!(time: "01:05-04:00", active: true, user: self)
-    self.daily_notification = newNotification
+  #Requires an ISO time ( Not DateTime )
+  def create_daily_notification(time)
+    new_notification = DailyNotification.create!(time: time, active: true, user: self)
+    self.daily_notification = new_notification
   end
 
   def last_report
@@ -145,5 +146,6 @@ class Patient < User
   def update_password(new_password_string)
     self.update(password_digest: BCrypt::Password.create(new_password_string))
   end
+
 
 end

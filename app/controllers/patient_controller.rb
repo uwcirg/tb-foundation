@@ -2,31 +2,45 @@ require "fileutils"
 require "base64"
 
 class PatientController < UserController
-  before_action :auth_patient, :except => [:activate_patient, :check_patient_code]
+  before_action :auth_patient
 
   def get_patient
     render(json: @current_user, status: 200)
   end
 
-  def activate_patient
-    if (check_patient_activation_code && confirm_password)
-      @user = Patient.create(
-        given_name: @temp_account.given_name,
-        family_name: @temp_account.family_name,
-        username: params["username"],
-        password_digest: BCrypt::Password.create(params["password"]),
-        phone_number: @temp_account.phone_number,
-        managing_organization: @temp_account.organization,
-        treatment_start: @temp_account.treatment_start,
-        practitioner_id: @temp_account.practitioner_id,
-      )
+  #Different from normal password change, doesnt require the exisiting password
+  def change_inital_password
 
-      if (@user.valid?)
-        authenticate()
-      else
-        render(json: @user.errors.to_json, status: 400)
-      end
+    #Verify that patient is in pending state, if they are not then they shouldnt be able to use this method
+    if(@current_user.status != "Pending")
+      render(json: { message: "Patient account already activated" }, status: 401)
+      return
     end
+
+    if (params[:password] == params[:passwordConfirmation])
+      @current_user.update_password(params[:password])
+      render(json: { message: "Password Upadate Success" }, status: 200)
+    else
+      render(json: { message: "password and passwordConfirmation do not match" }, status: 422)
+    end
+  end
+
+  def activate_patient
+    if (params[:activateDailyNotification] == true)
+      @current_user.create_daily_notification(params[:notificationTime])
+    end
+
+    if(!@current_user.contact_tracing.nil?)
+      @current_user.contact_tracing.update!(number_of_contacts: params[:numberContacts], contacts_tested: params[:contactsTested],patient_id: @current_user.id)
+    else
+       @current_user.contact_tracing = ContactTracing.create!(number_of_contacts: params[:numberContacts], contacts_tested: params[:contactsTested],patient_id: @current_user.id)
+    end
+
+   @current_user.update(gender: params[:gender], age: params[:age], status: "Active")
+    @current_user.save!
+
+    render(json: @current_user, status: 200)
+
   end
 
   def new_patient
@@ -84,7 +98,7 @@ class PatientController < UserController
     existing_report = @current_user.daily_reports.where(date: params["date"])
 
     if (existing_report.count < 1)
-      new_report = @current_user.daily_reports.create(date: params["date"],doing_okay: params["doingOkay"], medication_report: med_report, symptom_report: symptom_report)
+      new_report = @current_user.daily_reports.create(date: params["date"], doing_okay: params["doingOkay"], medication_report: med_report, symptom_report: symptom_report)
       new_report.photo_report = photo_report
       new_report.save!
       render(json: new_report.as_json, status: 200)
@@ -102,7 +116,7 @@ class PatientController < UserController
 
   def update_notification_time
     if (@current_user.daily_notification.nil?)
-      @current_user.create_daily_notification
+      @current_user.create_daily_notification(Time.parse(params["time"]))
     else
       @current_user.daily_notification.update_time(Time.parse(params["time"]))
     end
@@ -110,5 +124,4 @@ class PatientController < UserController
     obj = @current_user.daily_notification
     render(json: obj.as_json, status: 200)
   end
-
 end

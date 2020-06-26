@@ -19,8 +19,7 @@ Rails.application.routes.draw do
   get '/practitioner/me', to: 'practitioner#get_current_practitioner'
   post '/authentication', to: 'user#authenticate'
 
-  post '/patient/activation/check', to: 'application#check_patient_code'
-  post '/patient/activation', to: 'patient#activate_patient'
+  post '/patient/self/activate', to: 'patient#activate_patient'
 
   #Routes from in progress refractoring
   post '/auth', to: 'user#login'
@@ -66,8 +65,9 @@ Rails.application.routes.draw do
   get '/patients/reports/recent', to: 'practitioner#recent_reports'
 
   post '/patient/:patient_id/resolutions', to: 'practitioner#create_resolution'
-
   patch '/patient/:patient_id/activation_code', to: 'practitioner#reset_temp_password'
+
+  post '/patient/self/password', to: 'patient#change_inital_password'
 
 
 

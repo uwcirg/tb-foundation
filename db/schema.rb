@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_22_192109) do
+ActiveRecord::Schema.define(version: 2020_06_25_210211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,12 @@ ActiveRecord::Schema.define(version: 2020_06_22_192109) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_private", default: false, null: false
     t.integer "messages_count", default: 0, null: false
+  end
+
+  create_table "contact_tracings", force: :cascade do |t|
+    t.bigint "patient_id", null: false
+    t.integer "number_of_contacts"
+    t.integer "contacts_tested"
   end
 
   create_table "daily_notifications", force: :cascade do |t|
@@ -177,6 +183,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_192109) do
     t.integer "gender"
     t.string "medication_type"
     t.text "profile_note"
+    t.integer "age"
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
 

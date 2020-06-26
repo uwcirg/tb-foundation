@@ -1,7 +1,7 @@
 require "aws-sdk"
 
 class UserController < ApplicationController
-  before_action :decode_token, :except => [:login, :generate_presigned_url, :activate_patient, :check_patient_code, :get_all_tests]
+  before_action :decode_token, :except => [:login, :generate_presigned_url, :get_all_tests]
 
   #Find user based on :user_id from the JWT, stored in cookie
   def auth_user
