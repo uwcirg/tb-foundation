@@ -27,7 +27,7 @@ class PatientController < UserController
 
   def activate_patient
     if (params[:activateDailyNotification] == true)
-      @current_user.create_daily_notification(params[:notificationTime])
+      @current_user.update_daily_notification(params[:notificationTime])
     end
 
     if(!@current_user.contact_tracing.nil?)

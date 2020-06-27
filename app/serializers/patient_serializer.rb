@@ -12,7 +12,8 @@ class PatientSerializer < ActiveModel::Serializer
     :medication_schedule, 
     :current_streak, 
     :phone_number,
-    :status
+    :status,
+    :daily_notification
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
