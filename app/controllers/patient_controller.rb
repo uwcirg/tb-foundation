@@ -12,7 +12,7 @@ class PatientController < UserController
   def change_inital_password
 
     #Verify that patient is in pending state, if they are not then they shouldnt be able to use this method
-    if(@current_user.status != "Pending")
+    if (@current_user.status != "Pending")
       render(json: { message: "Patient account already activated" }, status: 401)
       return
     end
@@ -30,17 +30,16 @@ class PatientController < UserController
       @current_user.update_daily_notification(params[:notificationTime])
     end
 
-    if(!@current_user.contact_tracing.nil?)
-      @current_user.contact_tracing.update!(number_of_contacts: params[:numberContacts], contacts_tested: params[:contactsTested],patient_id: @current_user.id)
+    if (!@current_user.contact_tracing.nil?)
+      @current_user.contact_tracing.update!(number_of_contacts: params[:numberContacts], contacts_tested: params[:contactsTested], patient_id: @current_user.id)
     else
-       @current_user.contact_tracing = ContactTracing.create!(number_of_contacts: params[:numberContacts], contacts_tested: params[:contactsTested],patient_id: @current_user.id)
+      @current_user.contact_tracing = ContactTracing.create!(number_of_contacts: params[:numberContacts], contacts_tested: params[:contactsTested], patient_id: @current_user.id)
     end
 
-   @current_user.update(gender: params[:gender], age: params[:age], status: "Active")
+    @current_user.update(gender: params[:gender], age: params[:age], status: "Active")
     @current_user.save!
 
     render(json: @current_user, status: 200)
-
   end
 
   def new_patient
@@ -115,13 +114,7 @@ class PatientController < UserController
   end
 
   def update_notification_time
-    if (@current_user.daily_notification.nil?)
-      @current_user.create_daily_notification(Time.parse(params["time"]))
-    else
-      @current_user.daily_notification.update_time(Time.parse(params["time"]))
-    end
-
-    obj = @current_user.daily_notification
-    render(json: obj.as_json, status: 200)
+    object = @current_user.update_daily_notification(Time.parse(params["time"]))
+    render(json: object, status: 200)
   end
 end

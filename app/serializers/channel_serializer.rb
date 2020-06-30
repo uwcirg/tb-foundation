@@ -16,8 +16,4 @@ class ChannelSerializer < ActiveModel::Serializer
 
     end
 
-    def test
-    return(I18n.t('welcome'))
-    end
-
 end
