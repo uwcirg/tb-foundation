@@ -1,5 +1,5 @@
 class Channel < ApplicationRecord
-    has_many :messages
+    has_many :messages, dependent: :destroy
     belongs_to :user
     validates :title, presence: true
 

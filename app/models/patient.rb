@@ -64,6 +64,11 @@ class Patient < User
     end
   end
 
+  def disable_daily_notification
+    self.daily_notification.update!(active: false)
+  end
+
+
   def last_report
     self.daily_reports.last
   end

@@ -2,9 +2,9 @@ require "webpush"
 
 class User < ApplicationRecord
   belongs_to :organization
-  has_many :messages
-  has_many :channels
-  has_many :messaging_notifications
+  has_many :messages,dependent: :destroy
+  has_many :channels,dependent: :destroy
+  has_many :messaging_notifications,dependent: :destroy
 
   enum locale: { "en": 0, "es-ar": 1 }
   enum type: { Patient: 0, Practitioner: 1, Administrator: 2 }

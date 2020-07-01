@@ -26,7 +26,7 @@ class PatientController < UserController
   end
 
   def activate_patient
-    if (params[:activateDailyNotification] == true)
+    if (params[:enableNotifications] == true)
       @current_user.update_daily_notification(params[:notificationTime])
     end
 
