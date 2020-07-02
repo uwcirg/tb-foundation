@@ -114,7 +114,14 @@ class PatientController < UserController
   end
 
   def update_notification_time
-    object = @current_user.update_daily_notification(Time.parse(params["time"]))
-    render(json: object, status: 200)
+
+    if(params[:enabled] == false)
+       @current_user.daily_notification.destroy!
+       response = {isoTime: nil,time:nil}
+    else
+      response = @current_user.update_daily_notification(Time.parse(params["time"]))
+    end
+
+    render(json: response, status: 200)
   end
 end
