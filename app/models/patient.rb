@@ -62,6 +62,7 @@ class Patient < User
     else
       self.daily_notification.update!(time: time)
     end
+    return self.daily_notification
   end
 
   def disable_daily_notification

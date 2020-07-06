@@ -119,7 +119,7 @@ class PatientController < UserController
        @current_user.daily_notification.destroy!
        response = {isoTime: nil,time:nil}
     else
-      response = @current_user.update_daily_notification(Time.parse(params["time"]))
+      response = @current_user.update_daily_notification(Time.parse(params["time"])).as_json
     end
 
     render(json: response, status: 200)
