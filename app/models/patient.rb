@@ -4,38 +4,40 @@ class Patient < User
   include PhotoSchedule
   include SeedPatient
 
-  belongs_to :practitioner, :foreign_key => :practitioner_id
+  belongs_to :organization
+
   has_many :milestones, :foreign_key => :user_id
   has_many :daily_reports, :foreign_key => :user_id
   has_many :photo_reports, :foreign_key => :user_id
   has_many :medication_reports, :foreign_key => :user_id
   has_many :symptom_reports, :foreign_key => :user_id
-  has_one :daily_notification, :foreign_key => :user_id
-
   has_many :resolutions
+
+  has_one :daily_notification, :foreign_key => :user_id
+  has_one :contact_tracing
 
   #validates :user_type, value:
   validates :family_name, presence: true
   validates :given_name, presence: true
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
   validates :treatment_start, presence: true
-  validates :practitioner_id, presence: true
 
   after_create :create_private_message_channel, :create_milestone, :create_resolutions
   before_create :generate_medication_schedule
 
-  scope :active, -> { where(:active => (true)) }
+  scope :active, -> { where(:status => ("Active")) }
+  scope :pending, -> { where(:status => ("Pending")) }
 
 
   def create_private_message_channel
     channel = self.channels.create!(title: self.full_name, is_private: true)
-    channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.practitioner_id)
+    channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.organization.practitioners.first.id)
   end
 
   def create_resolutions
     kinds = ["MissedMedication", "Symptom", "MissedPhoto"]
     kinds.each do |kind|
-      resolution = self.resolutions.create!(practitioner: self.practitioner, kind: kind, resolved_at: self.treatment_start)
+      resolution = self.resolutions.create!(practitioner: self.organization.practitioners.first, kind: kind, resolved_at: self.treatment_start)
     end
   end
 
@@ -51,10 +53,22 @@ class Patient < User
     self.update(medication_schedule: schedule.as_json)
   end
 
-  def create_daily_notification
-    newNotification = DailyNotification.create!(time: "01:05-04:00", active: true, user: self)
-    self.daily_notification = newNotification
+  #Requires an ISO time ( Not DateTime )
+  def update_daily_notification(time)
+
+    if(self.daily_notification.nil?)
+      new_notification = DailyNotification.create!(time: time, active: true, user: self)
+      self.daily_notification = new_notification
+    else
+      self.daily_notification.update!(time: time)
+    end
+    return self.daily_notification
   end
+
+  def disable_daily_notification
+    self.daily_notification.update!(active: false)
+  end
+
 
   def last_report
     self.daily_reports.last
@@ -140,29 +154,9 @@ class Patient < User
     return self.daily_reports.where(doing_okay: true).count();
   end
 
-  def get_streak
-
-      sql = "WITH report_dates AS (
-        SELECT DISTINCT date
-        FROM daily_reports
-        WHERE user_id=3
-        ),
-        report_dates_groups AS (
-        SELECT
-          date,
-          date::DATE - CAST(row_number() OVER (ORDER BY date) as INT) AS grp
-        FROM report_dates
-          )
-        SELECT
-          max(date) - min(date) + 1 AS length
-        FROM report_dates_groups
-        GROUP BY grp
-        ORDER BY max(date) DESC
-        LIMIT  1"
-
-        tst = 'SELECT * FROM daily_reports'
-
-        results = ActiveRecord::Base.connection.exec_query(sql)
-        puts(results)
+  def update_password(new_password_string)
+    self.update(password_digest: BCrypt::Password.create(new_password_string))
   end
+
+
 end

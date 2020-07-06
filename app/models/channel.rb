@@ -1,5 +1,5 @@
 class Channel < ApplicationRecord
-    has_many :messages
+    has_many :messages, dependent: :destroy
     belongs_to :user
     validates :title, presence: true
 
@@ -10,7 +10,7 @@ class Channel < ApplicationRecord
     #TODO move this to a worker becuase it will be intensive, might be a better method to update
     def create_notifications
         User.all.map do |u| 
-            if(!self.is_private || self.user_id == u.id || self.user.practitioner_id == u.id)
+            if(!self.is_private || self.user_id == u.id || (u.type == "Practitioner" && (self.user.organization == u.organization)))
                 u.messaging_notifications.create!(channel_id: self.id, user_id: u.id )
             end
         end

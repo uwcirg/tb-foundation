@@ -1,6 +1,20 @@
 class PatientSerializer < ActiveModel::Serializer
     
-    attributes :given_name, :family_name, :id, :full_name, :adherence, :percentage_complete, :days_in_treatment, :last_report, :treatment_start, :medication_schedule, :current_streak, :phone_number
+    attributes :given_name, 
+    :family_name, 
+    :id, 
+    :full_name, 
+    :adherence, 
+    :percentage_complete, 
+    :days_in_treatment, 
+    :last_report, 
+    :treatment_start, 
+    :medication_schedule, 
+    :current_streak, 
+    :phone_number,
+    :status,
+    :daily_notification_time
+
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
     attribute :symptom_summary, if: -> { @instance_options[:include_symptom_summary].present?}
@@ -12,6 +26,12 @@ class PatientSerializer < ActiveModel::Serializer
 
     def symptom_summary
         object.daily_reports
+    end
+
+    def daily_notification_time
+        if(object.daily_notification)
+            return object.daily_notification.formatted_time
+        end
     end
 
 end
