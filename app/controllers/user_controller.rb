@@ -7,8 +7,6 @@ class UserController < ApplicationController
   def switch_locale(&action)
     auth_user
     locale = @current_user.try(:locale) || I18n.default_locale
-    puts("zkz")
-    puts("locale: #{locale}")
     I18n.with_locale(locale, &action)
   end
 

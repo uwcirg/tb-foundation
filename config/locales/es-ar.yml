@@ -1,2 +1,5 @@
-es-ar:
-  welcome: "Hola!"
+es-AR:
+  welcome: "Bienvenidos"
+  new_messages: "Nuevas Mensajes"
+  medication_reminder: "SPANISH"
+  medication_reminder_body: "SPANISH BODY"

@@ -4,9 +4,9 @@ class User < ApplicationRecord
   belongs_to :organization
   has_many :messages,dependent: :destroy
   has_many :channels,dependent: :destroy
-  has_many :messaging_notifications,dependent: :destroy
+  has_many :messaging_notifications, dependent: :destroy
 
-  enum locale: { "en": 0, "es-ar": 1 }
+  enum locale: { "en": 0, "es-AR": 1 }
   enum type: { Patient: 0, Practitioner: 1, Administrator: 2 }
   enum status: { Pending: 0, Active: 1, Archived: 2 }
   enum gender: { Male: 0, Female: 1, Other: 2 }
