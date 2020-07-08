@@ -14,10 +14,10 @@ Rails.application.routes.draw do
   get '/channel/:channelID/messages/:messageID', to: 'channel#get_messages_before'
   get '/messages/unread', to: 'channel#get_unread_message_numbers'
 
-  #Testing new data model
   get '/patient/me', to: 'patient#get_patient'
   get '/practitioner/me', to: 'practitioner#get_current_practitioner'
   post '/authentication', to: 'user#authenticate'
+  patch '/user/me/password', to: "user#update_password"
 
   post '/patient/self/activate', to: 'patient#activate_patient'
 
@@ -68,6 +68,9 @@ Rails.application.routes.draw do
   patch '/patient/:patient_id/activation_code', to: 'practitioner#reset_temp_password'
 
   post '/patient/self/password', to: 'patient#change_inital_password'
+
+  #i18n
+  get '/config/locales', to: 'application#get_locales'
 
 
 

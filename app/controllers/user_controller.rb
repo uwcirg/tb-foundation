@@ -74,6 +74,21 @@ class UserController < ApplicationController
     render(json: { key: vapid_key }, status: 200)
   end
 
+  def update_password
+    if (@current_user.check_current_password(params[:currentPassword]))
+      if (params[:newPassword] == params[:newPasswordConfirmation])
+        @current_user.update_password(params[:newPassword])
+        render(json: { message: "Success" }, status: 200)
+      else
+        render(json: { error: "Passwords do not match" }, status: 404)
+        return
+      end
+    else
+      render(json: { error: "Wrong Password" }, status: 401)
+      return
+    end
+  end
+
   private
 
   #Authenticaiton Functions

@@ -98,4 +98,17 @@ class User < ApplicationRecord
     one.skip_notify = true
     one.save
   end
+
+  def update_password(new_password_string)
+    self.update(password_digest: BCrypt::Password.create(new_password_string))
+  end
+
+  def update_password_test
+    params[:currentPassword]
+  end
+
+  def check_current_password(password)
+    BCrypt::Password.new(self.password_digest) == password
+  end
+
 end

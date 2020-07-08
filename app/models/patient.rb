@@ -154,9 +154,5 @@ class Patient < User
     return self.daily_reports.where(doing_okay: true).count();
   end
 
-  def update_password(new_password_string)
-    self.update(password_digest: BCrypt::Password.create(new_password_string))
-  end
-
 
 end
