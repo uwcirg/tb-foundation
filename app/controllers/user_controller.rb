@@ -78,13 +78,13 @@ class UserController < ApplicationController
     if (@current_user.check_current_password(params[:currentPassword]))
       if (params[:newPassword] == params[:newPasswordConfirmation])
         @current_user.update_password(params[:newPassword])
-        render(json: { message: "Success" }, status: 200)
+        render(json: { message: I18n.t("user_settings.update_success") }, status: 200)
       else
-        render(json: { error: "Passwords do not match" }, status: 404)
+        render(json: { error: I18n.t("user_settings.password_mismatch"), fields: ["newPassword","newPasswordConfirmation"] }, status: 404)
         return
       end
     else
-      render(json: { error: "Wrong Password" }, status: 401)
+      render(json: { error: I18n.t("user_settings.current_password_incorrect"), fields: ["currentPassword"] }, status: 401)
       return
     end
   end

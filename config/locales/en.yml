@@ -3,3 +3,7 @@ en:
   new_messages: "New Messages"
   medication_reminder: "Medication Reminder"
   medication_reminder_body: "Please take your medication and report it in the Treatment Companion app"
+  user_settings:
+    password_mismatch: "Passwords Do Not Match"
+    current_password_incorrect: "Current Password Incorrect"
+    update_success: "Password Updated"
