@@ -29,4 +29,9 @@ class ApplicationController < ActionController::Base
     return (@temp_account && BCrypt::Password.new(@temp_account.code_digest) == params["activationCode"])
   end
 
+  def get_locales
+    locales = User.locales
+    render(json: locales, status: 200)
+  end
+
 end

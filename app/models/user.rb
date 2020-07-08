@@ -4,9 +4,9 @@ class User < ApplicationRecord
   belongs_to :organization
   has_many :messages,dependent: :destroy
   has_many :channels,dependent: :destroy
-  has_many :messaging_notifications,dependent: :destroy
+  has_many :messaging_notifications, dependent: :destroy
 
-  enum locale: { "en": 0, "es-ar": 1 }
+  enum locale: { "en": 0, "es-AR": 1 }
   enum type: { Patient: 0, Practitioner: 1, Administrator: 2 }
   enum status: { Pending: 0, Active: 1, Archived: 2 }
   enum gender: { Male: 0, Female: 1, Other: 2 }
@@ -98,4 +98,17 @@ class User < ApplicationRecord
     one.skip_notify = true
     one.save
   end
+
+  def update_password(new_password_string)
+    self.update(password_digest: BCrypt::Password.create(new_password_string))
+  end
+
+  def update_password_test
+    params[:currentPassword]
+  end
+
+  def check_current_password(password)
+    BCrypt::Password.new(self.password_digest) == password
+  end
+
 end

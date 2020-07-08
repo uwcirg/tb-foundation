@@ -10,10 +10,7 @@ services:
       NODE_ENV: development
       URL_API: $URL_API
       URL_CLIENT: $URL_CLIENT
-      REACT_APP_CONTACT_LINK: $CONTACT_LINK
-      REACT_APP_MESSAGE_API: $URL_MESSAGE_API
-      REACT_APP_LANGUAGE: $LANGUAGE
-      CHOKIDAR_USEPOLLING: 'true'
+      DEFAULT_LOCALE: $DEFAULT_LOCALE
 
   db:
     restart: always

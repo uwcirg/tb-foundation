@@ -7,8 +7,6 @@ class UserController < ApplicationController
   def switch_locale(&action)
     auth_user
     locale = @current_user.try(:locale) || I18n.default_locale
-    puts("zkz")
-    puts("locale: #{locale}")
     I18n.with_locale(locale, &action)
   end
 
@@ -74,6 +72,21 @@ class UserController < ApplicationController
   def push_key
     vapid_key = ENV["VAPID_PUBLIC_KEY"]
     render(json: { key: vapid_key }, status: 200)
+  end
+
+  def update_password
+    if (@current_user.check_current_password(params[:currentPassword]))
+      if (params[:newPassword] == params[:newPasswordConfirmation])
+        @current_user.update_password(params[:newPassword])
+        render(json: { message: I18n.t("user_settings.update_success") }, status: 200)
+      else
+        render(json: { error: I18n.t("user_settings.password_mismatch"), fields: ["newPassword","newPasswordConfirmation"] }, status: 404)
+        return
+      end
+    else
+      render(json: { error: I18n.t("user_settings.current_password_incorrect"), fields: ["currentPassword"] }, status: 401)
+      return
+    end
   end
 
   private
