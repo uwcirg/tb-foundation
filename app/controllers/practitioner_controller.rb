@@ -105,11 +105,6 @@ class PractitionerController < UserController
     render(json: { message: "Photo status updated" }, status: 200)
   end
 
-  def send_notifcation_all
-    Patient.all.map { |u| u.send_push_to_user("Please Take Your Medication", "Click Here to Complete Report") }
-    render(json: { message: "Success" }, status: 200)
-  end
-
   def get_patient_reports
     patient = get_patient_by_id(params[:patient_id])
 
@@ -121,44 +116,13 @@ class PractitionerController < UserController
   end
 
   def patients_with_symptoms
-    #TODO - might be an inefficent query here
-    #This way worked for the 7 day approach
-    #severe = Patient.where(daily_reports: DailyReport.where(user_id: @current_practitoner.patients.select("id"), symptom_report: SymptomReport.has_symptom).last_week)
-    patients = Patient.where(daily_reports: DailyReport.unresolved_symptoms)
+    patients = DailyReport.unresolved_symptoms.select('user_id AS patient_id').distinct.as_json
     render(json: patients, status: 200)
   end
 
   def patients_missed_reporting
-
-    #Old Way
-    # list = []
-    # @current_practitoner.patients.each do |patient|
-    #   if(patient.has_missed_report)
-    #     list.push(patient)
-    #   end
-    # end
-
-    #Resolution.select('MAX(resolved_at), patient_id, resolved_at').group(:patient_id)
-
-    #Number of reports since last resolution for each user
-
     list = Patient.where(id: @current_practitoner.patients_missed_medication)
-
     render(json: list, status: 200)
-
-    # reports_since_res = Patient.joins(:daily_reports,:resolutions).where("resolutions.kind": "MissedMedication").where("daily_reports.date > resolutions.updated_at").group("users.id").count("daily_reports.id")
-
-    # list = []
-    # render(json: reports_since_res,status: 200)
-    # return
-    # Resolution.where(patient: Practitioner.all.first.patients,kind: "MissedMedication").each do |res|
-    #   good = ((DateTime.now - 1.day).to_date - res.updated_at.to_date).to_i
-    #   puts(reports_since_res["#{res.patient_id}"])
-    #   if(good - reports_since_res["#{res.patient_id}"] > 0)
-    #     list.push(res.patient_id)
-    #   end
-    # end
-    # render(json: list.as_json, status: 200)
   end
 
   def patients_with_adherence

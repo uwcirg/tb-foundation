@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   post '/push', to: 'login#send_push_to_user'
   get '/push_key', to: 'user#push_key'
   patch '/update_user_subscription', to: 'user#update_user_subscription'
-  post '/notify_all', to: 'practitioner#send_notifcation_all'
 
   #post '/message', to: 'message#post_message'
   post '/channel', to: 'channel#new_channel'
