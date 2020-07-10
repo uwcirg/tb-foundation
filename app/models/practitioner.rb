@@ -25,35 +25,22 @@ class Practitioner < User
     return list
   end
 
+  #TODO: Remove this old function
   def missed_since_last_resolution
 
-    #Daily reports where time > than last resolution, where patients are in the coordinators list of patients
-    #Where reports are less than number of days since last resolution
     start = DateTime.now - 1.week
     stop = DateTime.now - 1.day
     list = (start..stop).to_a
 
     #.includes will join the tables so you have access to tall of the reports alrady
     hash = {}
-    # self.patients.inincludes(:resolutions).where("resolutions.patient_id": self.patients, "resolutions.kind": "MissedMedication").each do |u|
-    #     #puts(u.full_name)
-    #     hash[u.id] = u.full_name
-    # end
-
     self.patients.includes(:resolutions).each do |u|
-      #puts(u.full_name)
       hash[u.id] = u.full_name
     end
 
     return(hash)
-
-    #puts( DailyReport.where(patient: self.patients).where("updated_at > ?",DateTime.now - 1.days).count )
-
-    #return self.patients.where(daily_reports: Dailyself.resolutions.find_by(kind: "MissedMedication").updated_at
-
-    #rp = DailyReport.where(date: list)
-    #list = @current_practitoner.patients.where.not(daily_reports: DailyReport.after().group("user_id").having('count(user_id) = 7'))
   end
+  
 
   def patient_names
     hash = {}
@@ -71,13 +58,11 @@ class Practitioner < User
 
     latest_resolutions.each do |resolution|
       days_since = (DateTime.now.to_date - resolution.last_resolution.to_date).to_i
-      puts("#{resolution.patient_id} #{days_since}")
       if (!reports_per_patient[resolution.patient_id].nil? && days_since > reports_per_patient[resolution.patient_id]  )
-        new_list.push(resolution.patient_id)
+        new_list.push({"patientId": resolution.patient_id})
       end
     end
 
-    puts(new_list)
     return(new_list)
   end
 

@@ -133,8 +133,8 @@ class Patient < User
     self.resolutions.create!(kind: "Symptom", practitioner_id: practitioner_id, resolved_at: DateTime.now)
   end
 
-  def resolve_missing_report
-    self.resolutions.create!(kind: "MissedMedication", practitioner: self.practitioner, resolved_at: DateTime.now)
+  def resolve_missing_report(practitioner_id)
+    self.resolutions.create!(kind: "MissedMedication", practitioner_id: practitioner_id, resolved_at: DateTime.now)
   end
 
   def formatted_reports

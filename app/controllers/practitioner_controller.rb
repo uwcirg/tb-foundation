@@ -125,7 +125,7 @@ class PractitionerController < UserController
   end
 
   def patients_missed_reporting
-    list = Patient.where(id: @current_practitoner.patients_missed_medication)
+    list = @current_practitoner.patients_missed_medication
     render(json: list, status: 200)
   end
 
@@ -147,7 +147,7 @@ class PractitionerController < UserController
     when "symptom"
       resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_symptoms(@current_practitoner.id)
     when "medication"
-      resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_missing_report
+      resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_missing_report(@current_practitoner.id)
     else
       render(json: { error: "#{params["type"]} is not a resolution type", status: 422 })
     end
