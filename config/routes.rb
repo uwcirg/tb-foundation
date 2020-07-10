@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   post '/practitioner', to: 'administrator#create_practitioner'
 
   post '/administrator', to:'practitioner#create_admin'
-  post '/patient', to: 'practitioner#generate_temp_patient'
+  post '/patient', to: 'practitioner#create_pending_patient'
 
   #Image Recognition Pipeline
   #post '/lab_image_test', to: 'practitioner#upload_lab_test'

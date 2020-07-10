@@ -12,7 +12,7 @@ class PractitionerController < UserController
     render(json: @current_practitoner.patients.find(params[:patient_id]), all_details: true, status: 200)
   end
 
-  def generate_temp_patient
+  def create_pending_patient
 
     #This generates a random 4 digit hex
     code = SecureRandom.hex(10).upcase[0, 5]
@@ -100,7 +100,8 @@ class PractitionerController < UserController
     if (params[:approved])
       photo.approve
     else (!params[:approved])
-      photo.deny     end
+      photo.deny     
+    end
 
     render(json: { message: "Photo status updated" }, status: 200)
   end
@@ -116,7 +117,10 @@ class PractitionerController < UserController
   end
 
   def patients_with_symptoms
-    patients = DailyReport.unresolved_symptoms.select('user_id AS patient_id').distinct.as_json
+    patients = []
+      DailyReport.unresolved_symptoms.select("user_id").distinct.each do |patient|
+        patients.push({"patientId": patient.user_id})
+      end
     render(json: patients, status: 200)
   end
 
@@ -141,7 +145,7 @@ class PractitionerController < UserController
     case params["type"]
 
     when "symptom"
-      resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_symptoms
+      resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_symptoms(@current_practitoner.id)
     when "medication"
       resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_missing_report
     else
@@ -154,7 +158,7 @@ class PractitionerController < UserController
   def reset_temp_password
     code = SecureRandom.hex(10).upcase[0, 5]
     @current_practitoner.patients.find(params[:patient_id]).update_password(code)
-    render(json: {newCode: code}, status: 200)
+    render(json: { newCode: code }, status: 200)
   end
 
   private
