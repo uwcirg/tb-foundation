@@ -16,5 +16,15 @@ class Channel < ApplicationRecord
         end
     end
 
+    def last_message_time
+        message = self.messages.last
+        if(!message.nil?)
+            return(message.created_at)
+        end
+
+        return(self.created_at)
+
+    end
+
 
 end
