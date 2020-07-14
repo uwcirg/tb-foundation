@@ -6,14 +6,4 @@ class ChannelSerializer < ActiveModel::Serializer
         return(object.messages_count - MessagingNotification.where(user_id: @instance_options[:user_id],channel_id: object.id ).first.read_message_count)
     end
 
-    def last_message_time
-        message = object.messages.last
-        if(!message.nil?)
-            return(message.created_at)
-        end
-
-        return(object.created_at)
-
-    end
-
 end

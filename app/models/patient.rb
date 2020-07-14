@@ -129,12 +129,12 @@ class Patient < User
     return(days > number_since)
   end
 
-  def resolve_symptoms
-    self.resolutions.create!(kind: "Symptom", practitioner: self.practitioner, resolved_at: DateTime.now)
+  def resolve_symptoms(practitioner_id)
+    self.resolutions.create!(kind: "Symptom", practitioner_id: practitioner_id, resolved_at: DateTime.now)
   end
 
-  def resolve_missing_report
-    self.resolutions.create!(kind: "MissedMedication", practitioner: self.practitioner, resolved_at: DateTime.now)
+  def resolve_missing_report(practitioner_id,resolution_time=DateTime.now)
+    self.resolutions.create!(kind: "MissedMedication", practitioner_id: practitioner_id, resolved_at: resolution_time)
   end
 
   def formatted_reports
@@ -148,6 +148,10 @@ class Patient < User
 
   def current_streak
       streak = DailyReport.user_streak_days(self)
+  end
+
+  def missed_days
+    return DailyReport.user_missed_days(self)
   end
 
   def feeling_healthy_days

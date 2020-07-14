@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   post '/push', to: 'login#send_push_to_user'
   get '/push_key', to: 'user#push_key'
   patch '/update_user_subscription', to: 'user#update_user_subscription'
-  post '/notify_all', to: 'practitioner#send_notifcation_all'
 
   #post '/message', to: 'message#post_message'
   post '/channel', to: 'channel#new_channel'
@@ -28,7 +27,7 @@ Rails.application.routes.draw do
   post '/practitioner', to: 'administrator#create_practitioner'
 
   post '/administrator', to:'practitioner#create_admin'
-  post '/patient', to: 'practitioner#generate_temp_patient'
+  post '/patient', to: 'practitioner#create_pending_patient'
 
   #Image Recognition Pipeline
   #post '/lab_image_test', to: 'practitioner#upload_lab_test'
@@ -62,6 +61,7 @@ Rails.application.routes.draw do
   get '/test/patients', to: 'practitioner#patients_with_adherence'
 
   get '/patient/:patient_id/symptoms', to: 'practitioner#patient_symptom_summary'
+  get '/patient/:patient_id/missed_reports', to: 'practitioner#patient_missed_days'
   get '/patients/reports/recent', to: 'practitioner#recent_reports'
 
   post '/patient/:patient_id/resolutions', to: 'practitioner#create_resolution'
