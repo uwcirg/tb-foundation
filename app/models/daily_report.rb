@@ -19,8 +19,6 @@ class DailyReport < ApplicationRecord
   scope :unresolved_symptoms, -> { joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, "resolutions.id": Resolution.last_symptom_from_user).where("daily_reports.updated_at > resolutions.resolved_at") }
   scope :since_last_missing_resolution, -> { joins(:resolutions).where("resolutions.id": Resolution.last_medication_from_user).where("daily_reports.created_at > resolutions.resolved_at") }
 
-
-
   def self.user_missed_days(user_id)
     sql = sanitize_sql [MISSED_DAYS, { user_id: user_id }]
     # result_value = connection.select_value(sql)

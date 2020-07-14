@@ -8,7 +8,7 @@ FROM generate_series(
       ( SELECT resolved_at::date
         FROM resolutions
         WHERE patient_id = :user_id
-        AND kind = 2
+        AND kind = 1
         ORDER BY resolved_at DESC
         LIMIT 1
       ),
