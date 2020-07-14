@@ -2,7 +2,7 @@ module PatientSQL
 
 #TODO adapt this to match the users timezone
 MISSED_DAYS = <<-SQL
-SELECT series_date AS date FROM (
+SELECT to_char(series_date::date at time zone 'ART', 'YYYY-MM-DD')  AS date FROM (
 SELECT series_date, combined.id AS report_id
 FROM generate_series(
       ( SELECT resolved_at::date
