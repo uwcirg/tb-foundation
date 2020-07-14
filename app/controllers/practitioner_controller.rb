@@ -161,6 +161,10 @@ class PractitionerController < UserController
     render(json: { newCode: code }, status: 200)
   end
 
+  def patient_missed_days
+    render(json: {last_resolved: Resolution.where(patient_id: params[:patient_id], kind: "MissedMedication").order("created_at DESC").first, days: get_patient_by_id(params[:patient_id]).missed_days}, status: 200)
+  end
+
   private
 
   def get_patient_by_id(id)
