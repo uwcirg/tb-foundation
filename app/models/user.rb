@@ -21,6 +21,10 @@ class User < ApplicationRecord
     "#{self.given_name} #{self.family_name}"
   end
 
+  def unsubscribe_push 
+    self.update(push_p256dh: nil, push_auth: nil, push_url: nil)
+  end
+
   def as_fhir_json(*args)
     return {
              givenName: given_name,

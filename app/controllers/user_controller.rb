@@ -57,8 +57,8 @@ class UserController < ApplicationController
     render(json: organizations.to_json, status: 200)
   end
 
-  #Destroy cookie for logout
   def logout
+    @current_user.unsubscribe_push
     cookies.delete(:jwt)
     render(json: { message: "Logout Successful" }, status: 200)
   end
