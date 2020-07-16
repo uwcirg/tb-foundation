@@ -44,11 +44,12 @@ class Patient < User
   end
 
   def generate_photo_schedule
-    generate_schedule(self)
     puts("Generating Photo Schedule")
+    generate_schedule(self)
   end
 
   def photo_day_override
+    puts("Generating Override Schedule")
     generate_schedule(self,false)
   end
 
@@ -138,7 +139,7 @@ class Patient < User
 
   def formatted_reports
     hash = {}
-    self.daily_reports.each do |report|
+    DailyReport.where(user_id: self.id).includes(:photo_report,:symptom_report,:medication_report).each do |report|
       serialization = ActiveModelSerializers::SerializableResource.new(report)
       hash["#{report["date"]}"] = serialization
     end
