@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_29_164358) do
+ActiveRecord::Schema.define(version: 2020_07_15_173443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -106,6 +106,13 @@ ActiveRecord::Schema.define(version: 2020_06_29_164358) do
     t.index ["title"], name: "index_organizations_on_title", unique: true
   end
 
+  create_table "photo_days", force: :cascade do |t|
+    t.date "date", null: false
+    t.bigint "patient_id"
+    t.index ["patient_id", "date"], name: "index_photo_days_on_patient_id_and_date", unique: true
+    t.index ["patient_id"], name: "index_photo_days_on_patient_id"
+  end
+
   create_table "photo_reports", force: :cascade do |t|
     t.bigint "daily_report_id"
     t.datetime "captured_at"
@@ -192,6 +199,7 @@ ActiveRecord::Schema.define(version: 2020_06_29_164358) do
   add_foreign_key "messaging_notifications", "channels"
   add_foreign_key "messaging_notifications", "messages", column: "last_message_id"
   add_foreign_key "messaging_notifications", "users"
+  add_foreign_key "photo_days", "users", column: "patient_id"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"
 end

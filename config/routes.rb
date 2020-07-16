@@ -71,10 +71,5 @@ Rails.application.routes.draw do
 
   #i18n
   get '/config/locales', to: 'application#get_locales'
-
-
-
-
-
-
+  
 end

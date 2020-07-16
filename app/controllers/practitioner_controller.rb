@@ -1,8 +1,13 @@
 require "aws-sdk"
 require "securerandom"
+   require 'sidekiq/web'
 
 class PractitionerController < UserController
   before_action :auth_practitioner, :except => [:upload_lab_test, :generate_presigned_url, :get_all_tests]
+
+  def get_sidekiq
+     mount Sidekiq::Web => '/sidekiq'
+  end
 
   def get_current_practitioner
     render(json: @current_practitoner, status: 200)
