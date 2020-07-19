@@ -2,6 +2,7 @@ require 'sidekiq-scheduler'
 
 class NotificationWorker
     include Sidekiq::Worker
+    sidekiq_options retry: 0
   
     def perform()
         puts(" time = '#{Time.now.utc.strftime("%H:%M")}'")

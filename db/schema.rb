@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_15_173443) do
+ActiveRecord::Schema.define(version: 2020_07_16_220741) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,14 @@ ActiveRecord::Schema.define(version: 2020_07_15_173443) do
     t.date "date"
     t.boolean "doing_okay"
     t.index ["user_id"], name: "index_daily_reports_on_user_id"
+  end
+
+  create_table "education_message_statuses", force: :cascade do |t|
+    t.integer "treatment_week", null: false
+    t.boolean "was_helpful"
+    t.bigint "patient_id"
+    t.index ["patient_id", "treatment_week"], name: "patient_treatment_week_index", unique: true
+    t.index ["patient_id"], name: "index_education_message_statuses_on_patient_id"
   end
 
   create_table "lab_tests", force: :cascade do |t|
@@ -195,6 +203,7 @@ ActiveRecord::Schema.define(version: 2020_07_15_173443) do
   end
 
   add_foreign_key "channels", "users"
+  add_foreign_key "education_message_statuses", "users", column: "patient_id"
   add_foreign_key "messages", "channels"
   add_foreign_key "messaging_notifications", "channels"
   add_foreign_key "messaging_notifications", "messages", column: "last_message_id"

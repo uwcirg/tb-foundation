@@ -71,5 +71,8 @@ Rails.application.routes.draw do
 
   #i18n
   get '/config/locales', to: 'application#get_locales'
-  
+
+
+  post '/patient/me/education_status', to: 'patient#mark_educational_message_viewed'
+
 end

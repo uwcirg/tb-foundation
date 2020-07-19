@@ -13,6 +13,7 @@ class Patient < User
   has_many :symptom_reports, :foreign_key => :user_id
   has_many :resolutions
 
+  has_many :education_message_statuses
   has_many :photo_days
 
   has_one :daily_notification, :foreign_key => :user_id
@@ -24,8 +25,7 @@ class Patient < User
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
   validates :treatment_start, presence: true
 
-  after_create :create_private_message_channel, :create_milestone, :create_resolutions
-  before_create :generate_photo_schedule
+  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
@@ -165,6 +165,5 @@ class Patient < User
   def weeks_in_treatment
     (DateTime.current.to_date - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
   end
-
 
 end

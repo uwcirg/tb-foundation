@@ -124,4 +124,9 @@ class PatientController < UserController
 
     render(json: response, status: 200)
   end
+
+  def mark_educational_message_viewed
+    @current_user.education_message_statuses.create!(treatment_week: params[:treatmentWeek])
+  end
+
 end
