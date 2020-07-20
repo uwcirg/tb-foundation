@@ -29,10 +29,6 @@ Rails.application.routes.draw do
   post '/administrator', to:'practitioner#create_admin'
   post '/patient', to: 'practitioner#create_pending_patient'
 
-  #Image Recognition Pipeline
-  #post '/lab_image_test', to: 'practitioner#upload_lab_test'
-  #get '/lab_test/all', to: 'practitioner#get_all_tests'
-
   get '/patient/daily_reports/photo_upload_url', to: 'patient#generate_upload_url'
   get '/organizations', to: 'user#get_all_organizations'
 
@@ -47,7 +43,6 @@ Rails.application.routes.draw do
 
   #Notification Reminder
   patch '/patient/reminder', to: 'patient#update_notification_time'
-
 
   #New Ones
   get '/patients/photo_reports', to: 'practitioner#get_photos'
