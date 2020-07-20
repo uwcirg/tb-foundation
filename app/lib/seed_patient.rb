@@ -1,6 +1,7 @@
 module SeedPatient
   
   def seed_test_reports(is_good = false)
+   
     (treatment_start.to_date..DateTime.current.to_date).each do |day|
       #Decide if the user will report at all that day
       if (is_good)
@@ -10,15 +11,16 @@ module SeedPatient
       end
 
       if (should_report)
-        create_seed_report(day, is_good)
+        create_seed_report(day, is_good,photo_days)
       end
     end
   end
 
-  def create_seed_report(day, is_good)
+  def create_seed_report(day, is_good,photo_days)
     datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
 
-    is_photo_day = datetime > (DateTime.now - 7.days) && (JSON.parse(self.medication_schedule)[self.days_in_treatment / 7].include? datetime.wday)
+    #TODO Fix
+    is_photo_day = self.photo_days.where(date: day).exists?
 
     if(!is_good)
       med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: rand(1.0) <= 0.99999 , datetime_taken: datetime)
