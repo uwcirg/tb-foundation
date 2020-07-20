@@ -1,5 +1,6 @@
 require "aws-sdk"
 require "securerandom"
+   require 'sidekiq/web'
 
 class PractitionerController < UserController
   before_action :auth_practitioner, :except => [:upload_lab_test, :generate_presigned_url, :get_all_tests]

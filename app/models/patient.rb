@@ -13,6 +13,9 @@ class Patient < User
   has_many :symptom_reports, :foreign_key => :user_id
   has_many :resolutions
 
+  has_many :education_message_statuses
+  has_many :photo_days
+
   has_one :daily_notification, :foreign_key => :user_id
   has_one :contact_tracing
 
@@ -22,8 +25,7 @@ class Patient < User
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
   validates :treatment_start, presence: true
 
-  after_create :create_private_message_channel, :create_milestone, :create_resolutions
-  before_create :generate_medication_schedule
+  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
@@ -41,16 +43,14 @@ class Patient < User
     end
   end
 
-  def generate_medication_schedule
-    schedule = random_schedule
-    puts("Generating Medication Schedule")
-    self.medication_schedule = schedule.as_json
+  def generate_photo_schedule
+    puts("Generating Photo Schedule")
+    generate_schedule(self)
   end
 
   def photo_day_override
-    schedule = every_day_schedule
-    puts("Overriding Medication Schedule For Testing")
-    self.update(medication_schedule: schedule.as_json)
+    puts("Generating Override Schedule")
+    generate_schedule(self,false)
   end
 
   #Requires an ISO time ( Not DateTime )
@@ -139,7 +139,7 @@ class Patient < User
 
   def formatted_reports
     hash = {}
-    self.daily_reports.each do |report|
+    DailyReport.where(user_id: self.id).includes(:photo_report,:symptom_report,:medication_report).each do |report|
       serialization = ActiveModelSerializers::SerializableResource.new(report)
       hash["#{report["date"]}"] = serialization
     end
@@ -158,5 +158,12 @@ class Patient < User
     return self.daily_reports.where(doing_okay: true).count();
   end
 
+  def photo_schedule
+    self.photo_days.pluck(:date)
+  end
+
+  def weeks_in_treatment
+    (DateTime.current.to_date - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
+  end
 
 end

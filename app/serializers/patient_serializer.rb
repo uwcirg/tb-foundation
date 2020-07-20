@@ -9,13 +9,15 @@ class PatientSerializer < ActiveModel::Serializer
     :days_in_treatment, 
     :last_report, 
     :treatment_start, 
-    :medication_schedule, 
     :current_streak, 
     :phone_number,
     :status,
     :daily_notification_time,
     :channel_id,
-    :last_contacted
+    :last_contacted,
+    :photo_schedule,
+    :weeks_in_treatment,
+    :education_status
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
@@ -43,5 +45,10 @@ class PatientSerializer < ActiveModel::Serializer
     def last_contacted
         object.channels.where(is_private: true).first.last_message_time
     end
+
+    def education_status
+        object.education_message_statuses.pluck(:treatment_week)
+    end
+    
 
 end

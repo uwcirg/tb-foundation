@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_29_164358) do
+ActiveRecord::Schema.define(version: 2020_07_16_220741) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,14 @@ ActiveRecord::Schema.define(version: 2020_06_29_164358) do
     t.date "date"
     t.boolean "doing_okay"
     t.index ["user_id"], name: "index_daily_reports_on_user_id"
+  end
+
+  create_table "education_message_statuses", force: :cascade do |t|
+    t.integer "treatment_week", null: false
+    t.boolean "was_helpful"
+    t.bigint "patient_id"
+    t.index ["patient_id", "treatment_week"], name: "patient_treatment_week_index", unique: true
+    t.index ["patient_id"], name: "index_education_message_statuses_on_patient_id"
   end
 
   create_table "lab_tests", force: :cascade do |t|
@@ -104,6 +112,13 @@ ActiveRecord::Schema.define(version: 2020_06_29_164358) do
   create_table "organizations", force: :cascade do |t|
     t.string "title", null: false
     t.index ["title"], name: "index_organizations_on_title", unique: true
+  end
+
+  create_table "photo_days", force: :cascade do |t|
+    t.date "date", null: false
+    t.bigint "patient_id"
+    t.index ["patient_id", "date"], name: "index_photo_days_on_patient_id_and_date", unique: true
+    t.index ["patient_id"], name: "index_photo_days_on_patient_id"
   end
 
   create_table "photo_reports", force: :cascade do |t|
@@ -188,10 +203,12 @@ ActiveRecord::Schema.define(version: 2020_06_29_164358) do
   end
 
   add_foreign_key "channels", "users"
+  add_foreign_key "education_message_statuses", "users", column: "patient_id"
   add_foreign_key "messages", "channels"
   add_foreign_key "messaging_notifications", "channels"
   add_foreign_key "messaging_notifications", "messages", column: "last_message_id"
   add_foreign_key "messaging_notifications", "users"
+  add_foreign_key "photo_days", "users", column: "patient_id"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"
 end

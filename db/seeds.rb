@@ -15,15 +15,16 @@ when "development"
     password_hash = BCrypt::Password.create(ENV["RAILS_BASE_PASS"])
 
     #Organizations
-    Organization.create(title: "University of Washington")
-    Organization.create(title: "Hospital One")
+    org_one = Organization.create!(title: "University of Washington")
+    Organization.create!(title: "Hospital One")
+    puts(Organization.all.pluck(:id))
 
     #Test Practitioner
     practitioner = Practitioner.create!(
         password_digest: password_hash,
         family_name: "Practitioner",
         given_name: "Test",
-        managing_organization: "Hospital One",
+        organization_id: org_one.id,
         email: "test@gmail.com",
         type: "Practitioner"
     )
@@ -33,7 +34,7 @@ when "development"
         password_digest: password_hash,
         family_name: "Hugo",
         given_name: "Test",
-        managing_organization: "University of Washington",
+        organization_id: org_one.id,
         email: "test@test.com",
         type: "Practitioner"
     )
@@ -43,11 +44,11 @@ when "development"
         password_digest: password_hash,
         family_name: "Goodwin",
         given_name: "Kyle",
-        managing_organization: "Hospital One",
+        organization_id: org_one.id,
         phone_number: "123456789",
         treatment_start: Date.today - 2.months,
-        type: "Patient",
-        practitioner_id: practitioner.id
+        type: "Patient"
+        
     )
 
 
@@ -56,11 +57,11 @@ when "development"
         password_digest: password_hash,
         family_name: "Brown",
         given_name: "Jimmy",
-        managing_organization: "Hospital One",
+        organization_id: org_one.id,
         phone_number: "012345678",
         treatment_start: Date.today - 2.months,
-        type: "Patient",
-        practitioner_id: practitioner.id
+        type: "Patient"
+        
     )
 
     #Test Patient
@@ -68,11 +69,11 @@ when "development"
         password_digest: password_hash,
         family_name: "Prueba",
         given_name: "Hugo",
-        managing_organization: "Hospital One",
+        organization_id: org_one.id,
         phone_number: "111222333",
         treatment_start: Date.today - 1.month,
-        type: "Patient",
-        practitioner_id: practitioner.id
+        type: "Patient"
+        
     )
 
     patient.seed_test_reports(true)
@@ -91,8 +92,8 @@ when "development"
         password_digest: password_hash,
         family_name: "Admin",
         given_name: "Test",
-        managing_organization: "Hospital One",
-        type: "Administrator",
+        organization_id: org_one.id,
+        type: "Administrator"
       )
 
 
@@ -127,11 +128,11 @@ when "development"
         password_digest: password_hash,
         family_name: "Patient 3",
         given_name: "Test",
-        managing_organization: "Hospital One",
+        organization_id: org_one.id,
         phone_number: "123456780",
         treatment_start: Date.today,
-        type: "Patient",
-        practitioner_id: practitioner.id
+        type: "Patient"
+        
     )
 
     i = 0
@@ -140,11 +141,11 @@ when "development"
             password_digest: password_hash,
             family_name: last_names[i],
             given_name: name,
-            managing_organization: "Hospital One" ,
+            organization_id: org_one.id ,
             phone_number: "12312312#{i}",
             treatment_start: Date.today - rand(1..24).weeks,
-            type: "Patient",
-            practitioner_id: practitioner.id
+            type: "Patient"
+            
         )
         new_patient.seed_test_reports(true)
         i += 1

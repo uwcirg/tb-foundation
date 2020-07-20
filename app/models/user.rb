@@ -70,7 +70,8 @@ class User < ApplicationRecord
       data: data,
     )
 
-    Webpush.payload_send(
+    begin
+          Webpush.payload_send(
       message: message,
       endpoint: self.push_url,
       p256dh: self.push_p256dh,
@@ -80,8 +81,12 @@ class User < ApplicationRecord
         subject: "mailto:sender@example.com",
         public_key: ENV["VAPID_PUBLIC_KEY"],
         private_key: ENV["VAPID_PRIVATE_KEY"],
-      },
-    )
+      })
+    rescue => exception
+      puts("User Push Info Was Probably Expired")
+      puts(exception)
+    end
+
   end
 
   def update_last_message_seen(channel_id, number)
