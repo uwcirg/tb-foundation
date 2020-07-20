@@ -16,7 +16,7 @@ FactoryBot.define do
     factory :random_patients, class: Patient do
     given_name { Faker::Name.first_name }
     family_name { Faker::Name.last_name }
-    phone_number { Faker::Config.random.seed.to_s.first(9) }
+    phone_number { Faker::Number.number(digits: 9).to_s }
     password_digest { BCrypt::Password.create("password") }
     treatment_start { Faker::Date.between(from: 1.month.ago, to: Date.today) }
   end

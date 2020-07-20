@@ -1,9 +1,9 @@
-require "capybara/rspec"
-require "factory_bot"
+# require "capybara/rspec"
+# require "factory_bot"
 
-SELENIUM_HOST = ENV.fetch("SELENIUM_HOST")
-TEST_APP_HOST = ENV.fetch("TEST_APP_HOST")
-TEST_APP_PORT = ENV.fetch("TEST_APP_PORT")
+# SELENIUM_HOST = ENV.fetch("SELENIUM_HOST")
+# TEST_APP_HOST = ENV.fetch("TEST_APP_HOST")
+# TEST_APP_PORT = ENV.fetch("TEST_APP_PORT")
 
 # The `.rspec` file contains `--require spec_helper`,
 # which will cause this file to always be loaded,
@@ -22,6 +22,7 @@ TEST_APP_PORT = ENV.fetch("TEST_APP_PORT")
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 RSpec.configure do |config|
+
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
@@ -52,25 +53,25 @@ RSpec.configure do |config|
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
-  # Use `FactoryBot` as a replacement for test fixtures
-  config.include FactoryBot::Syntax::Methods
-  config.before(:suite) { FactoryBot.find_definitions }
+  # # Use `FactoryBot` as a replacement for test fixtures
+  # config.include FactoryBot::Syntax::Methods
+  # config.before(:suite) { FactoryBot.find_definitions }
 
 
-  Capybara.register_driver :selenium_remote do |app|
-    Capybara::Selenium::Driver.new(
-      app,
-      url:  "http://selenium:4444/wd/hub",
-      browser: :remote,
-      desired_capabilities: :chrome
-    )
-  end
+  # Capybara.register_driver :selenium_remote do |app|
+  #   Capybara::Selenium::Driver.new(
+  #     app,
+  #     url:  "http://selenium:4444/wd/hub",
+  #     browser: :remote,
+  #     desired_capabilities: :chrome
+  #   )
+  # end
 
-  Capybara.server_port = TEST_APP_PORT
-  Capybara.server_host = TEST_APP_HOST
-  Capybara.app_host = "http://#{TEST_APP_HOST}:#{TEST_APP_PORT}"
+  # Capybara.server_port = TEST_APP_PORT
+  # Capybara.server_host = TEST_APP_HOST
+  # Capybara.app_host = "http://#{TEST_APP_HOST}:#{TEST_APP_PORT}"
 
-  config.include Capybara::DSL
+  # config.include Capybara::DSL
 
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
