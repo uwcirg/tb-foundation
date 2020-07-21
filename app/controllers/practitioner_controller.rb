@@ -24,11 +24,16 @@ class PractitionerController < UserController
       family_name: params[:familyName],
       given_name: params[:givenName],
       organization: @current_practitoner.organization,
-      treatment_start: DateTime.now(),
+      treatment_start: params["isTester"] ? DateTime.now() - 1.month : DateTime.now(),
       status: "Pending",
     )
 
     if new_patient.save
+
+      if(params["isTester"] == true)
+        new_patient.seed_test_reports
+      end
+
       render(json: { account: new_patient, code: code }, status: 200)
     else
       @test = new_patient.errors.as_json
