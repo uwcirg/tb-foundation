@@ -29,6 +29,7 @@ class Patient < User
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
+  scope :had_symptom_last_week, -> {where(id: DailyReport.symptoms_last_week.select(:user_id))}
 
 
   def create_private_message_channel

@@ -14,6 +14,9 @@ class DailyReport < ApplicationRecord
 
   scope :today, -> { where(:date => (Time.now.to_date)) }
   scope :last_week, -> { where("date > ?", Time.now - 1.week) }
+
+  scope :symptoms_last_week, -> {last_week.where(:symptom_report => SymptomReport.has_symptom)}
+
   scope :two_days, -> { where("date > ?", Time.now - 10.days) }
   scope :active_patient, -> {where(:patient => Patient.active)}
   scope :was_taken, -> { joins(:medication_report).where(medication_reports: { medication_was_taken: true }) }

@@ -33,7 +33,6 @@ class ChannelController < UserController
 
   def post_message
     newMessage = @current_user.messages.create!(body: params[:body], channel_id: params["channelID"], user_id: @current_user.id)
-    #@current_user.testd
     render(json: newMessage.to_json, status: 200)
   end
 
