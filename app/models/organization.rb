@@ -12,6 +12,16 @@ class Organization < ApplicationRecord
     return hash
   end
 
+  def patient_adherence
+    sql = ActiveRecord::Base.sanitize_sql [ADHERENCE, { organization_id: self.id }]
+    puts(ActiveRecord::Base.connection.exec_query(sql).to_a)
+  end
+
+  def patient_symptoms
+    sql = ActiveRecord::Base.sanitize_sql [NUMBER_DAYS_SYMPTOMS, { organization_id: self.id }]
+    puts(ActiveRecord::Base.connection.exec_query(sql).to_a)
+  end
+
   def patient_priorities
     sql = ActiveRecord::Base.sanitize_sql [PATIENT_RANK, { organization_id: self.id }]
     hash = {}

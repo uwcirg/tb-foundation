@@ -14,14 +14,20 @@ WHERE type = 0 AND organization_id = :organization_id AND users.status = 1
 SQL
 
   NUMBER_DAYS_SYMPTOMS = <<-SQL
-SELECT daily_reports.user_id as user_id, count(filtered_symptoms.id) as days_with_symptoms
+SELECT patients.id as user_id, CASE 
+WHEN symptoms_table.days_with_symptoms IS NULL then 0
+ELSE symptoms_table.days_with_symptoms
+ END as days_with_symptoms
+FROM (#{PATIENTS_IN_COHORT}) as patients
+LEFT JOIN 
+(SELECT daily_reports.user_id as user_id, count(filtered_symptoms.id) as days_with_symptoms
 FROM (SELECT *  FROM symptom_reports
 WHERE symptom_reports.user_id IN (#{PATIENTS_IN_COHORT})
 AND (redness=true OR hives=TRUE OR fever=TRUE OR appetite_loss=TRUE OR blurred_vision=TRUE OR sore_belly=TRUE OR yellow_coloration=TRUE OR difficulty_breathing=TRUE OR facial_swelling=TRUE OR nausea=TRUE)
 ) as filtered_symptoms
 JOIN daily_reports on filtered_symptoms.daily_report_id = daily_reports.id
 WHERE daily_reports.date > CURRENT_TIMESTAMP - interval '1 week'
-GROUP BY daily_reports.user_id
+GROUP BY daily_reports.user_id) as symptoms_table on symptoms_table.user_id = patients.id
 SQL
 
   ADHERENCE = <<-SQL
