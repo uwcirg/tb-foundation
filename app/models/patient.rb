@@ -31,11 +31,16 @@ class Patient < User
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> {where(id: DailyReport.symptoms_last_week.select(:user_id))}
+
+
+  def test_test
+    sql = TESTER
+    query = ActiveRecord::Base.connection.exec_query(sql).as_json
+  end
   
   def sql_adherence
     #sanitize_sql [MISSED_DAYS, { user_id: user_id }]
-    #sql = ADHERENCE
-    sql = PRIORITY
+    sql = ADHERENCE
     query = ActiveRecord::Base.connection.exec_query(sql).as_json
     puts(query)
   end

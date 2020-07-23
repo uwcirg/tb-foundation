@@ -13,10 +13,18 @@ class Organization < ApplicationRecord
   end
 
   def self.cohort_summary_dev(id)
-    #sql = sanitize_sql [COHORT_SUMMARY, { organization_id: id }]
-    sql = COHORT_SUMMARY
+    sql = sanitize_sql [TESTER, { organization_id: id }]
+    #sql = TESTER
     # result_value = connection.select_value(sql)
-    return ActiveRecord::Base.connection.exec_query(sql)
+    return ActiveRecord::Base.connection.exec_query(sql).to_a
+  end
+
+
+  def self.test_dev(id)
+    #sql = sanitize_sql [COHORT_SUMMARY, { organization_id: id }]
+    sql = sanitize_sql [PATIENTS_IN_COHORT, { organization_id: id }]
+    # result_value = connection.select_value(sql)
+    return ActiveRecord::Base.connection.exec_query(sql).to_a
   end
 
 

@@ -52,20 +52,7 @@ end
 #   GROUP BY daily_reports.user_id)
 #   SQL
 
-#TODO adapt this to match the users timezone
-ADHERENCE = <<-SQL
-SELECT number_reports, days_since_start, user_starts.given_name,user_starts.family_name,  round( number_reports/days_since_start::decimal, 3 ) as adherence FROM 
-  (SELECT daily_reports.user_id as patient_id,count(daily_reports.id) as number_reports 
-  FROM daily_reports 
-  JOIN medication_reports ON daily_reports.id = medication_reports.daily_report_id
-  WHERE medication_reports.medication_was_taken = true
-  GROUP BY daily_reports.user_id) AS report_counts 
-JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_start - INTERVAL '1 DAY'))::integer as days_since_start, id, given_name, family_name FROM users) as user_starts
-ON report_counts.patient_id = user_starts.id
-ORDER BY user_starts.given_name
-  SQL
-
-PRIORITY =<<-SQL
+PRIORITY = <<-SQL
 SELECT
 SUM (case when tab.adherence between 0 and 0.8 then 1 else 0 end) high,
 SUM (case when tab.adherence between 0.8 and 0.9 then 1 else 0 end) mid,
@@ -82,26 +69,52 @@ JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_star
 ON report_counts.patient_id = user_starts.id) as tab
 SQL
 
+PATIENT_ADHER = <<-SQL
+SELECT patient_id, CASE
+when tab.adherence between 0 and 0.8 then low
+when tb
+FROM (
+  SELECT number_reports, days_since_start, user_starts.given_name,user_starts.family_name, user_starts.id as patient_id,  round( number_reports/days_since_start::decimal, 3 ) as adherence FROM 
+  (SELECT daily_reports.user_id as patient_id,count(daily_reports.id) as number_reports 
+  FROM daily_reports 
+  JOIN medication_reports ON daily_reports.id = medication_reports.daily_report_id
+  JOIN symptom_reports ON daily_reports.id = symptom_reports.daily_report_id
+  WHERE medication_reports.medication_was_taken = true
+  GROUP BY daily_reports.user_id) AS report_counts 
+JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_start - INTERVAL '1 DAY'))::integer as days_since_start, id, given_name, family_name FROM users) as user_starts
+ON report_counts.patient_id = user_starts.id) as tab
+SQL
 
-# PRIORITY =<<-SQL
-# SELECT
-# SUM (case when tab.adherence between 0 and 0.8 then 1 else 0 end) high,
-# SUM (case when tab.adherence between 0.8 and 0.9 then 1 else 0 end) mid,
-# SUM (case when tab.adherence between 0.9 and 1 then 1 else 0 end) low
-# FROM (
-#   SELECT number_reports, days_since_start, user_starts.given_name,user_starts.family_name,  round( number_reports/days_since_start::decimal, 3 ) as adherence FROM 
+# NUMBER_DAYS_SYMPTOMS = <<-SQL
+# SELECT daily_reports.user_id as user_id, count(filtered_symptoms.id) as days_with_symptoms
+# FROM (SELECT *  FROM symptom_reports
+# WHERE (redness=true OR hives=TRUE OR fever=TRUE OR appetite_loss=TRUE OR blurred_vision=TRUE OR sore_belly=TRUE OR yellow_coloration=TRUE OR difficulty_breathing=TRUE OR facial_swelling=TRUE OR nausea=TRUE)
+# ) as filtered_symptoms
+# JOIN daily_reports on filtered_symptoms.daily_report_id = daily_reports.id
+# WHERE daily_reports.date > CURRENT_TIMESTAMP - interval '1 week'
+# GROUP BY daily_reports.user_id
+# SQL
+
+# ADHERENCE = <<-SQL
+# SELECT user_starts.id as user_id,  round( number_reports/days_since_start::decimal, 3 ) as adherence FROM 
 #   (SELECT daily_reports.user_id as patient_id,count(daily_reports.id) as number_reports 
 #   FROM daily_reports 
 #   JOIN medication_reports ON daily_reports.id = medication_reports.daily_report_id
-#   JOIN (SELECT id, count(user_id),daily_report_id FROM symptom_reports
-#   INNER JOIN (SELECT id, date FROM daily_reports
-#     WHERE date > (CURRENT_TIMESTAMP - interval '1 week')
-#     ) AS report_dates ON symptom_reports.daily_report_id = report_dates.id
-#   WHERE (redness=true OR hives=TRUE OR fever=TRUE OR appetite_loss=TRUE OR blurred_vision=TRUE OR sore_belly=TRUE OR yellow_coloration=TRUE OR difficulty_breathing=TRUE OR facial_swelling=TRUE OR nausea=TRUE))
-#   GROUP BY user_id)
-#   as symptom_totals ON daily_reports.id = symptom_totals.daily_report_id
 #   WHERE medication_reports.medication_was_taken = true
 #   GROUP BY daily_reports.user_id) AS report_counts 
-# JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_start - INTERVAL '1 DAY'))::integer as days_since_start, id, given_name, family_name FROM users) as user_starts
-# ON report_counts.patient_id = user_starts.id) as tab
+# JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_start - INTERVAL '1 DAY'))::integer as days_since_start, id FROM users) as user_starts
+# ON report_counts.patient_id = user_starts.id
 # SQL
+
+# TESTER = <<-SQL
+# SELECT combined.patient_id, CASE
+# when (combined.adherence between 0 and 0.8) OR ((combined.adherence between 0.8 and 0.9) AND combined.days_with_symptoms >= 1 )   then 2
+# when (combined.adherence between 0.8 and 0.9) OR combined.days_with_symptoms >= 1 then 1
+# when (combined.adherence between 0.9 and 1) AND combined.days_with_symptoms = 0  then 0
+# else 0
+# end as priority
+# FROM (
+# SELECT weekly_symptoms.user_id as patient_id, * FROM (#{ADHERENCE}) as adherence
+# JOIN (#{NUMBER_DAYS_SYMPTOMS}) as weekly_symptoms on weekly_symptoms.user_id = adherence.user_id) as combined
+# SQL
+
