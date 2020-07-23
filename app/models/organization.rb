@@ -12,19 +12,20 @@ class Organization < ApplicationRecord
     return hash
   end
 
-  def self.cohort_summary_dev(id)
-    sql = sanitize_sql [TESTER, { organization_id: id }]
-    #sql = TESTER
-    # result_value = connection.select_value(sql)
-    return ActiveRecord::Base.connection.exec_query(sql).to_a
+  def patient_priorities
+    sql = ActiveRecord::Base.sanitize_sql [PATIENT_RANK, { organization_id: self.id }]
+    hash = {}
+    q = ActiveRecord::Base.connection.exec_query(sql).to_a.each do |line|
+        hash[line["patient_id"]] = line["priority"]
+    end
+    puts(hash)
+    return(hash)
   end
 
 
-  def self.test_dev(id)
-    #sql = sanitize_sql [COHORT_SUMMARY, { organization_id: id }]
-    sql = sanitize_sql [PATIENTS_IN_COHORT, { organization_id: id }]
-    # result_value = connection.select_value(sql)
-    return ActiveRecord::Base.connection.exec_query(sql).to_a
+  def test_dev
+    sql = ActiveRecord::Base.sanitize_sql [SUMMARY_OF_PRIORITIES, { organization_id: self.id }]
+    puts(ActiveRecord::Base.connection.exec_query(sql).to_a)
   end
 
 

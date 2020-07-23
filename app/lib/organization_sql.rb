@@ -8,10 +8,9 @@ module OrganizationSQL
  )
     SQL
 
-
-PATIENTS_IN_COHORT = <<-SQL
+  PATIENTS_IN_COHORT = <<-SQL
 SELECT id from users
-WHERE type = 0 AND organization_id = :organization_id
+WHERE type = 0 AND organization_id = :organization_id AND users.status = 1
 SQL
 
   NUMBER_DAYS_SYMPTOMS = <<-SQL
@@ -36,8 +35,18 @@ JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_star
 ON report_counts.patient_id = user_starts.id
 SQL
 
-  TESTER = <<-SQL
-SELECT combined.patient_id, CASE
+
+#Modified this function so that it returns all patients, even ones who have not submitted a  report yet, this will allow a 3rd priortiy of new patients (3)
+  PATIENT_RANK = <<-SQL
+  SELECT all_patients.id as patient_id, 
+  CASE 
+  WHEN ranks.priority IS NULL then 3
+ELSE ranks.priority
+  END as priority
+  FROM 
+    (#{PATIENTS_IN_COHORT}) as all_patients
+    LEFT JOIN(
+SELECT combined.patient_id as patient_id, CASE
 when (combined.adherence between 0 and 0.8) OR ((combined.adherence between 0.8 and 0.9) AND combined.days_with_symptoms >= 1 )   then 2
 when (combined.adherence between 0.8 and 0.9) OR combined.days_with_symptoms >= 1 then 1
 when (combined.adherence between 0.9 and 1) AND combined.days_with_symptoms = 0  then 0
@@ -45,6 +54,12 @@ else 0
 end as priority
 FROM (
 SELECT weekly_symptoms.user_id as patient_id, * FROM (#{ADHERENCE}) as adherence
-JOIN (#{NUMBER_DAYS_SYMPTOMS}) as weekly_symptoms on weekly_symptoms.user_id = adherence.user_id) as combined
+JOIN (#{NUMBER_DAYS_SYMPTOMS}) as weekly_symptoms on weekly_symptoms.user_id = adherence.user_id) as combined) as ranks on all_patients.id = ranks.patient_id
+SQL
+
+  SUMMARY_OF_PRIORITIES = <<-SQL
+  SELECT ranks.priority, count(ranks.patient_id) FROM (#{PATIENT_RANK}) as ranks
+  GROUP BY ranks.priority
+
 SQL
 end
