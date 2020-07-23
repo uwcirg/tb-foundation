@@ -7,7 +7,8 @@ class Organization < ApplicationRecord
   def cohort_summary
     hash = {}
     hash["hadSymptom"] = self.patients.had_symptom_last_week.count
-    hash = hash.merge(self.patients.group(:status).count.as_json)
+    hash["activePatients"] = self.patients.group(:status).count.as_json["Active"]
+    hash["pendingPatients"] = self.patients.group(:status).count.as_json["Pending"]
     return hash
   end
 
