@@ -14,3 +14,5 @@ services:
         target: /foundation/
         type: bind
         read_only: false
+  client:
+    entrypoint: ["echo", "Service foo disabled"]

@@ -39,13 +39,13 @@ class Organization < ApplicationRecord
     exec_query(SUMMARY_OF_PRIORITIES).each do |line|
         case line['priority']
         when 0
-            hash['lowPriority'] = line['count']
+            hash['low'] = line['count']
         when 1
-            hash['mediumPriority'] = line['count']
+            hash['medium'] = line['count']
         when 2 
-            hash['highPriority'] = line['count']
+            hash['high'] = line['count']
         when 3
-            hash['newPriority'] = line['count']
+            hash['new'] = line['count']
         else
             puts("Unexpected SQL Return for priority summary")
         end
