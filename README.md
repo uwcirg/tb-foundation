@@ -4,8 +4,8 @@ This is the backend API for a project intended to improve tuberculosis treatment
 
 Provides REST style routes for CRUD operations about patients history and information. 
 
-## API Routes and descriptions
-[TB-Backend on Postman Documenter](https://documenter.getpostman.com/view/8985648/SVtPYrMr?version=latest)
+## Run Rspec tests (example file provided)
+docker-compose run --rm -e "RAILS_ENV=test" web rspec spec/requests/get_patients_spec.rb
 
 
 More documentation coming soon.

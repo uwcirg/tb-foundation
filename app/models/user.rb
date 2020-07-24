@@ -94,12 +94,9 @@ class User < ApplicationRecord
   end
 
   def create_unread_messages
-    Channel.all.map do |c|
-      #TODO make sure coordinator would also get unread message here
-      if (!c.is_private || (c.is_private && self.id == c.user_id))
+    Channel.where(is_private: false).map do |c|
         self.messaging_notifications.create!(channel_id: c.id, user_id: self.id, read_message_count: 0)
       end
-    end
   end
 
   def send_message_no_push(body, channel_id)

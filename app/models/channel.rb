@@ -5,6 +5,8 @@ class Channel < ApplicationRecord
 
     after_create :create_notifications
 
+    scope :active, -> { where(:status => ("Active")) }
+
     #When Creating a new channel initalize notifications for that channel
     #TODO allow notifications for coordinator on private channel
     #TODO move this to a worker becuase it will be intensive, might be a better method to update

@@ -1,6 +1,73 @@
 class Organization < ApplicationRecord
+  has_many :practitioners
+  has_many :patients
 
-    has_many :practitioners
-    has_many :patients
-        
+  include OrganizationSQL
+
+  def cohort_summary
+    hash = {}
+    status = {}
+    exec_query(PATIENT_STATUS).each do |line|
+        status[User.statuses.keys[line["status"]].downcase] = line["count"]
+    end
+
+    hash = hash.merge({status: status})
+    hash = hash.merge({priority: priority_summary})
+    hash = hash.merge({symptoms: symptom_summary})
+    return hash
+
+  end
+
+  def patient_adherence
+    exec_query(ADHERENCE)
+  end
+
+#   def patient_symptoms
+#     exec_query(NUMBER_DAYS_SYMPTOMS)
+#   end
+
+  def patient_priorities
+    hash = {}
+    exec_query(PATIENT_RANK).each do |line|
+      hash[line["patient_id"]] = line["priority"]
+    end
+    return(hash)
+  end
+
+  def priority_summary
+    hash =  {}
+    exec_query(SUMMARY_OF_PRIORITIES).each do |line|
+        case line['priority']
+        when 0
+            hash['low'] = line['count']
+        when 1
+            hash['medium'] = line['count']
+        when 2 
+            hash['high'] = line['count']
+        when 3
+            hash['new'] = line['count']
+        else
+            puts("Unexpected SQL Return for priority summary")
+        end
+    end 
+    return hash
+  end
+
+  def symptom_summary 
+    hash = {}
+    results = exec_query(SYMPTOM_SUMMARY)[0]
+    results.keys.each do |value|
+        hash[value] = results[value]
+    end
+    hash
+  end
+
+
+  private
+
+  def exec_query(query)
+    sql = ActiveRecord::Base.sanitize_sql [query, { organization_id: self.id }]
+    return ActiveRecord::Base.connection.exec_query(sql).to_a
+  end
+
 end

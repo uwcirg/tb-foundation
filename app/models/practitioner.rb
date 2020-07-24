@@ -5,6 +5,14 @@ class Practitioner < User
   validates :type, inclusion: { in: ["Practitioner"] }
   validates :email, presence: true
 
+
+  def create_unread_messages
+    super
+    Channel.where(is_private: true, user: self.patients).map do |c|
+        self.messaging_notifications.create!(channel_id: c.id, user_id: self.id, read_message_count: 0)
+      end
+  end
+
   def get_photos
     #If you need more information from the DailyReport change this query to use DailyReport as the base, then join the other tables
     photos_needing_approval = PhotoReport.where(approved: nil).joins(:daily_report).joins(:patient).where(patient: self.patients ).order("daily_reports.created_at desc")
