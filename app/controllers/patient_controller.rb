@@ -126,7 +126,15 @@ class PatientController < UserController
   end
 
   def mark_educational_message_viewed
-    @current_user.education_message_statuses.create!(treatment_week: params[:treatmentWeek])
+    status = @current_user.education_message_statuses.create(treatment_week: params[:treatmentWeek])
+    if(status.save!)
+      render(json: status.as_json, status: :ok)
+    else
+      render(json:{message: "Problem updating education message status"},status: 422)
+    end
+
+    rescue ActiveRecord::RecordNotUnique
+      render(json:{message: "Already marked as read"}, status: 422)
   end
 
 end
