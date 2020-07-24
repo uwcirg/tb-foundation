@@ -6,37 +6,68 @@ class Organization < ApplicationRecord
 
   def cohort_summary
     hash = {}
-    hash["hadSymptom"] = self.patients.had_symptom_last_week.count
-    hash["activePatients"] = self.patients.group(:status).count.as_json["Active"]
-    hash["pendingPatients"] = self.patients.group(:status).count.as_json["Pending"]
+    status = {}
+    exec_query(PATIENT_STATUS).each do |line|
+        status[User.statuses.keys[line["status"]].downcase] = line["count"]
+    end
+
+    hash = hash.merge({status: status})
+    hash = hash.merge({priority: priority_summary})
+    hash = hash.merge({symptoms: symptom_summary})
     return hash
+
   end
 
   def patient_adherence
-    sql = ActiveRecord::Base.sanitize_sql [ADHERENCE, { organization_id: self.id }]
-    puts(ActiveRecord::Base.connection.exec_query(sql).to_a)
+    exec_query(ADHERENCE)
   end
 
-  def patient_symptoms
-    sql = ActiveRecord::Base.sanitize_sql [NUMBER_DAYS_SYMPTOMS, { organization_id: self.id }]
-    puts(ActiveRecord::Base.connection.exec_query(sql).to_a)
-  end
+#   def patient_symptoms
+#     exec_query(NUMBER_DAYS_SYMPTOMS)
+#   end
 
   def patient_priorities
-    sql = ActiveRecord::Base.sanitize_sql [PATIENT_RANK, { organization_id: self.id }]
     hash = {}
-    q = ActiveRecord::Base.connection.exec_query(sql).to_a.each do |line|
-        hash[line["patient_id"]] = line["priority"]
+    exec_query(PATIENT_RANK).each do |line|
+      hash[line["patient_id"]] = line["priority"]
     end
-    puts(hash)
     return(hash)
   end
 
-
-  def test_dev
-    sql = ActiveRecord::Base.sanitize_sql [SUMMARY_OF_PRIORITIES, { organization_id: self.id }]
-    puts(ActiveRecord::Base.connection.exec_query(sql).to_a)
+  def priority_summary
+    hash =  {}
+    exec_query(SUMMARY_OF_PRIORITIES).each do |line|
+        case line['priority']
+        when 0
+            hash['lowPriority'] = line['count']
+        when 1
+            hash['mediumPriority'] = line['count']
+        when 2 
+            hash['highPriority'] = line['count']
+        when 3
+            hash['newPriority'] = line['count']
+        else
+            puts("Unexpected SQL Return for priority summary")
+        end
+    end 
+    return hash
   end
 
+  def symptom_summary 
+    hash = {}
+    results = exec_query(SYMPTOM_SUMMARY)[0]
+    results.keys.each do |value|
+        hash[value] = results[value]
+    end
+    hash
+  end
+
+
+  private
+
+  def exec_query(query)
+    sql = ActiveRecord::Base.sanitize_sql [query, { organization_id: self.id }]
+    return ActiveRecord::Base.connection.exec_query(sql).to_a
+  end
 
 end

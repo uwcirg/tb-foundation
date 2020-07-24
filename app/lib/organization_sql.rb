@@ -41,8 +41,7 @@ JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_star
 ON report_counts.patient_id = user_starts.id
 SQL
 
-
-#Modified this function so that it returns all patients, even ones who have not submitted a  report yet, this will allow a 3rd priortiy of new patients (3)
+  #Modified this function so that it returns all patients, even ones who have not submitted a  report yet, this will allow a 3rd priortiy of new patients (3)
   PATIENT_RANK = <<-SQL
   SELECT all_patients.id as patient_id, 
   CASE 
@@ -66,6 +65,32 @@ SQL
   SUMMARY_OF_PRIORITIES = <<-SQL
   SELECT ranks.priority, count(ranks.patient_id) FROM (#{PATIENT_RANK}) as ranks
   GROUP BY ranks.priority
+
+SQL
+
+  PATIENT_STATUS = <<-SQL
+    SELECT status,count(id) from users
+    WHERE type = 0 AND organization_id = :organization_id
+    GROUP BY status
+SQL
+
+SYMPTOM_SUMMARY = <<-SQL
+
+SELECT sum(redness::int) as redness,
+sum(hives::int) as hives,
+sum(fever::int) as fever,
+sum(appetite_loss::int) as appetite_loss,
+sum(blurred_vision::int) as blurred_vision,
+sum(sore_belly::int) as sore_belly,
+sum(yellow_coloration::int) as yellow_coloration,
+sum(difficulty_breathing::int) as difficulty_breathing,
+sum(facial_swelling::int) as facial_swelling,
+sum(nausea::int) as nausea FROM 
+( SELECT * FROM symptom_reports
+    JOIN users on symptom_reports.user_id = users.id
+    WHERE users.organization_id = :organization_id) as org_symptoms
+INNER JOIN daily_reports ON org_symptoms.daily_report_id = daily_reports.id 
+WHERE daily_reports.date > CURRENT_TIMESTAMP - interval '1 week'
 
 SQL
 end
