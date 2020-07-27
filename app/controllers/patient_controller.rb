@@ -75,7 +75,7 @@ class PatientController < UserController
     med_report = MedicationReport.create!(user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"], why_medication_not_taken: params["whyMedicationNotTaken"])
     symptom_report = SymptomReport.create!(user_id: @current_user.id,
                                            nausea: params["nausea"],
-                                           nausea_rating: params["nausea_rating"],
+                                           nausea_rating: params["nauseaRating"],
                                            redness: params["redness"],
                                            hives: params["hives"],
                                            fever: params["fever"],
@@ -133,7 +133,7 @@ class PatientController < UserController
       render(json:{message: "Problem updating education message status"},status: 422)
     end
 
-    rescue ActiveRecord::RecordNotUnique
+    rescue ActiveRecord::RecordNotUnique 
       render(json:{message: "Already marked as read"}, status: 422)
   end
 
