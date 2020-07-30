@@ -31,12 +31,6 @@ class Patient < User
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> {where(id: DailyReport.symptoms_last_week.select(:user_id))}
-
-
-  def test_test
-    sql = TESTER
-    query = ActiveRecord::Base.connection.exec_query(sql).as_json
-  end
   
   def sql_adherence
     #sanitize_sql [MISSED_DAYS, { user_id: user_id }]
@@ -44,7 +38,6 @@ class Patient < User
     query = ActiveRecord::Base.connection.exec_query(sql).as_json
     puts(query)
   end
-
 
   def create_private_message_channel
     channel = self.channels.create!(title: self.full_name, is_private: true)
@@ -122,7 +115,7 @@ class Patient < User
   end
 
   def adherence
-    return (self.daily_reports.was_taken.count.to_f / self.days_in_treatment).round(2)
+    return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
   end
 
   def percentage_complete
@@ -154,7 +147,7 @@ class Patient < User
 
   def formatted_reports
     hash = {}
-    DailyReport.where(user_id: self.id).includes(:photo_report,:symptom_report,:medication_report).each do |report|
+    DailyReport.where(user_id: self.id).includes(:photo_report,:symptom_report,:medication_report).order("date DESC").each do |report|
       serialization = ActiveModelSerializers::SerializableResource.new(report)
       hash["#{report["date"]}"] = serialization
     end

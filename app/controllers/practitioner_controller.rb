@@ -146,9 +146,6 @@ class PractitionerController < UserController
     render(json: @current_practitoner.patients.find(params["patient_id"]).symptom_summary, status: 200)
   end
 
-  def recent_reports
-    render(json: DailyReport.two_days.where(patient: @current_practitoner.patients).order("date DESC, updated_at DESC").limit(50), status: 200)
-  end
 
   def create_resolution
     case params["type"]

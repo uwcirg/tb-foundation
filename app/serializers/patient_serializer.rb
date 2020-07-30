@@ -17,7 +17,8 @@ class PatientSerializer < ActiveModel::Serializer
     :last_contacted,
     :photo_schedule,
     :weeks_in_treatment,
-    :education_status
+    :education_status,
+    :age
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
@@ -48,6 +49,10 @@ class PatientSerializer < ActiveModel::Serializer
 
     def education_status
         object.education_message_statuses.pluck(:treatment_week)
+    end
+
+    def age
+        object.age || "Unknown"
     end
     
 
