@@ -92,6 +92,7 @@ count(symptoms.facial_swelling=true) as facial_swelling,
 count(symptoms.nausea=true) as nausea
 FROM
 (SELECT * FROM symptom_reports
-WHERE user_id = :user_id AND daily_report_id IS NOT NULL) as symptoms
+INNER JOIN daily_reports ON symptom_reports.daily_report_id = daily_reports.id
+WHERE symptom_reports.user_id = :user_id AND daily_reports.date >  NOW() - INTERVAL ':num_days DAY'  ) as symptoms
 SQL
 

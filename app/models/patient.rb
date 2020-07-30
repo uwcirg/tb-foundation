@@ -32,10 +32,9 @@ class Patient < User
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> {where(id: DailyReport.symptoms_last_week.select(:user_id))}
 
-  def full_symptom_summary
-    sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id }]
-    query = ActiveRecord::Base.connection.exec_query(sql).as_json
-    puts(query)
+  def symptom_summary_by_days(days)
+    sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days  }]
+    ActiveRecord::Base.connection.exec_query(sql).to_a[0]
   end
 
   def create_private_message_channel
