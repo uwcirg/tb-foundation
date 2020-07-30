@@ -10,7 +10,7 @@ class PractitionerController < UserController
   end
 
   def get_patient
-    render(json: @current_practitoner.patients.find(params[:patient_id]), all_details: true, status: 200)
+    render(json: @current_practitoner.patients.find(params[:patient_id]), status: 200)
   end
 
   def create_pending_patient

@@ -1,6 +1,6 @@
 class DailyReportSerializer < ActiveModel::Serializer
 
-    attributes :id, :date, :user_id, :photo_url, :medication_was_taken, :symptoms, :taken_at, :updated_at, :doing_okay
+    attributes :id, :date, :user_id, :photo_url, :medication_was_taken, :symptoms, :taken_at, :updated_at, :doing_okay, :photo_was_required
     attribute :nausea_rating,  if: -> {!object.symptom_report.nausea_rating.nil?}
     attribute :photo_details, if: -> {!object.photo_report.nil?}
 
@@ -26,6 +26,10 @@ class DailyReportSerializer < ActiveModel::Serializer
 
     def nausea_rating
         object.symptom_report.nausea_rating
+    end
+
+    def photo_was_required
+        object.check_photo_day
     end
 
 

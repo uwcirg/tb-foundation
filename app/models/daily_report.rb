@@ -48,6 +48,10 @@ class DailyReport < ApplicationRecord
     return nil
   end
 
+  def check_photo_day
+    self.patient.photo_days.where(date: self.date).exists?
+  end
+
   def get_photo_ref
     if (!self.photo_report.nil?)
       return self.photo_report.photo_url
