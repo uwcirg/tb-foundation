@@ -172,4 +172,26 @@ class Patient < User
     (DateTime.current.to_date - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
   end
 
+  def reporting_status
+      hash = {}
+      today_report = self.daily_reports.find_by(date: Date.today)
+      yesterday_report = self.daily_reports.find_by(date: Date.yesterday)
+
+      if(today_report.nil?)
+        hash['today']  = {reported: false,
+        photo_required: self.photo_days.where(date: Date.today).exists?}
+
+      else
+
+      hash['today'] = {
+        reported: !today_report.nil?, 
+        taken: today_report.medication_was_taken, 
+        photo: !today_report.photo_submitted,
+        photo_required: self.photo_days.where(date: Date.today).exists?
+      }
+    end
+
+      return hash
+  end
+
 end

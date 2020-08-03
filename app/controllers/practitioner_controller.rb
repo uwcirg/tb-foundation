@@ -45,8 +45,8 @@ class PractitionerController < UserController
   def get_patients
     hash = {}
     pp = @current_practitoner.organization.patient_priorities
-    @current_practitoner.patients.active.each do |patient|
-      serialization = ActiveModelSerializers::SerializableResource.new(patient).as_json
+    @current_practitoner.patients.active.includes('daily_reports','medication_reports','photo_reports','channels','messages').each do |patient|
+      serialization = ActiveModelSerializers::SerializableResource.new(patient, include_reporting_status: true).as_json
       hash[patient.id] = serialization.merge({priority: pp[patient.id]})
 
     end
@@ -127,8 +127,8 @@ class PractitionerController < UserController
 
   def patients_with_symptoms
     patients = []
-      DailyReport.unresolved_symptoms.select("user_id").distinct.each do |patient|
-        patients.push({"patientId": patient.user_id})
+      @current_practitoner.patients.where( id: DailyReport.unresolved_symptoms.select("user_id").distinct).select("id").each do |patient|
+        patients.push({"patientId": patient.id})
       end
     render(json: patients, status: 200)
   end

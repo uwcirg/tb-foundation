@@ -64,4 +64,12 @@ class DailyReport < ApplicationRecord
     return symptom_report.as_json
   end
 
+  def medication_was_taken
+    return medication_report.medication_was_taken
+  end
+
+  def photo_submitted
+    return !photo_report.nil?
+  end
+
 end
