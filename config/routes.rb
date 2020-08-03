@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   get '/practitioner/patients', to: 'practitioner#get_patients'
   get '/practitioner/patient/:patient_id', to: 'practitioner#get_patient'
   get '/practitioner/temporary_patients', to: 'practitioner#get_temp_accounts'
+  get '/practitioner/resolutions/summary', to: 'practitioner#tasks_completed_today'
 
   #Medication Reports
   post '/daily_report', to: 'patient#post_daily_report'

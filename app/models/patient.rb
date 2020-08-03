@@ -180,14 +180,14 @@ class Patient < User
       if(today_report.nil?)
         hash['today']  = {reported: false,
         photo_required: self.photo_days.where(date: Date.today).exists?}
-
       else
 
       hash['today'] = {
         reported: !today_report.nil?, 
-        taken: today_report.medication_was_taken, 
-        photo: !today_report.photo_submitted,
-        photo_required: self.photo_days.where(date: Date.today).exists?
+        medication_taken: today_report.medication_was_taken, 
+        photo: today_report.photo_submitted,
+        photo_required: self.photo_days.where(date: Date.today).exists?,
+        number_symptoms: today_report.symptom_report.number_symptoms
       }
     end
 

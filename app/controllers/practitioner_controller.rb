@@ -72,21 +72,6 @@ class PractitionerController < UserController
     render(json: LabTest.all().as_json, status: 200)
   end
 
-  def upload_lab_test
-    newTest = LabTest.create!(
-      test_id: params[:testId],
-      description: params[:description],
-      photo_url: params[:photoURL],
-      is_positive: params[:isPositive],
-      test_was_run: params[:testWasRun],
-      minutes_since_test: params[:minutesSinceTest],
-    )
-
-    signer = Aws::S3::Presigner.new
-    url = signer.presigned_url(:get_object, bucket: "lab-strips", key: newTest.photo_url)
-
-    render(json: newTest.as_json, status: 200)
-  end
 
   def get_photos
     photos = @current_practitoner.get_photos
@@ -107,9 +92,9 @@ class PractitionerController < UserController
     end
 
     if (params[:approved])
-      photo.approve
+      photo.approve(@current_practitoner.id)
     else (!params[:approved])
-      photo.deny     
+      photo.deny(@current_practitoner.id)    
     end
 
     render(json: { message: "Photo status updated" }, status: 200)
@@ -178,6 +163,10 @@ class PractitionerController < UserController
 
   def patient_missed_days
     render(json: {last_resolved: Resolution.where(patient_id: params[:patient_id], kind: "MissedMedication").order("created_at DESC").first, days: get_patient_by_id(params[:patient_id]).missed_days}, status: 200)
+  end
+
+  def tasks_completed_today
+    render(json: {count: @current_practitoner.tasks_completed_today}, status: :ok)
   end
 
   private

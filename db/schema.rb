@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_16_220741) do
+ActiveRecord::Schema.define(version: 2020_08_03_213408) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,7 +128,9 @@ ActiveRecord::Schema.define(version: 2020_07_16_220741) do
     t.boolean "approved"
     t.datetime "approval_timestamp"
     t.bigint "user_id", null: false
+    t.bigint "practitioner_id"
     t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
+    t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
   end
 
   create_table "resolutions", force: :cascade do |t|
@@ -209,6 +211,7 @@ ActiveRecord::Schema.define(version: 2020_07_16_220741) do
   add_foreign_key "messaging_notifications", "messages", column: "last_message_id"
   add_foreign_key "messaging_notifications", "users"
   add_foreign_key "photo_days", "users", column: "patient_id"
+  add_foreign_key "photo_reports", "users", column: "practitioner_id"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"
 end

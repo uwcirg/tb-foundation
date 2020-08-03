@@ -86,4 +86,8 @@ class Practitioner < User
 
   end
 
+  def tasks_completed_today
+    self.resolutions.where('resolved_at BETWEEN ? AND ?', DateTime.now.beginning_of_day, DateTime.now.end_of_day).count + PhotoReport.where('approval_timestamp BETWEEN ? AND ? AND practitioner_id = ?',DateTime.now.beginning_of_day, DateTime.now.end_of_day,self.id).count
+  end
+
 end

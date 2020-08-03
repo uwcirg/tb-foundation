@@ -8,13 +8,14 @@ class PhotoReport < ApplicationRecord
     end
 
 
-    def approve
-        self.update(approved: true)
+    #Pass in a practitioner id, to keep track of who approved photo
+    def approve(id)
+        self.update(approved: true,practitioner_id: id, approval_timestamp: DateTime.now() )
         self.save
     end
 
-    def deny
-        self.update(approved: false)
+    def deny(id)
+        self.update(approved: false,practitioner_id: id, approval_timestamp: DateTime.now() )
         self.save
     end
 
