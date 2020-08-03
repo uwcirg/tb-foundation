@@ -10,7 +10,7 @@ class PractitionerController < UserController
   end
 
   def get_patient
-    render(json: @current_practitoner.patients.find(params[:patient_id]), all_details: true, status: 200)
+    render(json: @current_practitoner.patients.find(params[:patient_id]), status: 200)
   end
 
   def create_pending_patient
@@ -142,13 +142,19 @@ class PractitionerController < UserController
     render(json: @current_practitoner.patients, status: 200)
   end
 
-  def patient_symptom_summary
+  def patient_unresolved_symptoms
     render(json: @current_practitoner.patients.find(params["patient_id"]).symptom_summary, status: 200)
   end
 
-  def recent_reports
-    render(json: DailyReport.two_days.where(patient: @current_practitoner.patients).order("date DESC, updated_at DESC").limit(50), status: 200)
+  def patient_symptom_summary
+    hash = {}
+    patient = get_patient_by_id(params[:patient_id])
+    hash['week'] = patient.symptom_summary_by_days(7)
+    hash['month'] = patient.symptom_summary_by_days(30)
+    hash['all'] = patient.symptom_summary_by_days(180)
+    render(json: hash, status: :ok )
   end
+
 
   def create_resolution
     case params["type"]

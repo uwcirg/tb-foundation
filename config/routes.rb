@@ -55,7 +55,8 @@ Rails.application.routes.draw do
   get '/patients/missed', to: 'practitioner#patients_missed_reporting'
   get '/test/patients', to: 'practitioner#patients_with_adherence'
 
-  get '/patient/:patient_id/symptoms', to: 'practitioner#patient_symptom_summary'
+  get '/patient/:patient_id/symptoms', to: 'practitioner#patient_unresolved_symptoms'
+  get '/patient/:patient_id/symptom_summary', to: 'practitioner#patient_symptom_summary'
   get '/patient/:patient_id/missed_reports', to: 'practitioner#patient_missed_days'
   get '/patients/reports/recent', to: 'practitioner#recent_reports'
 

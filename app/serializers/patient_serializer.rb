@@ -17,7 +17,9 @@ class PatientSerializer < ActiveModel::Serializer
     :last_contacted,
     :photo_schedule,
     :weeks_in_treatment,
-    :education_status
+    :education_status,
+    :age,
+    :gender
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
