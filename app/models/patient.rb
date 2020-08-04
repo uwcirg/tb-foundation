@@ -194,4 +194,10 @@ class Patient < User
       return hash
   end
 
+  def last_symptoms
+    report = self.daily_reports.has_symptoms.order('date DESC').first
+    return report.symptom_report.as_json.merge({date: report.updated_at})
+    #self.daily_reports.unresolved_symptoms
+  end
+
 end

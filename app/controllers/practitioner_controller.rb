@@ -46,7 +46,9 @@ class PractitionerController < UserController
     hash = {}
     pp = @current_practitoner.organization.patient_priorities
     @current_practitoner.patients.active.includes('daily_reports','medication_reports','photo_reports','channels','messages').each do |patient|
-      serialization = ActiveModelSerializers::SerializableResource.new(patient, include_reporting_status: true).as_json
+      serialization = ActiveModelSerializers::SerializableResource.new(patient, 
+        include_reporting_status: true, 
+        include_last_symptoms: true).as_json
       hash[patient.id] = serialization.merge({priority: pp[patient.id]})
 
     end
