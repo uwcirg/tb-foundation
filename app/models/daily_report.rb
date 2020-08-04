@@ -27,7 +27,7 @@ class DailyReport < ApplicationRecord
   def self.user_missed_days(user_id)
     sql = sanitize_sql [MISSED_DAYS, { user_id: user_id }]
     # result_value = connection.select_value(sql)
-    return ActiveRecord::Base.connection.exec_query(sql)
+    return ActiveRecord::Base.connection.exec_query(sql) rescue nil
   end
 
   def self.user_streak_days(user_id)

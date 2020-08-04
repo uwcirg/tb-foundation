@@ -27,6 +27,7 @@ class PatientSerializer < ActiveModel::Serializer
     attribute :number_missing_reports, if: -> { @instance_options[:include_missing_reports].present?}
     attribute :reporting_status, if: -> { @instance_options[:include_reporting_status].present?}
     attribute :last_symptoms, if: -> {@instance_options[:include_last_symptoms].present?}
+    attribute :last_missed_day, if: -> {@instance_options[:include_last_missed_day].present?}
 
     def full_name
         return("#{object.given_name} #{object.family_name}")

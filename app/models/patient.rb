@@ -200,4 +200,8 @@ class Patient < User
     #self.daily_reports.unresolved_symptoms
   end
 
+  def last_missed_day
+    days = self.missed_days.first['date'] rescue nil
+  end
+
 end
