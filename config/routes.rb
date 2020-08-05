@@ -74,4 +74,8 @@ Rails.application.routes.draw do
     resources :cohort_summary , only: :index
   end
 
+  scope "/patients/:patient_id", module: "patient" do
+    resources :notes , only: [:index, :new, :create, :update]
+  end
+
 end

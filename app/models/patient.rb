@@ -14,6 +14,8 @@ class Patient < User
   has_many :symptom_reports, :foreign_key => :user_id
   has_many :resolutions
 
+  has_many :patient_notes
+
   has_many :education_message_statuses
   has_many :photo_days
 

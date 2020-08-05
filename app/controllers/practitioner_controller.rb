@@ -32,6 +32,7 @@ class PractitionerController < UserController
 
       if(params["isTester"] == true)
         new_patient.seed_test_reports
+        new_patient.photo_day_override
       end
 
       render(json: { account: new_patient, code: code }, status: 200)

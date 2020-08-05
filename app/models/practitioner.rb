@@ -2,6 +2,7 @@ class Practitioner < User
   belongs_to :organization
   has_many :patients, through: :organization
   has_many :resolutions
+  has_many :patient_notes
   validates :type, inclusion: { in: ["Practitioner"] }
   validates :email, presence: true
 

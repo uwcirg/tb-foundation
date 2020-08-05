@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_03_213408) do
+ActiveRecord::Schema.define(version: 2020_08_05_150348) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,6 +114,17 @@ ActiveRecord::Schema.define(version: 2020_08_03_213408) do
     t.index ["title"], name: "index_organizations_on_title", unique: true
   end
 
+  create_table "patient_notes", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "patient_id", null: false
+    t.string "title", null: false
+    t.text "note", null: false
+    t.bigint "practitioner_id", null: false
+    t.index ["patient_id"], name: "index_patient_notes_on_patient_id"
+    t.index ["practitioner_id"], name: "index_patient_notes_on_practitioner_id"
+  end
+
   create_table "photo_days", force: :cascade do |t|
     t.date "date", null: false
     t.bigint "patient_id"
@@ -197,8 +208,6 @@ ActiveRecord::Schema.define(version: 2020_08_03_213408) do
     t.integer "status", default: 1, null: false
     t.bigint "organization_id", default: 1, null: false
     t.integer "gender"
-    t.string "medication_type"
-    t.text "profile_note"
     t.integer "age"
     t.integer "locale", default: 1
     t.index ["organization_id"], name: "index_users_on_organization_id"
@@ -210,6 +219,8 @@ ActiveRecord::Schema.define(version: 2020_08_03_213408) do
   add_foreign_key "messaging_notifications", "channels"
   add_foreign_key "messaging_notifications", "messages", column: "last_message_id"
   add_foreign_key "messaging_notifications", "users"
+  add_foreign_key "patient_notes", "users", column: "patient_id"
+  add_foreign_key "patient_notes", "users", column: "practitioner_id"
   add_foreign_key "photo_days", "users", column: "patient_id"
   add_foreign_key "photo_reports", "users", column: "practitioner_id"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
