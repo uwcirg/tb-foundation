@@ -35,4 +35,19 @@ namespace :patients do
   
       puts " All done now!"
     end
+
+    desc "Create Support Resolution"
+    task :add_need_support => :environment do
+      users = Patient.all
+      puts "Going to update #{users.count} patients"
+  
+      ActiveRecord::Base.transaction do
+        users.each do |patient|
+          patient.resolutions.create!(kind:"NeedSupport", resolved_at: DateTime.now() - 3.days, practitioner: (Practitioner.all.first))
+          print "."
+        end
+      end
+  
+      puts " All done now!"
+    end
   end

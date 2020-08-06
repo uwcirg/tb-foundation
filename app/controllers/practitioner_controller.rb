@@ -174,6 +174,11 @@ class PractitionerController < UserController
     render(json: {count: @current_practitoner.tasks_completed_today}, status: :ok)
   end
 
+  def patients_need_support
+  list = @current_practitoner.patients.where( id: DailyReport.unresolved_support_request.select("user_id").distinct).pluck('users.id')
+   render(json: list ,status: :ok )
+  end
+
   private
 
   def get_patient_by_id(id)

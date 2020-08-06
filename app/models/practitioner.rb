@@ -34,23 +34,6 @@ class Practitioner < User
     return list
   end
 
-  #TODO: Remove this old function
-  def missed_since_last_resolution
-
-    start = DateTime.now - 1.week
-    stop = DateTime.now - 1.day
-    list = (start..stop).to_a
-
-    #.includes will join the tables so you have access to tall of the reports alrady
-    hash = {}
-    self.patients.includes(:resolutions).each do |u|
-      hash[u.id] = u.full_name
-    end
-
-    return(hash)
-  end
-  
-
   def patient_names
     hash = {}
     Patient.where(practitioner_id: self.id).each do |patient|
@@ -80,11 +63,7 @@ class Practitioner < User
     select = self.patients.active
     select.each do |patient|
       list = JSON.parse(patient.medication_schedule)
-      puts("items #{list[patient.weeks_in_treatment]}")
-      puts(DateTime.now.in_time_zone("America/Argentina/Buenos_Aires"))
-
     end
-
   end
 
   def tasks_completed_today
