@@ -50,7 +50,8 @@ class PractitionerController < UserController
       serialization = ActiveModelSerializers::SerializableResource.new(patient, 
         include_reporting_status: true, 
         include_last_symptoms: true,
-      include_last_missed_day: true
+      include_last_missed_day: true,
+      include_support_requests: true
     ).as_json
       hash[patient.id] = serialization.merge({priority: pp[patient.id]})
 
@@ -153,6 +154,8 @@ class PractitionerController < UserController
       resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_symptoms(@current_practitoner.id)
     when "medication"
       resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_missing_report(@current_practitoner.id)
+    when "support"
+      resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_support_request(@current_practitoner.id)
     else
       render(json: { error: "#{params["type"]} is not a resolution type", status: 422 })
     end
