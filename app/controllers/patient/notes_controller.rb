@@ -3,7 +3,7 @@ class Patient::NotesController < UserController
     before_action :verify_practitioner
 
     def index
-        render(json: @patient.patient_notes, status: :ok)
+        render(json: @patient.patient_notes.order("created_at DESC"), status: :ok)
     end 
 
     def show
