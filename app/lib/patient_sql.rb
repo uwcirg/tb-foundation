@@ -17,6 +17,7 @@ FROM generate_series(
     ) AS series_date
      LEFT JOIN (SELECT * FROM daily_reports WHERE user_id = :user_id ) as combined ON combined.date::date = series_date) AS sq
 WHERE sq.report_id IS NULL
+ORDER BY date DESC
 SQL
 
   #TODO adapt this to match the users timezone

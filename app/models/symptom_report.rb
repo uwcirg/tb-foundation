@@ -33,4 +33,8 @@ class SymptomReport < ApplicationRecord
     end
     return list
   end
+
+  def number_symptoms
+    reported_symptoms.length
+  end
 end

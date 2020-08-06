@@ -1,6 +1,6 @@
 class PhotoReportSerializer < ActiveModel::Serializer
     
-    attributes :photo_id, :approved, :url, :full_name, :patient_id, :date
+    attributes :photo_id, :approved, :url, :full_name, :patient_id, :date, :created_at
 
     def url
         object.get_url
@@ -20,6 +20,10 @@ class PhotoReportSerializer < ActiveModel::Serializer
 
     def date
         object.daily_report.date
+    end
+
+    def created_at
+        object.daily_report.created_at
     end
 
 

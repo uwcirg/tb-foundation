@@ -25,6 +25,10 @@ class PatientSerializer < ActiveModel::Serializer
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
     attribute :symptom_summary, if: -> { @instance_options[:include_symptom_summary].present?}
     attribute :number_missing_reports, if: -> { @instance_options[:include_missing_reports].present?}
+    attribute :reporting_status, if: -> { @instance_options[:include_reporting_status].present?}
+    attribute :last_symptoms, if: -> {@instance_options[:include_last_symptoms].present?}
+    attribute :last_missed_day, if: -> {@instance_options[:include_last_missed_day].present?}
+    attribute :support_requests, if: -> {@instance_options[:include_support_requests].present?}
 
     def full_name
         return("#{object.given_name} #{object.family_name}")
@@ -51,6 +55,6 @@ class PatientSerializer < ActiveModel::Serializer
     def education_status
         object.education_message_statuses.pluck(:treatment_week)
     end
-    
+
 
 end

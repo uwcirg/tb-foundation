@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   get '/practitioner/patients', to: 'practitioner#get_patients'
   get '/practitioner/patient/:patient_id', to: 'practitioner#get_patient'
   get '/practitioner/temporary_patients', to: 'practitioner#get_temp_accounts'
+  get '/practitioner/resolutions/summary', to: 'practitioner#tasks_completed_today'
 
   #Medication Reports
   post '/daily_report', to: 'patient#post_daily_report'
@@ -53,6 +54,7 @@ Rails.application.routes.draw do
   get '/patient/me/milestones', to: 'patient#get_milestones'
   get '/patients/severe', to: 'practitioner#patients_with_symptoms'
   get '/patients/missed', to: 'practitioner#patients_missed_reporting'
+  get '/patients/need_support', to: 'practitioner#patients_need_support'
   get '/test/patients', to: 'practitioner#patients_with_adherence'
 
   get '/patient/:patient_id/symptoms', to: 'practitioner#patient_unresolved_symptoms'
@@ -71,6 +73,10 @@ Rails.application.routes.draw do
 
   scope "/organizations/:organization_id", module: "organization" do
     resources :cohort_summary , only: :index
+  end
+
+  scope "/patients/:patient_id", module: "patient" do
+    resources :notes , only: [:index, :new, :create, :update]
   end
 
 end

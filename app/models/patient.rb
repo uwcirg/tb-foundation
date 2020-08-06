@@ -14,6 +14,8 @@ class Patient < User
   has_many :symptom_reports, :foreign_key => :user_id
   has_many :resolutions
 
+  has_many :patient_notes
+
   has_many :education_message_statuses
   has_many :photo_days
 
@@ -43,7 +45,7 @@ class Patient < User
   end
 
   def create_resolutions
-    kinds = ["MissedMedication", "Symptom", "MissedPhoto"]
+    kinds = ["MissedMedication", "Symptom", "MissedPhoto","NeedSupport"]
     kinds.each do |kind|
       resolution = self.resolutions.create!(practitioner: self.organization.practitioners.first, kind: kind, resolved_at: self.treatment_start)
     end
@@ -135,12 +137,17 @@ class Patient < User
     return(days > number_since)
   end
 
+  #@TODO Refactor this redudant code for different types of resolutions - normalize in the front end so it uses the same resolution types
   def resolve_symptoms(practitioner_id)
     self.resolutions.create!(kind: "Symptom", practitioner_id: practitioner_id, resolved_at: DateTime.now)
   end
 
   def resolve_missing_report(practitioner_id,resolution_time=DateTime.now)
     self.resolutions.create!(kind: "MissedMedication", practitioner_id: practitioner_id, resolved_at: resolution_time)
+  end
+
+  def resolve_support_request(practitioner_id,resolution_time=DateTime.now)
+    self.resolutions.create!(kind: "NeedSupport", practitioner_id: practitioner_id, resolved_at: resolution_time)
   end
 
   def formatted_reports
@@ -168,8 +175,45 @@ class Patient < User
     self.photo_days.pluck(:date)
   end
 
+
   def weeks_in_treatment
     (DateTime.current.to_date - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
+  end
+
+  def reporting_status
+      hash = {}
+      today_report = self.daily_reports.find_by(date: Date.today)
+      yesterday_report = self.daily_reports.find_by(date: Date.yesterday)
+
+      if(today_report.nil?)
+        hash['today']  = {reported: false,
+        photo_required: self.photo_days.where(date: Date.today).exists?}
+      else
+
+      hash['today'] = {
+        reported: !today_report.nil?, 
+        medication_taken: today_report.medication_was_taken, 
+        photo: today_report.photo_submitted,
+        photo_required: self.photo_days.where(date: Date.today).exists?,
+        number_symptoms: today_report.symptom_report.number_symptoms
+      }
+    end
+
+      return hash
+  end
+
+  def last_symptoms
+    report = self.daily_reports.has_symptoms.order('date DESC').first
+    return report.symptom_report.as_json.merge({date: report.updated_at})
+    #self.daily_reports.unresolved_symptoms
+  end
+
+  def last_missed_day
+    days = self.missed_days.first['date'] rescue nil
+  end
+
+  def support_requests
+    self.daily_reports.joins(:resolutions).where(id: DailyReport.unresolved_support_request).where("resolutions.patient_id = #{self.id}","daily_reports.updated_at > resolutions.created_at" ).distinct
   end
 
 end

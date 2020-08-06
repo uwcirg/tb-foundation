@@ -32,6 +32,7 @@ class PractitionerController < UserController
 
       if(params["isTester"] == true)
         new_patient.seed_test_reports
+        new_patient.photo_day_override
       end
 
       render(json: { account: new_patient, code: code }, status: 200)
@@ -45,8 +46,13 @@ class PractitionerController < UserController
   def get_patients
     hash = {}
     pp = @current_practitoner.organization.patient_priorities
-    @current_practitoner.patients.active.each do |patient|
-      serialization = ActiveModelSerializers::SerializableResource.new(patient).as_json
+    @current_practitoner.patients.active.includes('daily_reports','medication_reports','photo_reports','channels','messages').each do |patient|
+      serialization = ActiveModelSerializers::SerializableResource.new(patient, 
+        include_reporting_status: true, 
+        include_last_symptoms: true,
+      include_last_missed_day: true,
+      include_support_requests: true
+    ).as_json
       hash[patient.id] = serialization.merge({priority: pp[patient.id]})
 
     end
@@ -72,21 +78,6 @@ class PractitionerController < UserController
     render(json: LabTest.all().as_json, status: 200)
   end
 
-  def upload_lab_test
-    newTest = LabTest.create!(
-      test_id: params[:testId],
-      description: params[:description],
-      photo_url: params[:photoURL],
-      is_positive: params[:isPositive],
-      test_was_run: params[:testWasRun],
-      minutes_since_test: params[:minutesSinceTest],
-    )
-
-    signer = Aws::S3::Presigner.new
-    url = signer.presigned_url(:get_object, bucket: "lab-strips", key: newTest.photo_url)
-
-    render(json: newTest.as_json, status: 200)
-  end
 
   def get_photos
     photos = @current_practitoner.get_photos
@@ -107,9 +98,9 @@ class PractitionerController < UserController
     end
 
     if (params[:approved])
-      photo.approve
+      photo.approve(@current_practitoner.id)
     else (!params[:approved])
-      photo.deny     
+      photo.deny(@current_practitoner.id)    
     end
 
     render(json: { message: "Photo status updated" }, status: 200)
@@ -127,8 +118,8 @@ class PractitionerController < UserController
 
   def patients_with_symptoms
     patients = []
-      DailyReport.unresolved_symptoms.select("user_id").distinct.each do |patient|
-        patients.push({"patientId": patient.user_id})
+      @current_practitoner.patients.where( id: DailyReport.unresolved_symptoms.select("user_id").distinct).select("id").each do |patient|
+        patients.push({"patientId": patient.id})
       end
     render(json: patients, status: 200)
   end
@@ -163,6 +154,8 @@ class PractitionerController < UserController
       resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_symptoms(@current_practitoner.id)
     when "medication"
       resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_missing_report(@current_practitoner.id)
+    when "support"
+      resolution = @current_practitoner.patients.find(params["patient_id"]).resolve_support_request(@current_practitoner.id)
     else
       render(json: { error: "#{params["type"]} is not a resolution type", status: 422 })
     end
@@ -178,6 +171,15 @@ class PractitionerController < UserController
 
   def patient_missed_days
     render(json: {last_resolved: Resolution.where(patient_id: params[:patient_id], kind: "MissedMedication").order("created_at DESC").first, days: get_patient_by_id(params[:patient_id]).missed_days}, status: 200)
+  end
+
+  def tasks_completed_today
+    render(json: {count: @current_practitoner.tasks_completed_today}, status: :ok)
+  end
+
+  def patients_need_support
+  list = @current_practitoner.patients.where( id: DailyReport.unresolved_support_request.select("user_id").distinct).pluck('users.id')
+   render(json: list ,status: :ok )
   end
 
   private

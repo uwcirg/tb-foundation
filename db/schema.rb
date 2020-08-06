@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_16_220741) do
+ActiveRecord::Schema.define(version: 2020_08_06_201918) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2020_07_16_220741) do
     t.datetime "updated_at", precision: 6, null: false
     t.date "date"
     t.boolean "doing_okay"
+    t.text "doing_okay_reason"
     t.index ["user_id"], name: "index_daily_reports_on_user_id"
   end
 
@@ -114,6 +115,17 @@ ActiveRecord::Schema.define(version: 2020_07_16_220741) do
     t.index ["title"], name: "index_organizations_on_title", unique: true
   end
 
+  create_table "patient_notes", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "patient_id", null: false
+    t.string "title", null: false
+    t.text "note", null: false
+    t.bigint "practitioner_id", null: false
+    t.index ["patient_id"], name: "index_patient_notes_on_patient_id"
+    t.index ["practitioner_id"], name: "index_patient_notes_on_practitioner_id"
+  end
+
   create_table "photo_days", force: :cascade do |t|
     t.date "date", null: false
     t.bigint "patient_id"
@@ -128,7 +140,9 @@ ActiveRecord::Schema.define(version: 2020_07_16_220741) do
     t.boolean "approved"
     t.datetime "approval_timestamp"
     t.bigint "user_id", null: false
+    t.bigint "practitioner_id"
     t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
+    t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
   end
 
   create_table "resolutions", force: :cascade do |t|
@@ -195,8 +209,6 @@ ActiveRecord::Schema.define(version: 2020_07_16_220741) do
     t.integer "status", default: 1, null: false
     t.bigint "organization_id", default: 1, null: false
     t.integer "gender"
-    t.string "medication_type"
-    t.text "profile_note"
     t.integer "age"
     t.integer "locale", default: 1
     t.index ["organization_id"], name: "index_users_on_organization_id"
@@ -208,7 +220,10 @@ ActiveRecord::Schema.define(version: 2020_07_16_220741) do
   add_foreign_key "messaging_notifications", "channels"
   add_foreign_key "messaging_notifications", "messages", column: "last_message_id"
   add_foreign_key "messaging_notifications", "users"
+  add_foreign_key "patient_notes", "users", column: "patient_id"
+  add_foreign_key "patient_notes", "users", column: "practitioner_id"
   add_foreign_key "photo_days", "users", column: "patient_id"
+  add_foreign_key "photo_reports", "users", column: "practitioner_id"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"
 end
