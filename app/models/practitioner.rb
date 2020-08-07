@@ -70,4 +70,8 @@ class Practitioner < User
     self.resolutions.where('resolved_at BETWEEN ? AND ?', DateTime.now.beginning_of_day, DateTime.now.end_of_day).count + PhotoReport.where('approval_timestamp BETWEEN ? AND ? AND practitioner_id = ?',DateTime.now.beginning_of_day, DateTime.now.end_of_day,self.id).count
   end
 
+  def summary_of_daily_medication_reporting
+    DailyReport.today.joins(:medication_report).where(user_id: self.patients.pluck(:id)).group("medication_reports.medication_was_taken").count
+  end
+
 end
