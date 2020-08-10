@@ -1,27 +1,23 @@
 class Patient::RemindersController < UserController
+  before_action :check_patient_record_access, only: [:index]
+  before_action :check_is_patient, only: [:create]
 
-    before_action :verify_user_access
+  #@selected_patient loaded from before action in user_controller.rb
 
-    def index
-        render(json: @selected_patient.reminders, status: :ok)
-    end 
+  def index
+    render(json: @selected_patient.reminders, status: :ok)
+  end
 
-    private
+  def create
+    new_reminder = @selected_patient.reminders.create!(filter_reminder_params)
+    render(json: new_reminder, status: :ok)
+  end
 
-    def verify_user_access
+  private
 
-        @selected_patient = Patient.find(params["patient_id"])
+  def filter_reminder_params
+    params.permit(:title, :datetime, :patient_id, :category, :other_category)
+  end
 
-        if(@selected_patient.nil?)
-            render(json: "That patient does not exist", status: 404)
-            return
-        elsif((@current_user.is_a? Patient) && @selected_patient != @current_user)
-            render(json: "You cannot access another patients records", status: 401)
-            return
-        elsif((@current_user.is_a? Practitioner) && @selected_patient.organization_id != @current_user.organization_id)
-            render(json: "You do not have access to that patients records, they belong to another organization", status: 401)
-            return
-        end
-    end
 
 end

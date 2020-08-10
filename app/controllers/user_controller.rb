@@ -80,7 +80,7 @@ class UserController < ApplicationController
         @current_user.update_password(params[:newPassword])
         render(json: { message: I18n.t("user_settings.update_success") }, status: 200)
       else
-        render(json: { error: I18n.t("user_settings.password_mismatch"), fields: ["newPassword","newPasswordConfirmation"] }, status: 404)
+        render(json: { error: I18n.t("user_settings.password_mismatch"), fields: ["newPassword", "newPasswordConfirmation"] }, status: 404)
         return
       end
     else
@@ -89,7 +89,33 @@ class UserController < ApplicationController
     end
   end
 
+  # ----- Restful patient record access contorl methods
+
+  #Authorize a patient or a practitioner to view records
+  def check_patient_record_access
+    @selected_patient = Patient.find(params["patient_id"]) rescue nil
+
+    if (@selected_patient.nil?)
+      render(json: "That patient does not exist", status: 404)
+    elsif ((@current_user.is_a? Patient) && @selected_patient != @current_user)
+      render(json: "You cannot access another patients records", status: 401)
+      return
+    elsif ((@current_user.is_a? Practitioner) && @selected_patient.organization_id != @current_user.organization_id)
+      render(json: "You do not have access to that patients records, they belong to another organization", status: 401)
+      return
+    end
+  end
+
+  def check_is_patient
+    @selected_patient = Patient.find(params["patient_id"]) rescue nil
+
+    if (@current_user != @selected_patient)
+      render(json: "You cannot access another patients records", status: 401)
+    end
+  end
+
   private
+
 
   #Authenticaiton Functions
   def decode_token

@@ -146,10 +146,11 @@ ActiveRecord::Schema.define(version: 2020_08_07_023821) do
   end
 
   create_table "reminders", force: :cascade do |t|
-    t.datetime "date", null: false
-    t.integer "type", default: 0, null: false
-    t.string "note"
+    t.datetime "datetime", null: false
+    t.integer "category", null: false
     t.bigint "patient_id"
+    t.boolean "send_push", default: true
+    t.string "other_category"
     t.index ["patient_id"], name: "index_reminders_on_patient_id"
   end
 
