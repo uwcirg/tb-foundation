@@ -174,7 +174,11 @@ class PractitionerController < UserController
   end
 
   def tasks_completed_today
-    render(json: {count: @current_practitoner.tasks_completed_today}, status: :ok)
+    response = {
+      count: @current_practitoner.tasks_completed_today,
+      medicationReporting: @current_practitoner.summary_of_daily_medication_reporting
+    }
+    render(json: response, status: :ok)
   end
 
   def patients_need_support

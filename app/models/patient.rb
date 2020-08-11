@@ -13,11 +13,10 @@ class Patient < User
   has_many :medication_reports, :foreign_key => :user_id
   has_many :symptom_reports, :foreign_key => :user_id
   has_many :resolutions
-
   has_many :patient_notes
-
   has_many :education_message_statuses
   has_many :photo_days
+  has_many :reminders
 
   has_one :daily_notification, :foreign_key => :user_id
   has_one :contact_tracing

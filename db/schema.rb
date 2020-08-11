@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_06_201918) do
+ActiveRecord::Schema.define(version: 2020_08_07_023821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -145,6 +145,15 @@ ActiveRecord::Schema.define(version: 2020_08_06_201918) do
     t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
   end
 
+  create_table "reminders", force: :cascade do |t|
+    t.datetime "datetime", null: false
+    t.integer "category", null: false
+    t.bigint "patient_id"
+    t.boolean "send_push", default: true
+    t.string "other_category"
+    t.index ["patient_id"], name: "index_reminders_on_patient_id"
+  end
+
   create_table "resolutions", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -224,6 +233,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_201918) do
   add_foreign_key "patient_notes", "users", column: "practitioner_id"
   add_foreign_key "photo_days", "users", column: "patient_id"
   add_foreign_key "photo_reports", "users", column: "practitioner_id"
+  add_foreign_key "reminders", "users", column: "patient_id"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"
 end

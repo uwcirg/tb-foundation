@@ -77,6 +77,7 @@ Rails.application.routes.draw do
 
   scope "/patients/:patient_id", module: "patient" do
     resources :notes , only: [:index, :new, :create, :update]
+    resources :reminders , only: [:index, :new, :create, :destroy]
   end
 
 end
