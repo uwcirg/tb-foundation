@@ -7,3 +7,11 @@ en:
     password_mismatch: "Passwords Do Not Match"
     current_password_incorrect: "Current Password Incorrect"
     update_success: "Password Updated"
+  appointment: 
+    you_have: "You have a"
+    reminder: "Appointment Reminder"
+    check_in: "Check In"
+    sputum_test: "Sputum Test"
+    medication_pickup: "Medication Pickup"
+    other: "Other"
+    tomorrow: "tomorrow"

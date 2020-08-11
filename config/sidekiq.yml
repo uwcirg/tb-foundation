@@ -2,3 +2,6 @@
   daily_notification:
     cron: '0 * * * * *'   # Runs once per minute
     class: NotificationWorker
+  reminders:
+    cron: '0 12 * * * America/Argentina/Buenos_Aires'   # Runs once per day at noon art
+    class: ReminderWorker
