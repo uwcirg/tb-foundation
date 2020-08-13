@@ -114,6 +114,10 @@ class UserController < ApplicationController
     end
   end
 
+  def snake_case_params
+    request.parameters.deep_transform_keys!(&:underscore)
+  end
+
   private
 
 

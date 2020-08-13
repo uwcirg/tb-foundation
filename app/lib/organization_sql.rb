@@ -47,11 +47,12 @@ SQL
   CASE 
   WHEN ranks.priority IS NULL then 3
 ELSE ranks.priority
-  END as priority
+  END as priority,
+  ranks.adherence as adherence
   FROM 
     (#{PATIENTS_IN_COHORT}) as all_patients
     LEFT JOIN(
-SELECT combined.patient_id as patient_id, CASE
+SELECT combined.patient_id as patient_id, combined.adherence as adherence, CASE
 when (combined.adherence between 0 and 0.8) OR ((combined.adherence between 0.8 and 0.9) AND combined.days_with_symptoms >= 1 )   then 2
 when (combined.adherence between 0.8 and 0.9) OR combined.days_with_symptoms >= 1 then 1
 when (combined.adherence between 0.9 and 1) AND combined.days_with_symptoms = 0  then 0

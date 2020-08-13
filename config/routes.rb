@@ -27,7 +27,6 @@ Rails.application.routes.draw do
   post '/practitioner', to: 'administrator#create_practitioner'
 
   post '/administrator', to:'practitioner#create_admin'
-  post '/patient', to: 'practitioner#create_pending_patient'
 
   get '/patient/daily_reports/photo_upload_url', to: 'patient#generate_upload_url'
   get '/organizations', to: 'user#get_all_organizations'
@@ -73,11 +72,17 @@ Rails.application.routes.draw do
 
   scope "/organizations/:organization_id", module: "organization" do
     resources :cohort_summary , only: :index
+    resources :patients, only: [:index,:create,:show]
   end
 
-  scope "/patients/:patient_id", module: "patient" do
-    resources :notes , only: [:index, :new, :create, :update]
-    resources :reminders , only: [:index, :new, :create, :destroy]
+  resources :patient, only: [] do 
+    scope module: :patient do
+    resources :notes , only: [:index, :create, :update]
+    resources :reminders , only: [:index, :create, :destroy]
+    end
   end
+
+  resources :patients, only: [:create], controller: 'patient/patients'
+
 
 end

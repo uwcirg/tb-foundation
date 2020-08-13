@@ -13,36 +13,6 @@ class PractitionerController < UserController
     render(json: @current_practitoner.patients.find(params[:patient_id]), status: 200)
   end
 
-  def create_pending_patient
-
-    #This generates a random 4 digit hex
-    code = SecureRandom.hex(10).upcase[0, 5]
-
-    new_patient = Patient.create(
-      phone_number: params[:phoneNumber],
-      password_digest: BCrypt::Password.create(code),
-      family_name: params[:familyName],
-      given_name: params[:givenName],
-      organization: @current_practitoner.organization,
-      treatment_start: params["isTester"] ? DateTime.now() - 1.month : DateTime.now(),
-      status: "Pending",
-    )
-
-    if new_patient.save
-
-      if(params["isTester"] == true)
-        new_patient.seed_test_reports
-        new_patient.photo_day_override
-      end
-
-      render(json: { account: new_patient, code: code }, status: 200)
-    else
-      @test = new_patient.errors.as_json
-      @test = @test.as_json.deep_transform_keys! { |key| key.camelize(:lower) }
-      render(json: { error: 422, paramErrors: @test }, status: 422)
-    end
-  end
-
   def get_patients
     hash = {}
     pp = @current_practitoner.organization.patient_priorities
@@ -53,7 +23,7 @@ class PractitionerController < UserController
       include_last_missed_day: true,
       include_support_requests: true
     ).as_json
-      hash[patient.id] = serialization.merge({priority: pp[patient.id]})
+      hash[patient.id] = serialization.merge(pp[patient.id])
 
     end
     render(json: hash, status: 200)

@@ -4,7 +4,7 @@ class PatientSerializer < ActiveModel::Serializer
     :family_name, 
     :id, 
     :full_name, 
-    :adherence, 
+    :adherence,
     :percentage_complete, 
     :days_in_treatment, 
     :last_report, 
@@ -54,6 +54,10 @@ class PatientSerializer < ActiveModel::Serializer
 
     def education_status
         object.education_message_statuses.pluck(:treatment_week)
+    end
+
+    def adherence_sql
+        object.adherence
     end
 
 
