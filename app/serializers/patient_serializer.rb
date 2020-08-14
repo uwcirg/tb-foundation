@@ -15,7 +15,6 @@ class PatientSerializer < ActiveModel::Serializer
     :daily_notification_time,
     :channel_id,
     :last_contacted,
-    :photo_schedule,
     :weeks_in_treatment,
     :education_status,
     :age,
@@ -53,7 +52,7 @@ class PatientSerializer < ActiveModel::Serializer
     end
 
     def education_status
-        object.education_message_statuses.pluck(:treatment_week)
+        object.education_message_statuses.pluck(:treatment_day)
     end
 
     def adherence_sql

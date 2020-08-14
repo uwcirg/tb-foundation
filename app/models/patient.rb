@@ -34,8 +34,18 @@ class Patient < User
   scope :had_symptom_last_week, -> {where(id: DailyReport.symptoms_last_week.select(:user_id))}
 
   def adherence
-    sql = ActiveRecord::Base.sanitize_sql [SINGLE_PATIENT_ADHERENCE, { user_id: self.id }]
-    ActiveRecord::Base.connection.exec_query(sql).to_a[0]['adherence']
+    # sql = ActiveRecord::Base.sanitize_sql [SINGLE_PATIENT_ADHERENCE, { user_id: self.id }]
+    # ActiveRecord::Base.connection.exec_query(sql).to_a[0]['adherence']
+    if(self.last_report && self.last_report.date == Date.today)
+      return (self.daily_reports.was_taken.count.to_f / self.days_in_treatment).round(2)
+    else
+      return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
+    end
+
+      # def adherence
+  #   return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
+  # end
+
   end
 
   def symptom_summary_by_days(days)
@@ -116,10 +126,6 @@ class Patient < User
 
   def weeks_in_treatment
     return(days_in_treatment/7)
-  end
-
-  def adherence
-    return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
   end
 
   def percentage_complete

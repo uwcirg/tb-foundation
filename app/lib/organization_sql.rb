@@ -37,7 +37,7 @@ SELECT user_starts.id as user_id,  round( number_reports/days_since_start::decim
   JOIN medication_reports ON daily_reports.id = medication_reports.daily_report_id
   WHERE daily_reports.user_id IN (#{PATIENTS_IN_COHORT}) AND medication_reports.medication_was_taken = true
   GROUP BY daily_reports.user_id) AS report_counts 
-JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_start - INTERVAL '1 DAY'))::integer as days_since_start, id FROM users) as user_starts
+JOIN ( SELECT (DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_start - INTERVAL '1 DAY'))::integer + 1) as days_since_start, id FROM users) as user_starts
 ON report_counts.patient_id = user_starts.id
 SQL
 

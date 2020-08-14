@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_13_203947) do
+ActiveRecord::Schema.define(version: 2020_08_14_143410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,10 +49,10 @@ ActiveRecord::Schema.define(version: 2020_08_13_203947) do
   end
 
   create_table "education_message_statuses", force: :cascade do |t|
-    t.integer "treatment_week", null: false
+    t.integer "treatment_day", null: false
     t.boolean "was_helpful"
     t.bigint "patient_id"
-    t.index ["patient_id", "treatment_week"], name: "patient_treatment_week_index", unique: true
+    t.index ["patient_id", "treatment_day"], name: "patient_treatment_day_index", unique: true
     t.index ["patient_id"], name: "index_education_message_statuses_on_patient_id"
   end
 
