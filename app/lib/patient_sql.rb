@@ -63,22 +63,6 @@ JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_star
 ON report_counts.patient_id = user_starts.id) as tab
 SQL
 
-PATIENT_ADHER = <<-SQL
-SELECT patient_id, CASE
-when tab.adherence between 0 and 0.8 then low
-when tb
-FROM (
-  SELECT number_reports, days_since_start, user_starts.given_name,user_starts.family_name, user_starts.id as patient_id,  round( number_reports/days_since_start::decimal, 3 ) as adherence FROM 
-  (SELECT daily_reports.user_id as patient_id,count(daily_reports.id) as number_reports 
-  FROM daily_reports 
-  JOIN medication_reports ON daily_reports.id = medication_reports.daily_report_id
-  JOIN symptom_reports ON daily_reports.id = symptom_reports.daily_report_id
-  WHERE medication_reports.medication_was_taken = true
-  GROUP BY daily_reports.user_id) AS report_counts 
-JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_start - INTERVAL '1 DAY'))::integer as days_since_start, id, given_name, family_name FROM users) as user_starts
-ON report_counts.patient_id = user_starts.id) as tab
-SQL
-
 #(redness=true OR hives=TRUE OR fever=TRUE OR appetite_loss=TRUE OR blurred_vision=TRUE OR sore_belly=TRUE OR yellow_coloration=TRUE OR difficulty_breathing=TRUE OR facial_swelling=TRUE OR nausea=TRUE)
 SYMPTOM_SUMMARY = <<-SQL
 SELECT 
@@ -95,5 +79,16 @@ FROM
 (SELECT * FROM symptom_reports
 INNER JOIN daily_reports ON symptom_reports.daily_report_id = daily_reports.id
 WHERE symptom_reports.user_id = :user_id AND daily_reports.date >  NOW() - INTERVAL ':num_days DAY'  ) as symptoms
+SQL
+
+SINGLE_PATIENT_ADHERENCE= <<-SQL
+SELECT round( number_reports/days_since_start::decimal, 3 ) as adherence FROM 
+  (SELECT daily_reports.user_id as patient_id,count(daily_reports.id) as number_reports 
+  FROM daily_reports 
+  JOIN medication_reports ON daily_reports.id = medication_reports.daily_report_id
+  WHERE daily_reports.user_id = :user_id AND medication_reports.medication_was_taken = true
+  GROUP BY daily_reports.user_id) AS report_counts 
+JOIN ( SELECT DATE_PART('day',(NOW() - INTERVAL '1 DAY')::date - (treatment_start - INTERVAL '1 DAY'))::integer as days_since_start, id FROM users) as user_starts
+ON report_counts.patient_id = user_starts.id
 SQL
 

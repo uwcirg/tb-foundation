@@ -23,7 +23,7 @@ module SeedPatient
     is_photo_day = self.photo_days.where(date: day).exists?
 
     if(!is_good)
-      med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: rand(1.0) <= 0.99999 , datetime_taken: datetime)
+      med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: [true, true, true, true, false, false].sample, datetime_taken: datetime)
       symptom_report = SymptomReport.create!(
         user_id: self.id,
         nausea: [true, false].sample,
@@ -39,11 +39,10 @@ module SeedPatient
     else
       med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: [true, true, true, true, true, false].sample, datetime_taken: datetime)
       symptom_report = SymptomReport.create!(user_id: self.id, redness: [true, false, false, false, false, false].sample)
-      
-      if(is_photo_day)
-        photo_report = PhotoReport.create!(user_id: self.id, photo_url: "test_photo.jpg")
-      end
-      
+    end
+
+    if(is_photo_day)
+      photo_report = PhotoReport.create!(user_id: self.id, photo_url: "test_photo.jpg")
     end
 
 

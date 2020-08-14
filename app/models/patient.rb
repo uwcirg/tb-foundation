@@ -33,6 +33,11 @@ class Patient < User
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> {where(id: DailyReport.symptoms_last_week.select(:user_id))}
 
+  def adherence
+    sql = ActiveRecord::Base.sanitize_sql [SINGLE_PATIENT_ADHERENCE, { user_id: self.id }]
+    ActiveRecord::Base.connection.exec_query(sql).to_a[0]['adherence']
+  end
+
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days  }]
     ActiveRecord::Base.connection.exec_query(sql).to_a[0]
