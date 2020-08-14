@@ -15,6 +15,7 @@ class PatientSerializer < ActiveModel::Serializer
     :daily_notification_time,
     :channel_id,
     :last_contacted,
+    :photo_schedule,
     :weeks_in_treatment,
     :education_status,
     :age,
