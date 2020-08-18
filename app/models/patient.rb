@@ -31,25 +31,25 @@ class Patient < User
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
-  scope :had_symptom_last_week, -> {where(id: DailyReport.symptoms_last_week.select(:user_id))}
+  scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
 
   def adherence
     # sql = ActiveRecord::Base.sanitize_sql [SINGLE_PATIENT_ADHERENCE, { user_id: self.id }]
     # ActiveRecord::Base.connection.exec_query(sql).to_a[0]['adherence']
-    if(self.last_report && self.last_report.date == Date.today)
+    if (self.last_report && self.last_report.date == Date.today)
       return (self.daily_reports.was_taken.count.to_f / self.days_in_treatment).round(2)
     else
       return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
     end
 
-      # def adherence
-  #   return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
-  # end
+    # def adherence
+    #   return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
+    # end
 
   end
 
   def symptom_summary_by_days(days)
-    sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days  }]
+    sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
     ActiveRecord::Base.connection.exec_query(sql).to_a[0]
   end
 
@@ -59,7 +59,7 @@ class Patient < User
   end
 
   def create_resolutions
-    kinds = ["MissedMedication", "Symptom", "MissedPhoto","NeedSupport"]
+    kinds = ["MissedMedication", "Symptom", "MissedPhoto", "NeedSupport"]
     kinds.each do |kind|
       resolution = self.resolutions.create!(practitioner: self.organization.practitioners.first, kind: kind, resolved_at: self.treatment_start)
     end
@@ -72,13 +72,12 @@ class Patient < User
 
   def photo_day_override
     puts("Generating Override Schedule")
-    generate_schedule(self,false)
+    generate_schedule(self, false)
   end
 
   #Requires an ISO time ( Not DateTime )
   def update_daily_notification(time)
-
-    if(self.daily_notification.nil?)
+    if (self.daily_notification.nil?)
       new_notification = DailyNotification.create!(time: time, active: true, user: self)
       self.daily_notification = new_notification
     else
@@ -90,7 +89,6 @@ class Patient < User
   def disable_daily_notification
     self.daily_notification.update!(active: false)
   end
-
 
   def last_report
     self.daily_reports.last
@@ -125,7 +123,7 @@ class Patient < User
   end
 
   def weeks_in_treatment
-    return(days_in_treatment/7)
+    return(days_in_treatment / 7)
   end
 
   def percentage_complete
@@ -152,17 +150,17 @@ class Patient < User
     self.resolutions.create!(kind: "Symptom", practitioner_id: practitioner_id, resolved_at: DateTime.now)
   end
 
-  def resolve_missing_report(practitioner_id,resolution_time=DateTime.now)
+  def resolve_missing_report(practitioner_id, resolution_time = DateTime.now)
     self.resolutions.create!(kind: "MissedMedication", practitioner_id: practitioner_id, resolved_at: resolution_time)
   end
 
-  def resolve_support_request(practitioner_id,resolution_time=DateTime.now)
+  def resolve_support_request(practitioner_id, resolution_time = DateTime.now)
     self.resolutions.create!(kind: "NeedSupport", practitioner_id: practitioner_id, resolved_at: resolution_time)
   end
 
   def formatted_reports
     hash = {}
-    DailyReport.where(user_id: self.id).includes(:photo_report,:symptom_report,:medication_report).order("date DESC").each do |report|
+    DailyReport.where(user_id: self.id).includes(:photo_report, :symptom_report, :medication_report).order("date DESC").each do |report|
       serialization = ActiveModelSerializers::SerializableResource.new(report)
       hash["#{report["date"]}"] = serialization
     end
@@ -170,7 +168,7 @@ class Patient < User
   end
 
   def current_streak
-      streak = DailyReport.user_streak_days(self)
+    streak = DailyReport.user_streak_days(self)
   end
 
   def missed_days
@@ -178,55 +176,58 @@ class Patient < User
   end
 
   def feeling_healthy_days
-    return self.daily_reports.where(doing_okay: true).count();
+    return self.daily_reports.where(doing_okay: true).count()
   end
 
   def photo_schedule
     self.photo_days.pluck(:date)
   end
 
-
   def weeks_in_treatment
     (DateTime.current.to_date - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
   end
 
   def reporting_status
-      hash = {}
-      today_report = self.daily_reports.find_by(date: Date.today)
-      yesterday_report = self.daily_reports.find_by(date: Date.yesterday)
+    hash = {}
+    today_report = self.daily_reports.find_by(date: Date.today)
+    yesterday_report = self.daily_reports.find_by(date: Date.yesterday)
 
-      if(today_report.nil?)
-        hash['today']  = {reported: false,
-        photo_required: self.photo_days.where(date: Date.today).exists?}
-      else
-
-      hash['today'] = {
-        reported: !today_report.nil?, 
-        medication_taken: today_report.medication_was_taken, 
+    if (today_report.nil?)
+      hash["today"] = { reported: false,
+                        photo_required: self.photo_days.where(date: Date.today).exists? }
+    else
+      hash["today"] = {
+        reported: !today_report.nil?,
+        medication_taken: today_report.medication_was_taken,
         photo: today_report.photo_submitted,
         photo_required: self.photo_days.where(date: Date.today).exists?,
-        number_symptoms: today_report.symptom_report.number_symptoms
+        number_symptoms: today_report.symptom_report.number_symptoms,
       }
     end
 
-      return hash
+    return hash
   end
 
   def last_symptoms
-    report = self.daily_reports.has_symptoms.order('date DESC').first
-    if(report.nil?)
-      return {}
+    list = []
+    get_date = true;
+    date = nil
+    self.symptom_reports.includes(:daily_report).where(daily_report: DailyReport.unresolved_symptoms.order("date DESC")).each do |symptom_report|
+      if(get_date)
+        date = symptom_report.daily_report.date
+        get_date = false
+      end
+      to_add = symptom_report.reported_symptoms - list
+      list = list + to_add
     end
-    return report.symptom_report.as_json.merge({date: report.updated_at})
-    #self.daily_reports.unresolved_symptoms
+    {symptomList: list,date: date}
   end
 
   def last_missed_day
-    days = self.missed_days.first['date'] rescue nil
+    days = self.missed_days.first["date"] rescue nil
   end
 
   def support_requests
-    self.daily_reports.joins(:resolutions).where(id: DailyReport.unresolved_support_request).where("resolutions.patient_id = #{self.id}","daily_reports.updated_at > resolutions.created_at" ).distinct
+    self.daily_reports.joins(:resolutions).where(id: DailyReport.unresolved_support_request).where("resolutions.patient_id = #{self.id}", "daily_reports.updated_at > resolutions.created_at").distinct
   end
-
 end
