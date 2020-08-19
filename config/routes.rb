@@ -68,7 +68,7 @@ Rails.application.routes.draw do
 
   #i18n
   get '/config/locales', to: 'application#get_locales'
-  post '/patient/me/education_status', to: 'patient#mark_educational_message_viewed'
+  #post '/patient/me/education_status', to: 'patient#mark_educational_message_viewed'
 
   scope "/organizations/:organization_id", module: "organization" do
     resources :cohort_summary , only: :index
@@ -79,6 +79,7 @@ Rails.application.routes.draw do
     scope module: :patient do
     resources :notes , only: [:index, :create, :update]
     resources :reminders , only: [:index, :create, :destroy]
+    resources :education_statuses, only: [:create,:index]
     end
   end
 

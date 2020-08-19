@@ -19,7 +19,8 @@ class PatientSerializer < ActiveModel::Serializer
     :weeks_in_treatment,
     :education_status,
     :age,
-    :gender
+    :gender,
+    :last_education_status
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
@@ -54,6 +55,10 @@ class PatientSerializer < ActiveModel::Serializer
 
     def education_status
         object.education_message_statuses.pluck(:treatment_day)
+    end
+
+    def last_education_status
+        object.education_message_statuses.order("treatment_day DESC").first.treatment_day
     end
 
     def adherence_sql

@@ -24,33 +24,6 @@ class Patient::PatientsController < UserController
       errors = errors.as_json.deep_transform_keys! { |key| key.camelize(:lower) }
       render(json: { error: 422, paramErrors: errors }, status: 422)
     end
-
-    #This generates a random 4 digit hex
-    # code = SecureRandom.hex(10).upcase[0, 5]
-
-    # new_patient = Patient.create(
-    #   phone_number: params[:phoneNumber],
-    #   password_digest: BCrypt::Password.create(code),
-    #   family_name: params[:familyName],
-    #   given_name: params[:givenName],
-    #   organization: @current_practitoner.organization,
-    #   treatment_start: params["isTester"] ? DateTime.now() - 1.month : DateTime.now(),
-    #   status: "Pending",
-    # )
-
-    # if new_patient.save
-
-    #   if(params["isTester"] == true)
-    #     new_patient.seed_test_reports
-    #     new_patient.photo_day_override
-    #   end
-
-    #   render(json: { account: new_patient, code: code }, status: 200)
-    # else
-    #   @test = new_patient.errors.as_json
-    #   @test = @test.as_json.deep_transform_keys! { |key| key.camelize(:lower) }
-    #   render(json: { error: 422, paramErrors: @test }, status: 422)
-    # end
   end
 
   private
