@@ -58,7 +58,12 @@ class PatientSerializer < ActiveModel::Serializer
     end
 
     def last_education_status
-        object.education_message_statuses.order("treatment_day DESC").first.treatment_day
+        day = object.education_message_statuses.order("treatment_day DESC").first
+        if(day.nil?) 
+            return 0
+        end
+
+        return day.treatment_day
     end
 
     def adherence_sql
