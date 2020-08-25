@@ -5,12 +5,12 @@ default: &default
 
 development:
   <<: *default
-  url: <%= ENV['DATA'] %>/development
+  url: <%= ENV['URL_POSTGRES'] %>/development
 
 test:
   <<: *default
-  url: <%= ENV['DATA'] %>/test
+  url: <%= ENV['URL_POSTGRES'] %>/test
 
 production:
   <<: *default
-  url: <%= ENV['DATA'] %>/development
+  url: <%= ENV['URL_POSTGRES'] %>/production

@@ -14,11 +14,14 @@ services:
 
   db:
     restart: always
-    image: postgres:9.5.18
+    image: postgres:11
     volumes:
       - source: postgres-files
         target: /var/lib/postgresql/data
         type: volume
+    environment:
+      - POSTGRES_USER=webuser
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 
 
   bucket:
@@ -39,8 +42,8 @@ services:
   web:
     image: uwcirg/tb-foundation:$API_DOCKER_TAG
     environment:
-      - DATA=postgres://postgres:postgres@db
-      - PASSWORD
+      - URL_POSTGRES=postgres://postgres:$POSTGRES_PASSWORD@db
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - PORT=3000
       - RAILS_ENV=$ENVIRONMENT
       - SECRET_KEY_BASE=$SECRET_KEY_BASE
