@@ -42,7 +42,7 @@ services:
   web:
     image: uwcirg/tb-foundation:$API_DOCKER_TAG
     environment:
-      - URL_POSTGRES=postgres://postgres:$POSTGRES_PASSWORD@db
+      - URL_POSTGRES=postgres://webuser:$POSTGRES_PASSWORD@db
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - PORT=3000
       - RAILS_ENV=$ENVIRONMENT
