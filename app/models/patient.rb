@@ -55,7 +55,7 @@ class Patient < User
 
   def create_private_message_channel
     channel = self.channels.create!(title: self.full_name, is_private: true)
-    channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.organization.practitioners.first.id)
+    #channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.organization.practitioners.first.id)
   end
 
   def create_resolutions

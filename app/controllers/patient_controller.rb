@@ -71,6 +71,7 @@ class PatientController < UserController
     render(json: reports)
   end
 
+  #@TODO move this code to new filepatients/daily_reports_controller.rb
   def post_daily_report
     med_report = MedicationReport.create!(user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"], why_medication_not_taken: params["whyMedicationNotTaken"])
     symptom_report = SymptomReport.create!(user_id: @current_user.id,
@@ -97,7 +98,10 @@ class PatientController < UserController
     existing_report = @current_user.daily_reports.where(date: params["date"])
 
     if (existing_report.count < 1)
-      new_report = @current_user.daily_reports.create(date: params["date"], doing_okay: params["doingOkay"], medication_report: med_report, symptom_report: symptom_report)
+      new_report = @current_user.daily_reports.create(date: params["date"], 
+        doing_okay: params["doingOkay"], 
+        doing_okay_reason: params["doingOkayReason"], 
+        medication_report: med_report, symptom_report: symptom_report)
       new_report.photo_report = photo_report
       new_report.save!
       render(json: new_report.as_json, status: 200)
