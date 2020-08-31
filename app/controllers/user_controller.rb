@@ -36,6 +36,16 @@ class UserController < ApplicationController
     @current_practitoner = @current_user
   end
 
+  def auth_admin
+    auth_user
+
+    if (@current_user.type != "Administrator")
+      render json: { errors: "Must have type Administrator to access route" }, status: :unauthorized
+    end
+
+    @current_practitoner = @current_user
+  end
+
   def login
     case params[:userType] # a_variable is the variable we want to compare
     when "Administrator"
@@ -50,6 +60,10 @@ class UserController < ApplicationController
     end
 
     authenticate()
+  end
+
+  def get_current_user
+    render(json: @current_user, status: :ok)
   end
 
   def get_all_organizations

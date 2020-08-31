@@ -24,12 +24,10 @@ Rails.application.routes.draw do
   post '/auth', to: 'user#login'
   delete '/auth', to: 'user#logout'
 
-  post '/practitioner', to: 'administrator#create_practitioner'
-
-  post '/administrator', to:'practitioner#create_admin'
+  #post '/practitioner', to: 'administrator#create_practitioner'
+  #post '/administrator', to:'practitioner#create_admin'
 
   get '/patient/daily_reports/photo_upload_url', to: 'patient#generate_upload_url'
-  get '/organizations', to: 'user#get_all_organizations'
 
   #List of patients for practitioner
   get '/practitioner/patients', to: 'practitioner#get_patients'
@@ -70,6 +68,8 @@ Rails.application.routes.draw do
   get '/config/locales', to: 'application#get_locales'
   #post '/patient/me/education_status', to: 'patient#mark_educational_message_viewed'
 
+  get '/user/current', to: 'user#get_current_user'
+
   scope "/organizations/:organization_id", module: "organization" do
     resources :cohort_summary , only: :index
     resources :patients, only: [:index,:create,:show]
@@ -82,8 +82,12 @@ Rails.application.routes.draw do
     resources :education_statuses, only: [:create,:index]
     end
   end
-
+  
   resources :patients, only: [:create], controller: 'patient/patients'
+  
+  resources :practitioners, only: [:index], controller: 'practitioner/practitioners'
+
+  resources :organizations, only: [:index,:create,:show], controller: 'organization/organizations'
 
 
 end
