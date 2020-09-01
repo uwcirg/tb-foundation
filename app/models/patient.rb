@@ -210,17 +210,17 @@ class Patient < User
 
   def last_symptoms
     list = []
-    get_date = true;
+    get_date = true
     date = nil
     self.symptom_reports.includes(:daily_report).where(daily_report: DailyReport.unresolved_symptoms.order("date DESC")).each do |symptom_report|
-      if(get_date)
+      if (get_date)
         date = symptom_report.daily_report.date
         get_date = false
       end
       to_add = symptom_report.reported_symptoms - list
       list = list + to_add
     end
-    {symptomList: list,date: date}
+    { symptomList: list, date: date }
   end
 
   def last_missed_day
@@ -229,5 +229,23 @@ class Patient < User
 
   def support_requests
     self.daily_reports.joins(:resolutions).where(id: DailyReport.unresolved_support_request).where("resolutions.patient_id = #{self.id}", "daily_reports.updated_at > resolutions.created_at").distinct
+  end
+
+  def reporting_summary
+    last_resolution = self.resolutions.last.resolved_at
+    reports = self.daily_reports.where("date > ?", last_resolution).order("date")
+    hash = {}
+
+    i = 0
+    (last_resolution.to_date..Date.today).each do |date|
+      if(i < reports.length && reports[i].date == date)
+        hash[date] = reports[i]
+        i += 1
+      else
+        hash[date] = nil
+      end
+
+    end
+    hash
   end
 end

@@ -23,7 +23,6 @@ class DailyReport < ApplicationRecord
   scope :unresolved_symptoms, -> { active_patient.joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, "resolutions.id": Resolution.last_symptom_from_user).where("daily_reports.updated_at > resolutions.resolved_at") }
   scope :since_last_missing_resolution, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_medication_from_user).where("daily_reports.created_at > resolutions.resolved_at") }
   scope :has_symptoms, -> {active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.has_symptom )}
-
   scope :unresolved_support_request,-> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_support_request, "daily_reports.doing_okay": false).where("daily_reports.created_at > resolutions.resolved_at") }
 
   def self.user_missed_days(user_id)

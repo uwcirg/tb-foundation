@@ -37,7 +37,7 @@ module SeedPatient
         other: "Other symptom",
       )
     else
-      med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: [true, true, true, true, true, false].sample, datetime_taken: datetime)
+      med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: true, datetime_taken: datetime)
       symptom_report = SymptomReport.create!(user_id: self.id, redness: [true, false, false, false, false, false].sample)
     end
 
