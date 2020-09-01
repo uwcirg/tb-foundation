@@ -239,7 +239,7 @@ class Patient < User
     i = 0
     (last_resolution.to_date..Date.today).each do |date|
       if(i < reports.length && reports[i].date == date)
-        hash[date] = reports[i]
+        hash[date] = ActiveModelSerializers::SerializableResource.new(reports[i]).as_json
         i += 1
       else
         hash[date] = nil
