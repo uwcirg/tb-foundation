@@ -76,8 +76,8 @@ services:
     image: uwcirg/tb-foundation:$API_DOCKER_TAG
     command: 'sidekiq'
     environment:
-      - DATA=postgres://postgres:postgres@db
-      - PASSWORD
+      - URL_POSTGRES=postgres://webuser:$POSTGRES_PASSWORD@db
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - PORT=3000
       - RAILS_ENV=$ENVIRONMENT
       - SECRET_KEY_BASE=$SECRET_KEY_BASE
