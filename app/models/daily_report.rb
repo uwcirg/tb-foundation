@@ -10,9 +10,9 @@ class DailyReport < ApplicationRecord
   validates :medication_report, presence: true
   validates :symptom_report, presence: true
   validates :date, presence: true
-  validate :limit_one_report_per_day
+  validate :limit_one_report_per_day, on: :create
 
-  scope :today, -> { where(:date => (Time.now.to_date)) }
+  scope :today, -> { where(:date => (Date.today)) }
   scope :last_week, -> { where("date > ?", Time.now - 1.week) }
 
   scope :symptoms_last_week, -> { last_week.where(:symptom_report => SymptomReport.has_symptom) }

@@ -17,6 +17,7 @@ module SeedPatient
   end
 
   def create_seed_report(day, is_good)
+  
     datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
 
     #TODO Fix
@@ -50,6 +51,7 @@ module SeedPatient
     new_report.medication_report = med_report
     new_report.symptom_report = symptom_report
     new_report.photo_report = photo_report
+    new_report.save
   end
 
 end

@@ -95,9 +95,7 @@ class PatientController < UserController
       photo_report = PhotoReport.create!(user_id: @current_user.id, photo_url: params["photoUrl"])
     end
 
-    existing_report = @current_user.daily_reports.where(date: params["date"])
-
-    if (existing_report.count < 1)
+    if (!@current_user.has_reported_today)
       new_report = @current_user.daily_reports.create(date: params["date"], 
         doing_okay: params["doingOkay"], 
         doing_okay_reason: params["doingOkayReason"], 
@@ -106,9 +104,8 @@ class PatientController < UserController
       new_report.save!
       render(json: new_report.as_json, status: 200)
     else
-      old_report = existing_report.first
-      old_report.update!(medication_report: med_report, doing_okay: params["doingOkay"], symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
-      render(json: old_report.as_json, status: 200)
+      report = @current_user.daily_reports.find_by(date: params["date"]).update!(medication_report: med_report, doing_okay: params["doingOkay"], symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
+      render(json: report.as_json, status: 200)
     end
   end
 

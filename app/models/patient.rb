@@ -34,18 +34,7 @@ class Patient < User
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
 
   def adherence
-    # sql = ActiveRecord::Base.sanitize_sql [SINGLE_PATIENT_ADHERENCE, { user_id: self.id }]
-    # ActiveRecord::Base.connection.exec_query(sql).to_a[0]['adherence']
-    if (self.last_report && self.last_report.date == Date.today)
-      return (self.daily_reports.was_taken.count.to_f / self.days_in_treatment).round(2)
-    else
-      return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
-    end
-
-    # def adherence
-    #   return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
-    # end
-
+    return self.daily_reports.count / days_in_treatment
   end
 
   def symptom_summary_by_days(days)
@@ -113,13 +102,20 @@ class Patient < User
   end
 
   def days_in_treatment
-    days = (DateTime.current.to_date - self.treatment_start.to_date).to_i
 
-    if (days > 0)
+    #We are only considering "completed days"
+    #Meaning: exclude today if they havent reported
+    #Consider day 0 to be one day
+    days = (Date.today - self.treatment_start.to_date).to_i
+    if( days == 0) 
+      return 1
+    end
+
+    if(has_reported_today)
       return days + 1
     end
 
-    return 1
+    return days
   end
 
   def weeks_in_treatment
@@ -225,6 +221,10 @@ class Patient < User
 
   def last_missed_day
     days = self.missed_days.first["date"] rescue nil
+  end
+
+  def has_reported_today
+    self.daily_reports.today.exists?
   end
 
   def support_requests
