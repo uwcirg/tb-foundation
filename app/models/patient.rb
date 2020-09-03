@@ -230,22 +230,4 @@ class Patient < User
   def support_requests
     self.daily_reports.joins(:resolutions).where(id: DailyReport.unresolved_support_request).where("resolutions.patient_id = #{self.id}", "daily_reports.updated_at > resolutions.created_at").distinct
   end
-
-  def reporting_summary
-    last_resolution = self.resolutions.last.resolved_at
-    reports = self.daily_reports.where("date > ?", last_resolution).order("date")
-    hash = {}
-
-    i = 0
-    (last_resolution.to_date..Date.today).each do |date|
-      if(i < reports.length && reports[i].date == date)
-        hash[date] = ActiveModelSerializers::SerializableResource.new(reports[i]).as_json
-        i += 1
-      else
-        hash[date] = nil
-      end
-
-    end
-    hash
-  end
 end

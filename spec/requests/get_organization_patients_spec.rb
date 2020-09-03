@@ -10,6 +10,7 @@ describe "get all patients route", :type => :request do
     @patients2 = FactoryBot.create_list(:random_patients, 3, organization: @organization2)
   end
 
+  #TODO refactor out both of these before and after actions https://relishapp.com/rspec/rspec-core/v/3-9/docs/example-groups/shared-context
   before do |example|
     unless example.metadata[:skip_login]
       cookie_for_user({ password: "password", email: @practitioner.email, type: "Practitioner" })
@@ -46,12 +47,12 @@ describe "get all patients route", :type => :request do
     expect(parsed.length).to equal(3)
   end
 
-  it "expect 2nd patient to be the same" do
+  it "patient is properly serialzied" do
     get "/organizations/1/patients"
     parsed = JSON.parse(response.body)
-    left = parsed[0]["givenName"]
-    right = Organization.find(1).patients[0]["given_name"]
-    expect(left).to eq(right)
+    expect(parsed[0]["givenName"]).to eq(Organization.find(1).patients[0]["given_name"])
+    expect(parsed[0]["familyName"]).to eq(Organization.find(1).patients[0]["family_name"])
+    expect(parsed[0]["id"]).to eq(Organization.find(1).patients[0]["id"])
   end
 
 end

@@ -50,7 +50,6 @@ module SeedPatient
     new_report.medication_report = med_report
     new_report.symptom_report = symptom_report
     new_report.photo_report = photo_report
-    new_report.save
   end
 
 end

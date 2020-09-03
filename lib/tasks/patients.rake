@@ -55,11 +55,18 @@ namespace :patients do
   task :generate_test_reports => :environment do
     if (Rails.env == "development")
       ActiveRecord::Base.transaction do
+
+        DailyReport.all.delete_all
+        PhotoReport.all.delete_all
+        MedicationReport.all.delete_all
+        SymptomReport.all.delete_all
+
         Patient.all.active.each do |patient|
-          patient.daily_reports.destroy_all
           patient.seed_test_reports([true,true,false].sample)
           print "."
         end
+        
+        PhotoReport.joins(:daily_report).where('daily_reports.date < ?', DateTime.now() - 1.day).update_all(approved: true)
       end
     else
       puts("Can only be run in development - is destructive to patient data")
