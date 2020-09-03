@@ -55,7 +55,7 @@ namespace :patients do
   task :generate_test_reports => :environment do
     if (Rails.env == "development")
       ActiveRecord::Base.transaction do
-        Patient.all.each do |patient|
+        Patient.all.active.each do |patient|
           patient.daily_reports.destroy_all
           patient.seed_test_reports([true,true,false].sample)
           print "."
@@ -67,4 +67,21 @@ namespace :patients do
 
     puts " All done now!"
   end
+
+  desc "Report for today"
+  task :report_for_today => :environment do
+    if (Rails.env == "development")
+      ActiveRecord::Base.transaction do
+        Patient.all.active.each do |patient|
+          patient.create_seed_report(Date.today, [true,true,false].sample)
+          print "."
+        end
+      end
+    else
+      puts("Can only be run in development - is destructive to patient data")
+    end
+
+    puts " All done now!"
+  end
+
 end

@@ -10,7 +10,7 @@ FactoryBot.define do
       end
 
     factory :organization do
-        title { orgs_array.sample}
+        title { Faker::University.name}
     end
 
     factory :random_patients, class: Patient do
