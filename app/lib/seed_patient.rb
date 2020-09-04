@@ -46,12 +46,17 @@ module SeedPatient
       photo_report = PhotoReport.create!(user_id: self.id, photo_url: "test_photo.jpg")
     end
 
-
     new_report = DailyReport.create(date: day, user_id: self.id,doing_okay: [true,true,true,false].sample)
     new_report.medication_report = med_report
     new_report.symptom_report = symptom_report
     new_report.photo_report = photo_report
     new_report.save
+  end
+
+  def create_bad_report(day)
+    DailyReport.create!(date: day, user_id: self.id, doing_okay: false, 
+      medication_report: MedicationReport.create!(user_id: self.id, medication_was_taken: false),
+      symptom_report: SymptomReport.create!(user_id: self.id))
   end
 
 end

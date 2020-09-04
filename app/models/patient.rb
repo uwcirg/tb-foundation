@@ -33,10 +33,6 @@ class Patient < User
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
 
-  def adherence
-    return self.daily_reports.count / days_in_treatment
-  end
-
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
     ActiveRecord::Base.connection.exec_query(sql).to_a[0]
@@ -97,35 +93,6 @@ class Patient < User
     return hash
   end
 
-  def number_reports_past_week
-    return (self.daily_reports.last_week.count)
-  end
-
-  def days_in_treatment
-
-    #We are only considering "completed days"
-    #Meaning: exclude today if they havent reported
-    #Consider day 0 to be one day
-    days = (Date.today - self.treatment_start.to_date).to_i
-    if( days == 0) 
-      return 1
-    end
-
-    if(has_reported_today)
-      return days + 1
-    end
-
-    return days
-  end
-
-  def weeks_in_treatment
-    return(days_in_treatment / 7)
-  end
-
-  def percentage_complete
-    return (self.days_in_treatment.to_f / 180).round(2)
-  end
-
   def last_medication_resolution
     res = self.resolutions.where(kind: "MissedMedication").first
     if (res.nil?)
@@ -179,10 +146,6 @@ class Patient < User
     self.photo_days.pluck(:date)
   end
 
-  def weeks_in_treatment
-    (DateTime.current.to_date - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
-  end
-
   def reporting_status
     hash = {}
     today_report = self.daily_reports.find_by(date: Date.today)
@@ -230,4 +193,32 @@ class Patient < User
   def support_requests
     self.daily_reports.joins(:resolutions).where(id: DailyReport.unresolved_support_request).where("resolutions.patient_id = #{self.id}", "daily_reports.updated_at > resolutions.created_at").distinct
   end
+
+  def days_in_treatment
+    return (Date.today - self.treatment_start.to_date).to_i + 1
+  end
+
+  def number_of_treatments_taken
+    return self.daily_reports.was_taken.count.to_f
+  end
+
+  def adherence
+    #Is treatment start or has reported today
+    days = days_in_treatment
+
+    if(!has_reported_today && days_in_treatment > 1)
+      days = days-1
+    end
+      
+    return (number_of_treatments_taken.to_f / days.to_f)
+  end
+
+  def weeks_in_treatment
+    (Date.today - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
+  end
+
+  def percentage_complete
+    return (self.days_in_treatment.to_f / 180).round(2)
+  end
+
 end
