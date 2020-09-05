@@ -59,4 +59,10 @@ module SeedPatient
       symptom_report: SymptomReport.create!(user_id: self.id))
   end
 
+  def create_perfect_report(day)
+    DailyReport.create!(date: day, user_id: self.id, doing_okay: true, 
+      medication_report: MedicationReport.create!(user_id: self.id, medication_was_taken: true),
+      symptom_report: SymptomReport.create!(user_id: self.id))
+  end
+
 end

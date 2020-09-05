@@ -28,4 +28,5 @@ FactoryBot.define do
     password_digest { BCrypt::Password.create("password") }
     treatment_start { Faker::Date.between(from: 1.month.ago, to: Date.today) }
   end
+
 end

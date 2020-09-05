@@ -5,7 +5,7 @@ RSpec.describe Patient, :type => :model do
   before(:all) do
     @organization = FactoryBot.create(:organization)
     @practitioner = FactoryBot.create(:practitioner, organization: @organization)
-    #@patient = FactoryBot.create(:standard_patient, organization: @organization )
+    #@patient = FactoryBot.create(:patient, organization: @organization )
   end
 
   after(:all) do
