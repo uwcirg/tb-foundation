@@ -71,7 +71,7 @@ class Practitioner < User
   end
 
   def summary_of_daily_medication_reporting
-    DailyReport.today.joins(:medication_report).where(user_id: self.patients.pluck(:id)).group("medication_reports.medication_was_taken").count
+    DailyReport.today.joins(:medication_report).where(user_id: self.patients.active.pluck(:id)).group("medication_reports.medication_was_taken").count
   end
 
 end

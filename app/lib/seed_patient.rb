@@ -17,6 +17,7 @@ module SeedPatient
   end
 
   def create_seed_report(day, is_good)
+  
     datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
 
     #TODO Fix
@@ -37,7 +38,7 @@ module SeedPatient
         other: "Other symptom",
       )
     else
-      med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: [true, true, true, true, true, false].sample, datetime_taken: datetime)
+      med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: true, datetime_taken: datetime)
       symptom_report = SymptomReport.create!(user_id: self.id, redness: [true, false, false, false, false, false].sample)
     end
 
@@ -45,12 +46,23 @@ module SeedPatient
       photo_report = PhotoReport.create!(user_id: self.id, photo_url: "test_photo.jpg")
     end
 
-
     new_report = DailyReport.create(date: day, user_id: self.id,doing_okay: [true,true,true,false].sample)
     new_report.medication_report = med_report
     new_report.symptom_report = symptom_report
     new_report.photo_report = photo_report
     new_report.save
+  end
+
+  def create_bad_report(day)
+    DailyReport.create!(date: day, user_id: self.id, doing_okay: false, 
+      medication_report: MedicationReport.create!(user_id: self.id, medication_was_taken: false),
+      symptom_report: SymptomReport.create!(user_id: self.id))
+  end
+
+  def create_perfect_report(day)
+    DailyReport.create!(date: day, user_id: self.id, doing_okay: true, 
+      medication_report: MedicationReport.create!(user_id: self.id, medication_was_taken: true),
+      symptom_report: SymptomReport.create!(user_id: self.id))
   end
 
 end

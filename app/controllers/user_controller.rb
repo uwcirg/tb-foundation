@@ -36,6 +36,15 @@ class UserController < ApplicationController
     @current_practitoner = @current_user
   end
 
+  def verify_practitioner
+    auth_practitioner
+
+    if (@current_practitoner.organization_id != params[:organization_id].to_i)
+      render(json: { error: "You're not authorized to view that organization" }, status: :unauthorized)
+      return
+    end
+  end
+
   def auth_admin
     auth_user
 
@@ -133,7 +142,6 @@ class UserController < ApplicationController
   end
 
   private
-
 
   #Authenticaiton Functions
   def decode_token

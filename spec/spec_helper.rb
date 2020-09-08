@@ -1,5 +1,7 @@
 # require "capybara/rspec"
 # require "factory_bot"
+require 'active_support/testing/time_helpers'
+require 'helpers/patient_helper.rb'
 
 # SELENIUM_HOST = ENV.fetch("SELENIUM_HOST")
 # TEST_APP_HOST = ENV.fetch("TEST_APP_HOST")
@@ -22,6 +24,8 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 RSpec.configure do |config|
+  config.include ActiveSupport::Testing::TimeHelpers
+  config.include PatientHelper
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -57,7 +61,6 @@ RSpec.configure do |config|
   # config.include FactoryBot::Syntax::Methods
   # config.before(:suite) { FactoryBot.find_definitions }
 
-
   # Capybara.register_driver :selenium_remote do |app|
   #   Capybara::Selenium::Driver.new(
   #     app,
@@ -73,8 +76,8 @@ RSpec.configure do |config|
 
   # config.include Capybara::DSL
 
-# The settings below are suggested to provide a good initial experience
-# with RSpec, but feel free to customize to your heart's content.
+  # The settings below are suggested to provide a good initial experience
+  # with RSpec, but feel free to customize to your heart's content.
 =begin
   # This allows you to limit a spec run to individual examples or groups
   # you care about by tagging them with `:focus` metadata. When nothing

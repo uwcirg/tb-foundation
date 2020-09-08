@@ -88,6 +88,7 @@ Rails.application.routes.draw do
   resources :practitioners, only: [:index], controller: 'practitioner/practitioners'
 
   resources :organizations, only: [:index,:create,:show], controller: 'organization/organizations'
+  
 
 
 end
