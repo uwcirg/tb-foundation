@@ -88,6 +88,8 @@ Rails.application.routes.draw do
   resources :practitioners, only: [:index], controller: 'practitioner/practitioners'
 
   resources :organizations, only: [:index,:create,:show], controller: 'organization/organizations'
+
+  get '/photo_uploaders/messaging', to: 'photo_upload#message_upload_url'
   
 
 
