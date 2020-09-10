@@ -75,6 +75,10 @@ Rails.application.routes.draw do
     resources :patients, only: [:index,:create,:show]
   end
 
+  resources :channels, only: [:index,:create], module: "messaging" do
+    resources :messages , only: [:index,:create,:update]
+  end
+
   resources :patient, only: [] do 
     scope module: :patient do
     resources :notes , only: [:index, :create, :update]
@@ -82,6 +86,8 @@ Rails.application.routes.draw do
     resources :education_statuses, only: [:create,:index]
     end
   end
+
+
   
   resources :patients, only: [:create], controller: 'patient/patients'
   
