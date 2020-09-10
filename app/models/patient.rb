@@ -206,10 +206,10 @@ class Patient < User
     #Is treatment start or has reported today
     days = days_in_treatment
 
-    if(!has_reported_today && days_in_treatment > 1)
-      days = days-1
+    if (!has_reported_today && days_in_treatment > 1)
+      days = days - 1
     end
-      
+
     return (number_of_treatments_taken.to_f / days.to_f)
   end
 
@@ -221,4 +221,7 @@ class Patient < User
     return (self.days_in_treatment.to_f / 180).round(2)
   end
 
+  def available_channels
+    return Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).order(:created_at)
+  end
 end

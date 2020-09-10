@@ -38,18 +38,6 @@ class User < ApplicationRecord
            }
   end
 
-  def user_specific_channels
-    if (self.type == "Patient")
-      return Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).sort_by &:created_at
-    end
-
-    if (self.type == "Practitioner")
-      return Channel.joins(:user).where(is_private: true, users: { organization_id: self.organization_id }).or(Channel.joins(:user).where(is_private: false)).sort_by &:created_at
-    end
-
-    return []
-  end
-
   def send_push_to_user(title, body, app_url = "/", type = nil)
 
     #Check to make sure their subscription information is up to date
@@ -115,6 +103,10 @@ class User < ApplicationRecord
 
   def check_current_password(password)
     BCrypt::Password.new(self.password_digest) == password
+  end
+
+  def available_channels
+    return self.channels
   end
 
 end
