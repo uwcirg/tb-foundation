@@ -2,8 +2,9 @@ Aws.config.update({
   credentials: Aws::Credentials.new(ENV["MINIO_ACCESS_KEY"], ENV["MINIO_SECRET_KEY"]),
   endpoint: ENV["URL_MINIO"],
   force_path_style: true,
-  region: "us-east-1",
+  region: "us-east-1"
 })
+
 
 DEFAULT_BUCKETS = ["patient-test-photos", "messaging-photos"]
 

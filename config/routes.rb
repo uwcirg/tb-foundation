@@ -75,11 +75,11 @@ Rails.application.routes.draw do
     resources :patients, only: [:index,:create,:show]
   end
 
-  resources :channels, only: [:index,:create], module: "messaging" do
+  resources :channels, only: [:index,:create], module: "channel" do
     resources :messages , only: [:index,:create,:update]
   end
 
-  get '/unread_messages', to: "messaging/unread_messages#index"
+  get '/unread_messages', to: "channel/unread_messages#index"
 
   resources :patient, only: [] do 
     scope module: :patient do

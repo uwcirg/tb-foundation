@@ -1,4 +1,4 @@
-class Messaging::ChannelsController < UserController
+class Channel::ChannelsController < UserController
 
     before_action :auth_user
 

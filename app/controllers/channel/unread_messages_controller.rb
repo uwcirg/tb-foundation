@@ -1,4 +1,4 @@
-class Messaging::UnreadMessagesController < UserController
+class Channel::UnreadMessagesController < UserController
   before_action :auth_user
 
   def index
