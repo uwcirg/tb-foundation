@@ -6,9 +6,17 @@ class Channel::MessagesController < UserController
     def index
         #TODO paginate longer conversations, combined with lazy loading
         channel = relevant_channel
-        messages = channel.messages.order("created_at DESC").reverse
+
+        if(params[:last_message_id])
+            messages = channel.messages.where("id > ?", params[:last_message_id]).order("created_at DESC")
+        else
+            messages = channel.messages.order("created_at DESC")
+        end
+
+        
         @current_user.update_last_message_seen(channel.id,channel.messages_count)
-        render(json: messages, status: :ok)
+
+        render(json: messages.reverse, status: :ok)
     end
 
     def create

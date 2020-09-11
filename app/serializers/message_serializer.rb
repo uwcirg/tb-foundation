@@ -1,12 +1,5 @@
 class MessageSerializer < ActiveModel::Serializer
 
-    # t.bigint "channel_id"
-    # t.bigint "user_id", null: false
-    # t.text "body", null: false
-    # t.datetime "created_at", precision: 6, null: false
-    # t.datetime "updated_at", precision: 6, null: false
-    # t.string "photo_path"
-    
     attributes :id, :user_id, :body, :created_at, :updated_at, :photo_url
 
     def photo_url
