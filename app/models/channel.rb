@@ -1,7 +1,8 @@
 class Channel < ApplicationRecord
     has_many :messages, dependent: :destroy
     belongs_to :user
-    validates :title, presence: true
+    validates :title, presence: true, length: {maximum: 50}
+    validates :subtitle, length: {maximum: 250}
 
     after_create :create_notifications
 
