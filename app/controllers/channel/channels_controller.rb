@@ -19,7 +19,7 @@ class Channel::ChannelsController < UserController
         if(channel.save)
             render(json: channel, status: 200)
         else
-            errors = handle_errors
+            errors = handle_errors(channel)
             render(json: { error: 422, paramErrors: errors }, status: 422)
         end
     end
@@ -29,12 +29,9 @@ class Channel::ChannelsController < UserController
     end
 
     def handle_errors(object)
-        @errors = object.as_json.deep_transform_keys! { |key| key.camelize(:lower) }
+        errors = object.errors.as_json
+        errors = errors.as_json.deep_transform_keys! { |key| key.camelize(:lower) }
     end
-
-
-
-
 
   end
   
