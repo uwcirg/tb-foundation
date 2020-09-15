@@ -66,8 +66,8 @@ class PatientSerializer < ActiveModel::Serializer
         return day.treatment_day
     end
 
-    def adherence_sql
-        object.adherence
+    def adherence
+        object.adherence.round(2)
     end
 
 

@@ -1,0 +1,16 @@
+  # docker continuous delivery
+# deliver docker images to configured repo with tags to match branches and git tags
+---
+name: Run RSpec Tests
+on:
+  push:
+    branches:
+      - '*' 
+jobs:   
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Build the stack
+        run: docker-compose run --rm -e "RAILS_ENV=test" web rspec spec/requests/channels_spec.rb
+       

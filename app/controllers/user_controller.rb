@@ -1,5 +1,3 @@
-require "aws-sdk"
-
 class UserController < ApplicationController
   before_action :decode_token, :except => [:login, :generate_presigned_url, :get_all_tests]
   around_action :switch_locale, :except => [:login, :generate_presigned_url, :get_all_tests]
