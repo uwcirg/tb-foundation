@@ -1,7 +1,7 @@
   # docker continuous delivery
 # deliver docker images to configured repo with tags to match branches and git tags
 ---
-name: Run RSpec Tests
+name: test
 on:
   push:
     branches:
