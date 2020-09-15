@@ -32,7 +32,6 @@ services:
     ports:
       - $PORT_API:3000
     depends_on:
-      - redis
       - db
     restart: always
 
