@@ -1,0 +1,42 @@
+#Full fule for Github Actions Testing
+version: '3.3'
+
+services:
+  db:
+    restart: always
+    image: postgres:11
+    volumes:
+      - source: postgres-files
+        target: /var/lib/postgresql/data
+        type: volume
+    environment:
+      - POSTGRES_USER=webuser
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+  web:
+    image: uwcirg/tb-foundation:$API_DOCKER_TAG
+    environment:
+      - URL_POSTGRES=postgres://webuser:$POSTGRES_PASSWORD@db
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - PORT=3000
+      - RAILS_ENV=$ENVIRONMENT
+      - SECRET_KEY_BASE=$SECRET_KEY_BASE
+      - URL_API=$URL_API
+      - URL_CORS=$URL_CORS
+      - URL_MINIO=$URL_MINIO
+      - REDIS_URL=redis://redis:$PORT_REDIS/12
+      - MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
+      - MINIO_SECRET_KEY=$MINIO_SECRET_KEY
+      - RAILS_BASE_PASS=$RAILS_BASE_PASS
+      - VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
+      - VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
+    ports:
+      - $PORT_API:3000
+    depends_on:
+      - redis
+      - db
+    restart: always
+
+volumes:
+    user-files: {}
+    redis-files: {}
+    postgres-files: {}

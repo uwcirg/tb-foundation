@@ -12,5 +12,27 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Build the stack
-        run: docker-compose run --rm -e "RAILS_ENV=test" web rspec spec/requests/channels_spec.rb
+        run: dc run --rm  -e "RAILS_ENV=test" -e  "COMPOSE_FILE=docker-compose.test.yml" web rspec
+        env:
+          COMPOSE_FILE: docker-compose.test.yml
+          PORT_API: 5061
+          PORT_CLIENT: 3060
+          PORT_MESSAGE: 5002
+          PORT_MINIO: 9000
+          PORT_REDIS: 6379
+          ENVIRONMENT: test
+          API_DOCKER_TAG: develop
+          URL_API: http://localhost:5061
+          URL_CLIENT: http://localhost:3060
+          URL_MESSAGE_API: http://localhost:5002
+          URL_CORS: http://localhost:3000
+          URL_MINIO: http://bucket:9000
+          SECRET_KEY_BASE: password
+          MINIO_ACCESS_KEY: username
+          MINIO_SECRET_KEY: password
+          RAILS_BASE_PASS: password
+          POSTGRES_PASSWORD: password
+          DEFAULT_LOCALE: es-ar
+          VAPID_PUBLIC_KEY: public
+          VAPID_PRIVATE_KEY: private 
        
