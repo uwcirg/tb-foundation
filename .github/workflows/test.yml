@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Build the stack
-        run: dc run --rm  -e "RAILS_ENV=test" -e  "COMPOSE_FILE=docker-compose.test.yml" web rspec
+        run: docker-compose run --rm  -e "RAILS_ENV=test" -e  "COMPOSE_FILE=docker-compose.test.yml" web rspec
         env:
           COMPOSE_FILE: docker-compose.test.yml
           PORT_API: 5061
