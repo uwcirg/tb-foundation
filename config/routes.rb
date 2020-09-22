@@ -76,8 +76,10 @@ Rails.application.routes.draw do
   end
 
   resources :channels, only: [:index,:create], module: "channel" do
-    resources :messages , only: [:index,:create,:update]
+    resources :messages , only: [:index,:create]
   end
+
+  resources :message, only: [:update]
 
   get '/unread_messages', to: "channel/unread_messages#index"
 
