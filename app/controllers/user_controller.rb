@@ -54,16 +54,13 @@ class UserController < ApplicationController
   end
 
   def login
-    case params[:userType] # a_variable is the variable we want to compare
-    when "Administrator"
-      @user = Administrator.find_by(email: params[:identifier])
-    when "Practitioner"
-      @user = Practitioner.find_by(email: params[:identifier])
-    when "Patient"
-      @user = Patient.find_by(phone_number: params[:identifier])
+    snake_case_params
+
+    if(!params[:phone_number].nil?)
+      @user = Patient.find_by(phone_number: params[:phone_number] )
     else
-      render json: { error: "Invalid User Type. Possible values: Administrator, Practitioner, or Patient", status: 422 }, status: 422
-      return
+      #Must exclude patients from this search - or any patient with nil email will be selected
+      @user = User.where.not(type: "Patient").find_by(email: params[:email])
     end
 
     authenticate()
@@ -155,7 +152,7 @@ class UserController < ApplicationController
 
     #User does not exits, return error
     if !@user
-      render json: { error: "That #{params[:userType].downcase} does not exist", status: 422 }, status: 422
+      render json: { error: "That user does not exist", status: 422 }, status: 422
       return
     end
 
