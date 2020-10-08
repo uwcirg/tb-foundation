@@ -15,4 +15,20 @@ namespace :practitioner do
 
     puts " All done now!"
   end
+
+  desc "Initalize Expert Channels"
+  task :create_expert_channels => :environment do
+    users = Practitioner.all
+    puts "Going to create #{users.count} channels"
+    ActiveRecord::Base.transaction do
+      users.each do |user|
+        user.channels.create!(title: "tb-expert-chat", is_private: true)
+      end
+      
+    end
+
+    puts " All done now!"
+  end
+
+
 end

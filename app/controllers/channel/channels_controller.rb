@@ -4,7 +4,7 @@ class Channel::ChannelsController < UserController
 
     def index
         auth_user
-        render(json: @current_user.available_channels, status: :ok)
+        render(json: @current_user.available_channels.includes(:user),requesting_user_type: @current_user.type, status: :ok)
     end 
 
     def create
