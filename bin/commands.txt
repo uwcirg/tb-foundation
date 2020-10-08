@@ -1,7 +1,0 @@
-Expert.create!(
-        password_digest: BCrypt::Password.create(ENV["RAILS_BASE_PASS"]),
-        family_name: "Chirico",
-        given_name: "Cristina",
-        organization_id: 1,
-        email: "expert@gmail.com"
-    )
