@@ -22,6 +22,7 @@ services:
     environment:
       - POSTGRES_USER=webuser
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - RAILS_DB_NAME=$ENVIRONMENT
 
 
   bucket:
