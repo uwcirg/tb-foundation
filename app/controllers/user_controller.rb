@@ -144,7 +144,7 @@ class UserController < ApplicationController
     begin
       @decoded = JsonWebToken.decode(jwt)
     rescue JWT::DecodeError => e
-      render json: { errors: e.message }, status: :unauthorized
+      render json: { status: 401, errors: e.message }, status: :unauthorized
     end
   end
 
@@ -152,18 +152,19 @@ class UserController < ApplicationController
 
     #User does not exits, return error
     if !@user
-      render json: { error: "That user does not exist", status: 422 }, status: 422
+      render json: { error: "That user does not exist", status: 422, isLogin: true }, status: 422
       return
     end
 
     #Check if the user has the correct password
+    #TODO: BEFORE PUSHING MUST CHANGE Time.now + 5.seconds to 1.week
     if @user && BCrypt::Password.new(@user.password_digest) == params[:password]
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 7.days.to_i
       cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week }
       render json: { user_id: @user.id, user_type: @user.type }, status: :ok
     else
-      render json: { error: "Unauthorized: incorrect password", status: :unauthorized }, status: :unauthorized
+      render json: { error: "Unauthorized: incorrect password", status: 401, isLogin: true }, status: :unauthorized
     end
   end
 end
