@@ -185,8 +185,8 @@ class Patient < User
     days = self.missed_days.first["date"] rescue nil
   end
 
-  def has_reported_today
-    self.daily_reports.today.exists?
+  def has_reported_today(datetime=DateTime.now)
+    self.daily_reports.where(date: datetime.to_date ).exists?
   end
 
   def support_requests

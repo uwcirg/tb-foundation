@@ -95,7 +95,7 @@ class PatientController < UserController
       photo_report = PhotoReport.create!(user_id: @current_user.id, photo_url: params["photoUrl"])
     end
 
-    if (!@current_user.has_reported_today)
+    if (!@current_user.has_reported_today(DateTime.parse(params["dateTimeTaken"])))
       new_report = @current_user.daily_reports.create(date: params["date"], 
         doing_okay: params["doingOkay"], 
         doing_okay_reason: params["doingOkayReason"], 
