@@ -33,21 +33,6 @@ class Patient < User
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
 
-  def adherence
-    # sql = ActiveRecord::Base.sanitize_sql [SINGLE_PATIENT_ADHERENCE, { user_id: self.id }]
-    # ActiveRecord::Base.connection.exec_query(sql).to_a[0]['adherence']
-    if (self.last_report && self.last_report.date == Date.today)
-      return (self.daily_reports.was_taken.count.to_f / self.days_in_treatment).round(2)
-    else
-      return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
-    end
-
-    # def adherence
-    #   return (self.daily_reports.was_taken.before_today.count.to_f / self.days_in_treatment).round(2)
-    # end
-
-  end
-
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
     ActiveRecord::Base.connection.exec_query(sql).to_a[0]
@@ -55,7 +40,6 @@ class Patient < User
 
   def create_private_message_channel
     channel = self.channels.create!(title: self.full_name, is_private: true)
-    channel.messages.create!(body: "Hola. Buenas dias.", user_id: self.organization.practitioners.first.id)
   end
 
   def create_resolutions
@@ -106,28 +90,6 @@ class Patient < User
       hash["#{report.date}"] = report.symptom_report.reported_symptoms
     end
     return hash
-  end
-
-  def number_reports_past_week
-    return (self.daily_reports.last_week.count)
-  end
-
-  def days_in_treatment
-    days = (DateTime.current.to_date - self.treatment_start.to_date).to_i
-
-    if (days > 0)
-      return days + 1
-    end
-
-    return 1
-  end
-
-  def weeks_in_treatment
-    return(days_in_treatment / 7)
-  end
-
-  def percentage_complete
-    return (self.days_in_treatment.to_f / 180).round(2)
   end
 
   def last_medication_resolution
@@ -183,10 +145,6 @@ class Patient < User
     self.photo_days.pluck(:date)
   end
 
-  def weeks_in_treatment
-    (DateTime.current.to_date - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
-  end
-
   def reporting_status
     hash = {}
     today_report = self.daily_reports.find_by(date: Date.today)
@@ -210,24 +168,59 @@ class Patient < User
 
   def last_symptoms
     list = []
-    get_date = true;
+    get_date = true
     date = nil
     self.symptom_reports.includes(:daily_report).where(daily_report: DailyReport.unresolved_symptoms.order("date DESC")).each do |symptom_report|
-      if(get_date)
+      if (get_date)
         date = symptom_report.daily_report.date
         get_date = false
       end
       to_add = symptom_report.reported_symptoms - list
       list = list + to_add
     end
-    {symptomList: list,date: date}
+    { symptomList: list, date: date }
   end
 
   def last_missed_day
     days = self.missed_days.first["date"] rescue nil
   end
 
+  def has_reported_today(datetime=DateTime.now)
+    self.daily_reports.where(date: datetime.to_date ).exists?
+  end
+
   def support_requests
     self.daily_reports.joins(:resolutions).where(id: DailyReport.unresolved_support_request).where("resolutions.patient_id = #{self.id}", "daily_reports.updated_at > resolutions.created_at").distinct
+  end
+
+  def days_in_treatment
+    return (Date.today - self.treatment_start.to_date).to_i + 1
+  end
+
+  def number_of_treatments_taken
+    return self.daily_reports.was_taken.count.to_f
+  end
+
+  def adherence
+    #Is treatment start or has reported today
+    days = days_in_treatment
+
+    if (!has_reported_today && days_in_treatment > 1)
+      days = days - 1
+    end
+
+    return (number_of_treatments_taken.to_f / days.to_f)
+  end
+
+  def weeks_in_treatment
+    (Date.today - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
+  end
+
+  def percentage_complete
+    return (self.days_in_treatment.to_f / 180).round(2)
+  end
+
+  def available_channels
+    return Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).order(:created_at)
   end
 end

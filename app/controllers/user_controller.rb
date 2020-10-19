@@ -1,5 +1,3 @@
-require "aws-sdk"
-
 class UserController < ApplicationController
   before_action :decode_token, :except => [:login, :generate_presigned_url, :get_all_tests]
   around_action :switch_locale, :except => [:login, :generate_presigned_url, :get_all_tests]
@@ -36,20 +34,40 @@ class UserController < ApplicationController
     @current_practitoner = @current_user
   end
 
-  def login
-    case params[:userType] # a_variable is the variable we want to compare
-    when "Administrator"
-      @user = Administrator.find_by(email: params[:identifier])
-    when "Practitioner"
-      @user = Practitioner.find_by(email: params[:identifier])
-    when "Patient"
-      @user = Patient.find_by(phone_number: params[:identifier])
-    else
-      render json: { error: "Invalid User Type. Possible values: Administrator, Practitioner, or Patient", status: 422 }, status: 422
+  def verify_practitioner
+    auth_practitioner
+
+    if (@current_practitoner.organization_id != params[:organization_id].to_i)
+      render(json: { error: "You're not authorized to view that organization" }, status: :unauthorized)
       return
+    end
+  end
+
+  def auth_admin
+    auth_user
+
+    if (@current_user.type != "Administrator")
+      render json: { errors: "Must have type Administrator to access route" }, status: :unauthorized
+    end
+
+    @current_practitoner = @current_user
+  end
+
+  def login
+    snake_case_params
+
+    if(!params[:phone_number].nil?)
+      @user = Patient.find_by(phone_number: params[:phone_number] )
+    else
+      #Must exclude patients from this search - or any patient with nil email will be selected
+      @user = User.where.not(type: "Patient").find_by(email: params[:email])
     end
 
     authenticate()
+  end
+
+  def get_current_user
+    render(json: @current_user, status: :ok)
   end
 
   def get_all_organizations
@@ -120,14 +138,13 @@ class UserController < ApplicationController
 
   private
 
-
   #Authenticaiton Functions
   def decode_token
     jwt = cookies.signed[:jwt]
     begin
       @decoded = JsonWebToken.decode(jwt)
     rescue JWT::DecodeError => e
-      render json: { errors: e.message }, status: :unauthorized
+      render json: { status: 401, errors: e.message }, status: :unauthorized
     end
   end
 
@@ -135,18 +152,19 @@ class UserController < ApplicationController
 
     #User does not exits, return error
     if !@user
-      render json: { error: "That #{params[:userType].downcase} does not exist", status: 422 }, status: 422
+      render json: { error: "That user does not exist", status: 422, isLogin: true }, status: 422
       return
     end
 
     #Check if the user has the correct password
+    #TODO: BEFORE PUSHING MUST CHANGE Time.now + 5.seconds to 1.week
     if @user && BCrypt::Password.new(@user.password_digest) == params[:password]
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 7.days.to_i
       cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week }
       render json: { user_id: @user.id, user_type: @user.type }, status: :ok
     else
-      render json: { error: "Unauthorized: incorrect password", status: :unauthorized }, status: :unauthorized
+      render json: { error: "Unauthorized: incorrect password", status: 401, isLogin: true }, status: :unauthorized
     end
   end
 end

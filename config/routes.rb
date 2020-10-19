@@ -6,12 +6,12 @@ Rails.application.routes.draw do
   patch '/update_user_subscription', to: 'user#update_user_subscription'
 
   #post '/message', to: 'message#post_message'
-  post '/channel', to: 'channel#new_channel'
-  get '/channels', to: 'channel#all_channels'
-  post '/channel/:channelID/messages', to: 'channel#post_message'
-  get '/channel/:channelID/messages', to: 'channel#get_recent_messages'
-  get '/channel/:channelID/messages/:messageID', to: 'channel#get_messages_before'
-  get '/messages/unread', to: 'channel#get_unread_message_numbers'
+  # post '/channel', to: 'channel#new_channel'
+  # get '/channels', to: 'channel#all_channels'
+  # post '/channel/:channelID/messages', to: 'channel#post_message'
+  # get '/channel/:channelID/messages', to: 'channel#get_recent_messages'
+  # get '/channel/:channelID/messages/:messageID', to: 'channel#get_messages_before'
+  # get '/messages/unread', to: 'channel#get_unread_message_numbers'
 
   get '/patient/me', to: 'patient#get_patient'
   get '/practitioner/me', to: 'practitioner#get_current_practitioner'
@@ -24,12 +24,10 @@ Rails.application.routes.draw do
   post '/auth', to: 'user#login'
   delete '/auth', to: 'user#logout'
 
-  post '/practitioner', to: 'administrator#create_practitioner'
-
-  post '/administrator', to:'practitioner#create_admin'
+  #post '/practitioner', to: 'administrator#create_practitioner'
+  #post '/administrator', to:'practitioner#create_admin'
 
   get '/patient/daily_reports/photo_upload_url', to: 'patient#generate_upload_url'
-  get '/organizations', to: 'user#get_all_organizations'
 
   #List of patients for practitioner
   get '/practitioner/patients', to: 'practitioner#get_patients'
@@ -70,10 +68,20 @@ Rails.application.routes.draw do
   get '/config/locales', to: 'application#get_locales'
   #post '/patient/me/education_status', to: 'patient#mark_educational_message_viewed'
 
+  get '/user/current', to: 'user#get_current_user'
+
   scope "/organizations/:organization_id", module: "organization" do
     resources :cohort_summary , only: :index
     resources :patients, only: [:index,:create,:show]
   end
+
+  resources :channels, only: [:index,:create], module: "channel" do
+    resources :messages , only: [:index,:create]
+  end
+
+  resources :message, only: [:update]
+
+  get '/unread_messages', to: "channel/unread_messages#index"
 
   resources :patient, only: [] do 
     scope module: :patient do
@@ -83,7 +91,13 @@ Rails.application.routes.draw do
     end
   end
 
+
+  
   resources :patients, only: [:create], controller: 'patient/patients'
+  resources :practitioners, only: [:index], controller: 'practitioner/practitioners'
+  resources :organizations, only: [:index,:create,:show], controller: 'organization/organizations'
+  get '/photo_uploaders/messaging', to: 'photo_upload#message_upload_url'
+  
 
 
 end

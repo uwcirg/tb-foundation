@@ -16,3 +16,4 @@ services:
         read_only: false
   client:
     entrypoint: ["echo", "Service foo disabled"]
+

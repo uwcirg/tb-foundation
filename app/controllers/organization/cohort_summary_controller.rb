@@ -8,14 +8,5 @@ class Organization::CohortSummaryController < UserController
 
     private
 
-    def verify_practitioner
-        auth_practitioner
-    
-        if(@current_practitoner.organization_id != params[:organization_id].to_i)
-            render(json: {error: "You're not authorized to view that organization" }, status: :unauthorized)
-            return
-        end
-    end
-
   end
   

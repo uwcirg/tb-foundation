@@ -1,5 +1,4 @@
 class DailyReport < ApplicationRecord
-
   include PatientSQL
 
   belongs_to :patient, :foreign_key => :user_id
@@ -11,20 +10,26 @@ class DailyReport < ApplicationRecord
   validates :medication_report, presence: true
   validates :symptom_report, presence: true
   validates :date, presence: true
+  validate :limit_one_report_per_day, on: :create
 
-  scope :today, -> { where(:date => (Time.now.to_date)) }
+  scope :today, -> { where(:date => (Date.today)) }
   scope :last_week, -> { where("date > ?", Time.now - 1.week) }
 
-  scope :symptoms_last_week, -> {last_week.where(:symptom_report => SymptomReport.has_symptom)}
+  scope :symptoms_last_week, -> { last_week.where(:symptom_report => SymptomReport.has_symptom) }
 
-  scope :active_patient, -> {where(:patient => Patient.active)}
+  scope :active_patient, -> { where(:patient => Patient.active) }
   scope :was_taken, -> { joins(:medication_report).where(medication_reports: { medication_was_taken: true }) }
   scope :before_today, -> { where("date < ?", Time.now.to_date) }
   scope :unresolved_symptoms, -> { active_patient.joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, "resolutions.id": Resolution.last_symptom_from_user).where("daily_reports.updated_at > resolutions.resolved_at") }
   scope :since_last_missing_resolution, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_medication_from_user).where("daily_reports.created_at > resolutions.resolved_at") }
-  scope :has_symptoms, -> {active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.has_symptom )}
+  scope :has_symptoms, -> { active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.has_symptom) }
+  scope :unresolved_support_request, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_support_request, "daily_reports.doing_okay": false).where("daily_reports.created_at > resolutions.resolved_at") }
 
-  scope :unresolved_support_request,-> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_support_request, "daily_reports.doing_okay": false).where("daily_reports.created_at > resolutions.resolved_at") }
+  def limit_one_report_per_day
+    if self.patient.daily_reports.where(date: self.date).count > 0
+      errors.add(:base, "Only one report allowed daily. Edit the report instead.")
+    end
+  end
 
   def self.user_missed_days(user_id)
     sql = sanitize_sql [MISSED_DAYS, { user_id: user_id }]
@@ -36,12 +41,6 @@ class DailyReport < ApplicationRecord
     sql = sanitize_sql [USER_STREAK_DAYS_SQL, { user_id: user_id }]
     result_value = connection.select_value(sql)
     Integer(result_value) rescue nil
-  end
-
-  def limit_one
-    if self.daily_reports.today.count == 1
-      errors.add(:base, "Exceeds daily limit")
-    end
   end
 
   def get_photo
@@ -74,5 +73,4 @@ class DailyReport < ApplicationRecord
   def photo_submitted
     return !photo_report.nil?
   end
-
 end

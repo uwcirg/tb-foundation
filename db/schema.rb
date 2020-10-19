@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_14_143410) do
+ActiveRecord::Schema.define(version: 2020_10_05_180603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,8 @@ ActiveRecord::Schema.define(version: 2020_08_14_143410) do
     t.text "body", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "photo_path"
+    t.boolean "is_hidden", default: false
   end
 
   create_table "messaging_notifications", force: :cascade do |t|
@@ -92,6 +94,7 @@ ActiveRecord::Schema.define(version: 2020_08_14_143410) do
     t.bigint "last_message_id"
     t.integer "read_message_count", default: 0, null: false
     t.boolean "is_subscribed", default: true, null: false
+    t.index ["channel_id", "user_id"], name: "index_messaging_notifications_on_channel_id_and_user_id", unique: true
   end
 
   create_table "milestones", force: :cascade do |t|

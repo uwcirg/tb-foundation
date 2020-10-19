@@ -15,7 +15,7 @@ gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'jwt'
 gem 'rubyzip'
 gem 'webpush'
-gem 'aws-sdk', '~> 3'
+gem 'aws-sdk-s3', '~> 1'
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
 gem 'active_model_serializers'

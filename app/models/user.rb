@@ -7,7 +7,7 @@ class User < ApplicationRecord
   has_many :messaging_notifications, dependent: :destroy
 
   enum locale: { "en": 0, "es-AR": 1 }
-  enum type: { Patient: 0, Practitioner: 1, Administrator: 2 }
+  enum type: { Patient: 0, Practitioner: 1, Administrator: 2, Expert: 3}
   enum status: { Pending: 0, Active: 1, Archived: 2 }
   enum gender: { Male: 0, Female: 1, Other: 2 }
 
@@ -36,18 +36,6 @@ class User < ApplicationRecord
              managingOrganization: managing_organization,
 
            }
-  end
-
-  def user_specific_channels
-    if (self.type == "Patient")
-      return Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).sort_by &:created_at
-    end
-
-    if (self.type == "Practitioner")
-      return Channel.joins(:user).where(is_private: true, users: { organization_id: self.organization_id }).or(Channel.joins(:user).where(is_private: false)).sort_by &:created_at
-    end
-
-    return []
   end
 
   def send_push_to_user(title, body, app_url = "/", type = nil)
@@ -115,6 +103,10 @@ class User < ApplicationRecord
 
   def check_current_password(password)
     BCrypt::Password.new(self.password_digest) == password
+  end
+
+  def available_channels
+    return self.channels
   end
 
 end

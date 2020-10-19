@@ -71,6 +71,7 @@ class PatientController < UserController
     render(json: reports)
   end
 
+  #@TODO move this code to new filepatients/daily_reports_controller.rb
   def post_daily_report
     med_report = MedicationReport.create!(user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"], why_medication_not_taken: params["whyMedicationNotTaken"])
     symptom_report = SymptomReport.create!(user_id: @current_user.id,
@@ -94,17 +95,17 @@ class PatientController < UserController
       photo_report = PhotoReport.create!(user_id: @current_user.id, photo_url: params["photoUrl"])
     end
 
-    existing_report = @current_user.daily_reports.where(date: params["date"])
-
-    if (existing_report.count < 1)
-      new_report = @current_user.daily_reports.create(date: params["date"], doing_okay: params["doingOkay"], medication_report: med_report, symptom_report: symptom_report)
+    if (!@current_user.has_reported_today(DateTime.parse(params["date"])))
+      new_report = @current_user.daily_reports.create(date: params["date"], 
+        doing_okay: params["doingOkay"], 
+        doing_okay_reason: params["doingOkayReason"], 
+        medication_report: med_report, symptom_report: symptom_report)
       new_report.photo_report = photo_report
       new_report.save!
       render(json: new_report.as_json, status: 200)
     else
-      old_report = existing_report.first
-      old_report.update!(medication_report: med_report, doing_okay: params["doingOkay"], symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
-      render(json: old_report.as_json, status: 200)
+      report = @current_user.daily_reports.find_by(date: params["date"]).update!(medication_report: med_report, doing_okay: params["doingOkay"], symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
+      render(json: report.as_json, status: 200)
     end
   end
 

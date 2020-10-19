@@ -1,6 +1,5 @@
-require "aws-sdk"
 require "securerandom"
-   require 'sidekiq/web'
+require 'sidekiq/web'
 
 class PractitionerController < UserController
   before_action :auth_practitioner, :except => [:upload_lab_test, :generate_presigned_url, :get_all_tests]
@@ -35,13 +34,13 @@ class PractitionerController < UserController
   end
 
   def generate_presigned_url
-    s3 = Aws::S3::Resource.new
-    bucket = s3.bucket("lab-strips")
-    key = "lab-test-#{SecureRandom.uuid}.jpeg"
-    obj = bucket.object(key)
-    url = obj.presigned_url(:put)
+    # s3 = Aws::S3::Resource.new
+    # bucket = s3.bucket("lab-strips")
+    # key = "lab-test-#{SecureRandom.uuid}.jpeg"
+    # obj = bucket.object(key)
+    # url = obj.presigned_url(:put)
 
-    render json: { url: url, key: key }
+    # render json: { url: url, key: key }
   end
 
   def get_all_tests

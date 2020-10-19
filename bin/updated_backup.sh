@@ -53,11 +53,15 @@ web_image_hash="$(docker-compose images --quiet web | cut -c1-7)"
 dump_filename="psql_dump-$(date --iso-8601=seconds)-${web_image_hash}-${compose_project_name}"
 
 echo "Backing up current database..."
-docker-compose exec --user webuser db bash -c '\
-    pg_dump \
-        --dbname development \
+
+docker-compose exec --user postgres db bash -c '\
+    PGPASSWORD=$POSTGRES_PASSWORD pg_dump \
+        --dbname $RAILS_DB_NAME \
+        --username webuser \
         --no-acl \
         --no-owner \
         --encoding utf8 '\
 > "${BACKUPS_DIR}/${dump_filename}.sql"
+
+
 echo "Backup complete"
