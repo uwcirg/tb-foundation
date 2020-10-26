@@ -102,10 +102,11 @@ class PatientController < UserController
         medication_report: med_report, symptom_report: symptom_report)
       new_report.photo_report = photo_report
       new_report.save!
-      render(json: new_report.as_json, status: 200)
+      render(json: new_report, status: 200)
     else
-      report = @current_user.daily_reports.find_by(date: params["date"]).update!(medication_report: med_report, doing_okay: params["doingOkay"], symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
-      render(json: report.as_json, status: 200)
+      report = @current_user.daily_reports.find_by(date: params["date"])
+      report.update!(medication_report: med_report, doing_okay: params["doingOkay"], symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
+      render(json: report, status: 200)
     end
   end
 
