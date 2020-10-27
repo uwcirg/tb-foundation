@@ -73,8 +73,8 @@ class PatientController < UserController
 
   #@TODO move this code to new filepatients/daily_reports_controller.rb
   def post_daily_report
-    med_report = MedicationReport.create!(user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"], why_medication_not_taken: params["whyMedicationNotTaken"])
-    symptom_report = SymptomReport.create!(user_id: @current_user.id,
+    med_report = MedicationReport.create!(date: params["date"], user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"], why_medication_not_taken: params["whyMedicationNotTaken"])
+    symptom_report = SymptomReport.create!(date: params["date"], user_id: @current_user.id,
                                            nausea: params["nausea"],
                                            nausea_rating: params["nauseaRating"],
                                            redness: params["redness"],
@@ -92,7 +92,7 @@ class PatientController < UserController
 
     photo_report = nil
     if (!params["photoUrl"].nil?)
-      photo_report = PhotoReport.create!(user_id: @current_user.id, photo_url: params["photoUrl"])
+      photo_report = PhotoReport.create!(date: params["date"], user_id: @current_user.id, photo_url: params["photoUrl"])
     end
 
     if (!@current_user.has_reported_today(DateTime.parse(params["date"])))
