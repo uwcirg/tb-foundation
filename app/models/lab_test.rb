@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-s3'
 class LabTest < ApplicationRecord
 
     def as_json(*args)

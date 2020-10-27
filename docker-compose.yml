@@ -11,7 +11,7 @@ services:
       URL_API: $URL_API
       URL_CLIENT: $URL_CLIENT
       DEFAULT_LOCALE: $DEFAULT_LOCALE
-
+      DOCKER_TAG: $API_DOCKER_TAG
   db:
     restart: always
     image: postgres:11
@@ -23,8 +23,6 @@ services:
       - POSTGRES_USER=webuser
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - RAILS_DB_NAME=$ENVIRONMENT
-
-
   bucket:
     restart: always
     image: minio/minio
@@ -50,6 +48,7 @@ services:
       - SECRET_KEY_BASE=$SECRET_KEY_BASE
       - URL_API=$URL_API
       - URL_CORS=$URL_CORS
+      - CORS_ORIGINS=$CORS_ORIGINS
       - URL_MINIO=$URL_MINIO
       - REDIS_URL=redis://redis:$PORT_REDIS/12
       - MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
@@ -91,6 +90,7 @@ services:
       - RAILS_BASE_PASS=$RAILS_BASE_PASS
       - VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
       - VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
+      - CORS_ORIGINS=$CORS_ORIGINS
     depends_on:
       - redis
       - db
