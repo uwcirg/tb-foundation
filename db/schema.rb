@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_05_180603) do
+ActiveRecord::Schema.define(version: 2020_10_27_150136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 2020_10_05_180603) do
     t.date "date"
     t.boolean "doing_okay"
     t.text "doing_okay_reason"
+    t.boolean "created_offline", default: false
     t.index ["user_id"], name: "index_daily_reports_on_user_id"
   end
 
@@ -75,6 +76,7 @@ ActiveRecord::Schema.define(version: 2020_10_05_180603) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
+    t.date "date"
     t.index ["daily_report_id"], name: "index_medication_reports_on_daily_report_id"
   end
 
@@ -144,6 +146,7 @@ ActiveRecord::Schema.define(version: 2020_10_05_180603) do
     t.datetime "approval_timestamp"
     t.bigint "user_id", null: false
     t.bigint "practitioner_id"
+    t.date "date"
     t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
     t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
   end
@@ -188,6 +191,7 @@ ActiveRecord::Schema.define(version: 2020_10_05_180603) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
+    t.date "date"
     t.index ["daily_report_id"], name: "index_symptom_reports_on_daily_report_id"
   end
 
