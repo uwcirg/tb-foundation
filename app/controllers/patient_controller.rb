@@ -97,6 +97,7 @@ class PatientController < UserController
 
     if (!@current_user.has_reported_today(DateTime.parse(params["date"])))
       new_report = @current_user.daily_reports.create(date: params["date"], 
+        created_offline: (params["createdOffline"] ? params["createdOffline"] : false),
         doing_okay: params["doingOkay"], 
         doing_okay_reason: params["doingOkayReason"], 
         medication_report: med_report, symptom_report: symptom_report)
@@ -105,7 +106,7 @@ class PatientController < UserController
       render(json: new_report, status: 200)
     else
       report = @current_user.daily_reports.find_by(date: params["date"])
-      report.update!(medication_report: med_report, doing_okay: params["doingOkay"], symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
+      report.update!(medication_report: med_report,created_offline: (params["createdOffline"] ? params["createdOffline"] : false), doing_okay: params["doingOkay"], symptom_report: symptom_report, photo_report: photo_report, updated_at: DateTime.current)
       render(json: report, status: 200)
     end
   end

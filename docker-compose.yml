@@ -11,7 +11,7 @@ services:
       URL_API: $URL_API
       URL_CLIENT: $URL_CLIENT
       DEFAULT_LOCALE: $DEFAULT_LOCALE
-
+      DOCKER_TAG: $API_DOCKER_TAG
   db:
     restart: always
     image: postgres:11
@@ -23,8 +23,6 @@ services:
       - POSTGRES_USER=webuser
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - RAILS_DB_NAME=$ENVIRONMENT
-
-
   bucket:
     restart: always
     image: minio/minio
