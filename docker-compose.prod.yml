@@ -1,0 +1,4 @@
+client:
+  environment:
+    - MATOMO_URL=$MATOMO_URL
+    - MATOMO_ID=$MATOMO_ID
