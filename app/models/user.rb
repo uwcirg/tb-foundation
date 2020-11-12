@@ -9,7 +9,7 @@ class User < ApplicationRecord
   enum locale: { "en": 0, "es-AR": 1 }
   enum type: { Patient: 0, Practitioner: 1, Administrator: 2, Expert: 3}
   enum status: { Pending: 0, Active: 1, Archived: 2 }
-  enum gender: { Male: 0, Female: 1, Other: 2 }
+  enum gender: { Man: 0, Woman: 1, Other: 2, TransMan: 3, TransWoman: 4, Nonbinary: 5 }
 
   validates :password_digest, presence: true
   validates :email, uniqueness: true, allow_nil: true

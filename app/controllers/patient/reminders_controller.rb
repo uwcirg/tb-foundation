@@ -1,4 +1,5 @@
 class Patient::RemindersController < UserController
+  before_action :snake_case_params
   before_action :check_patient_record_access, only: [:index]
   before_action :check_is_patient, only: [:create,:delete]
 
@@ -25,7 +26,7 @@ class Patient::RemindersController < UserController
   private
 
   def filter_reminder_params
-    params.permit(:title, :datetime, :patient_id, :category, :other_category,:future)
+    params.permit(:title, :datetime, :patient_id, :category, :other_category, :future, :note)
   end
 
 

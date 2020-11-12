@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_27_150136) do
+ActiveRecord::Schema.define(version: 2020_11_04_171349) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,6 +157,7 @@ ActiveRecord::Schema.define(version: 2020_10_27_150136) do
     t.bigint "patient_id"
     t.boolean "send_push", default: true
     t.string "other_category"
+    t.text "note"
     t.index ["patient_id"], name: "index_reminders_on_patient_id"
   end
 
@@ -228,6 +229,7 @@ ActiveRecord::Schema.define(version: 2020_10_27_150136) do
     t.integer "age"
     t.integer "locale", default: 1
     t.datetime "app_start"
+    t.string "gender_other"
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
 
