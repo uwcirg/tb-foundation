@@ -12,8 +12,6 @@ services:
       URL_CLIENT: $URL_CLIENT
       DEFAULT_LOCALE: $DEFAULT_LOCALE
       DOCKER_TAG: $API_DOCKER_TAG
-      MATOMO_URL: $MATOMO_URL
-      MATOMO_ID: $MATOMO_ID
   db:
     restart: always
     image: postgres:11
