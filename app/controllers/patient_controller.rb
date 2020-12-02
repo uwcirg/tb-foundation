@@ -36,25 +36,10 @@ class PatientController < UserController
       @current_user.contact_tracing = ContactTracing.create!(number_of_contacts: params[:numberContacts], contacts_tested: params[:contactsTested], patient_id: @current_user.id)
     end
 
-    @current_user.update(gender: params[:gender], age: params[:age], status: "Active")
+    @current_user.update(gender: params[:gender], age: params[:age], status: "Active", gender_other: params[:genderOther] || nil)
     @current_user.save!
 
     render(json: @current_user, status: 200)
-  end
-
-  def new_patient
-    password_hash = BCrypt::Password.create(params["password"])
-
-    new_patient = Patient.create!(
-      password_digest: password_hash,
-      family_name: params["familyName"],
-      given_name: params["givenName"],
-      managing_organization: "test",
-      phone_number: params["phoneNumber"],
-      treatment_start: Date.today,
-    )
-
-    render(json: new_patient.as_json, status: 200)
   end
 
   def generate_upload_url

@@ -47,7 +47,6 @@ services:
       - RAILS_ENV=$ENVIRONMENT
       - SECRET_KEY_BASE=$SECRET_KEY_BASE
       - URL_API=$URL_API
-      - URL_CORS=$URL_CORS
       - CORS_ORIGINS=$CORS_ORIGINS
       - URL_MINIO=$URL_MINIO
       - REDIS_URL=redis://redis:$PORT_REDIS/12
