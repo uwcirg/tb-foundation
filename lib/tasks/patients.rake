@@ -1,5 +1,19 @@
 # lib/tasks/temporary/users.rake
 namespace :patients do
+
+  desc "Fix patient reports from inital launch downtime"
+  task :fix_inital_reports => :environment do
+    patients = Patient.where("treatment_start < TO_DATE('20201125','YYYYMMDD')")
+    puts "Going to update #{users.count} patients"
+
+    ActiveRecord::Base.transaction do
+      puts(patient.treatment_start)
+
+    end
+
+    puts " All done now!"
+  end
+
   desc "Create PhotoSchedule for each patient"
   task :set_photo_schedule => :environment do
     users = Patient.all

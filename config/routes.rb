@@ -5,14 +5,6 @@ Rails.application.routes.draw do
   get '/push_key', to: 'user#push_key'
   patch '/update_user_subscription', to: 'user#update_user_subscription'
 
-  #post '/message', to: 'message#post_message'
-  # post '/channel', to: 'channel#new_channel'
-  # get '/channels', to: 'channel#all_channels'
-  # post '/channel/:channelID/messages', to: 'channel#post_message'
-  # get '/channel/:channelID/messages', to: 'channel#get_recent_messages'
-  # get '/channel/:channelID/messages/:messageID', to: 'channel#get_messages_before'
-  # get '/messages/unread', to: 'channel#get_unread_message_numbers'
-
   get '/patient/me', to: 'patient#get_patient'
   get '/practitioner/me', to: 'practitioner#get_current_practitioner'
   post '/authentication', to: 'user#authenticate'
@@ -23,9 +15,6 @@ Rails.application.routes.draw do
   #Routes from in progress refractoring
   post '/auth', to: 'user#login'
   delete '/auth', to: 'user#logout'
-
-  #post '/practitioner', to: 'administrator#create_practitioner'
-  #post '/administrator', to:'practitioner#create_admin'
 
   get '/patient/daily_reports/photo_upload_url', to: 'patient#generate_upload_url'
 
@@ -91,11 +80,12 @@ Rails.application.routes.draw do
     end
   end
 
-
+  resources :trial_summary, only: [:index], :path => '/trial-summary'
   
   resources :patients, only: [:create], controller: 'patient/patients'
   resources :practitioners, only: [:index], controller: 'practitioner/practitioners'
   resources :organizations, only: [:index,:create,:show], controller: 'organization/organizations'
+
   get '/photo_uploaders/messaging', to: 'photo_upload#message_upload_url'
   
 
