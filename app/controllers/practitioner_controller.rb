@@ -33,21 +33,6 @@ class PractitionerController < UserController
     render(json: temp_accounts, status: 200)
   end
 
-  def generate_presigned_url
-    # s3 = Aws::S3::Resource.new
-    # bucket = s3.bucket("lab-strips")
-    # key = "lab-test-#{SecureRandom.uuid}.jpeg"
-    # obj = bucket.object(key)
-    # url = obj.presigned_url(:put)
-
-    # render json: { url: url, key: key }
-  end
-
-  def get_all_tests
-    render(json: LabTest.all().as_json, status: 200)
-  end
-
-
   def get_photos
     photos = @current_practitoner.get_photos
     render(json: photos, status: 200)

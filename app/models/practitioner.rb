@@ -19,6 +19,7 @@ class Practitioner < User
     self.channels.create!(title: "tb-expert-chat", is_private: true)
   end
 
+  #TODO: change to get_unresolved_photos
   def get_photos
     #If you need more information from the DailyReport change this query to use DailyReport as the base, then join the other tables
     photos_needing_approval = PhotoReport.where(approved: nil).joins(:daily_report).joins(:patient).where(patient: self.patients.active).order("daily_reports.created_at desc")
@@ -48,7 +49,7 @@ class Practitioner < User
   end
 
   def patients_missed_medication
-    latest_resolutions = Resolution.where(kind: "MissedMedication", patient: self.patients).select("MAX(resolved_at) as last_resolution, patient_id").group(:patient_id)
+    latest_resolutions = Resolution.where(kind: "MissedMedication", patient: self.patients.active).select("MAX(resolved_at) as last_resolution, patient_id").group(:patient_id)
     new_list = []
 
     reports_per_patient = DailyReport.since_last_missing_resolution.where(patient: self.patients).group(:user_id).count()
