@@ -223,4 +223,10 @@ class Patient < User
   def available_channels
     return Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).order(:created_at)
   end
+
+  def add_photo_day(date = Date.today)
+    if(!self.photo_days.where(date: date).exists?)
+          self.photo_days.create!(date: date)
+    end
+  end
 end
