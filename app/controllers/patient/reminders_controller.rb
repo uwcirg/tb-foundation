@@ -1,7 +1,7 @@
 class Patient::RemindersController < UserController
   before_action :snake_case_params
   before_action :check_patient_record_access, only: [:index]
-  before_action :check_is_patient, only: [:create,:delete]
+  before_action :check_is_patient, only: [:create,:destroy]
 
   #@selected_patient loaded from before action in user_controller.rb
 
@@ -19,7 +19,7 @@ class Patient::RemindersController < UserController
   end
 
   def destroy
-    rel = Patient.find(params[:patient_id]).reminders.find(params[:id]).destroy!
+    @selected_patient.reminders.find(params[:id]).destroy!
     render(json: {message: "Success"}, status: :ok )
   end
 
