@@ -1,0 +1,13 @@
+#Find old patient start dates using thier channel creation as a proxy
+#Truncate date by weeks to see how many have started each week.
+#Count based on week
+Channel.where(user_id: Patient.active.where('organization_id > 0')).group("date_trunc('week', created_at)").count
+
+
+
+#Developing command for Minio Backup 
+mc alias set local_minio $URL_MINIO $MINIO_ACCESS_KEY $MINIO_ACCESS_KEY --api S3v4
+
+docker run -it --rm --env-file .env --network="host" --entrypoint=/bin/sh minio/mc
+mc alias set local_minio http://minio $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+

@@ -1,6 +1,6 @@
 class ReminderSerializer < ActiveModel::Serializer
 
-    attributes :title, :category, :datetime, :note
+    attributes :id, :title, :category, :datetime, :note
 
     def title
         object.other_category
