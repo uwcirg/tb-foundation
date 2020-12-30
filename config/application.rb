@@ -34,7 +34,7 @@ module Assemble
   #  'Access-Control-Request-Method' => %w{GET POST OPTIONS}.join(",")
   #}
 
-  orgins_env = ENV['CORS_ORIGINS'] || ["localhost:5062"]
+  orgins_env = ENV['CORS_ORIGINS'] || "localhost:5062"
 
   config.middleware.insert_before 0, Rack::Cors do
     allow do
