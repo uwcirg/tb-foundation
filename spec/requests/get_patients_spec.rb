@@ -10,7 +10,7 @@ describe "get all patients route", :type => :request do
 
   before do |example|
     unless example.metadata[:skip_login]
-        cookie_for_user({ password: "password", email: @practitioner.email, type: "Practitioner" })
+        cookie_for_user({ password: "password", email: @practitioner.email})
     end
   end
 
