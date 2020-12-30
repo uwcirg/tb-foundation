@@ -69,4 +69,5 @@ class Organization < ApplicationRecord
     sql = ActiveRecord::Base.sanitize_sql [query, { organization_id: self.id }]
     return ActiveRecord::Base.connection.exec_query(sql).to_a
   end
+  
 end

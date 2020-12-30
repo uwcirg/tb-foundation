@@ -94,4 +94,6 @@ INNER JOIN daily_reports ON org_symptoms.daily_report_id = daily_reports.id
 WHERE daily_reports.date > CURRENT_TIMESTAMP - interval '1 week'
 
 SQL
+
+
 end

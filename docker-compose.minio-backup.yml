@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+  mc:
+    image: minio/mc
+    entrypoint: /bin/sh
+    volumes:
+      - source: ~/Desktop/minio-backup
+        target: /data-export/
+        type: bind
+        read_only: false
+    environment:
+      - MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
+      - MINIO_SECRET_KEY=$MINIO_SECRET_KEY

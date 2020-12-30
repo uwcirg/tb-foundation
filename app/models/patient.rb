@@ -32,6 +32,7 @@ class Patient < User
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
+  scope :non_test, -> {where('organization_id > 0')}
 
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
@@ -222,5 +223,11 @@ class Patient < User
 
   def available_channels
     return Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).order(:created_at)
+  end
+
+  def add_photo_day(date = Date.today)
+    if(!self.photo_days.where(date: date).exists?)
+          self.photo_days.create!(date: date)
+    end
   end
 end
