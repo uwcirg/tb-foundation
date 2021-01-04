@@ -1,4 +1,5 @@
-# lib/tasks/temporary/users.rake
+require 'rest-client'
+
 namespace :patients do
 
   desc "Fix patient reports from inital launch downtime"
@@ -104,5 +105,19 @@ namespace :patients do
 
     puts " All done now!"
   end
+
+
+  desc "Transfer data"
+  task :transfer_test_instance_data, [:url,:patient_id,:email,:password] => :environment do |t, args|
+
+    response = RestClient.post("#{args[:url]}/auth", {email: args[:email],password: args[:password]})
+    good_cookie = response.cookies
+    
+    reports = RestClient.get("#{args[:url]}/practitioner/patient/#{args[:patient_id]}",{:cookies => good_cookie})
+    puts(reports.body)
+  end
+
+
+
 
 end

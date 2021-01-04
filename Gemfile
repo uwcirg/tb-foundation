@@ -19,6 +19,7 @@ gem 'aws-sdk-s3', '~> 1'
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
 gem 'active_model_serializers'
+gem 'rest-client'
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console

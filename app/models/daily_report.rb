@@ -73,4 +73,5 @@ class DailyReport < ApplicationRecord
   def photo_submitted
     return !photo_report.nil?
   end
+
 end
