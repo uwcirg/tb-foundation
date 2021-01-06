@@ -16,6 +16,8 @@ module PhotoSchedule
         #Decide How Many Treatment days will occur this week
         i < 8 ? mod = 0 : mod = 1
         weekly_photo_sum = rand(2 - mod..2 - mod)
+        puts("Testing change within photo_schedule.rb")
+        puts(weekly_photo_sum)
 
         #Move to Sunday, so we can add weekday to get proper day
         date = date.beginning_of_week(start_day = :sunday)
