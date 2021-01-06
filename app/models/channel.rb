@@ -1,7 +1,7 @@
 class Channel < ApplicationRecord
     has_many :messages, dependent: :destroy
     #Enable this to allow deleting of these records
-    #has_many :messaging_notifications, dependent: :destroy
+    has_many :messaging_notifications, dependent: :destroy
 
     belongs_to :user
     validates :title, presence: true, length: {maximum: 50}

@@ -1,7 +1,7 @@
 class Patient < User
 
   #Medicaiton Schedules are defined in this file ./medication_scheudle.rb
-  include PhotoSchedule
+  #include PhotoSchedule
   include SeedPatient
   include PatientSQL
 
@@ -52,12 +52,12 @@ class Patient < User
 
   def generate_photo_schedule
     puts("Generating Photo Schedule")
-    generate_schedule(self)
+    self.create_new_photo_schedule()
   end
 
   def photo_day_override
     puts("Generating Override Schedule")
-    generate_schedule(self, false)
+    self.create_new_photo_schedule(false)
   end
 
   #Requires an ISO time ( Not DateTime )
@@ -230,4 +230,46 @@ class Patient < User
           self.photo_days.create!(date: date)
     end
   end
+
+  #Moved from photo_schedule.rb
+  def create_new_photo_schedule(random = true)
+
+    #Reset Scheudle
+    self.photo_days.destroy_all
+
+    #Monday-Friday
+    weekdays_array = (1..5).to_a
+
+    date = self.treatment_start
+    i = 0
+    while i < (28)
+      if (!random)
+        every_day_schedule(date)
+      else
+        #Decide How Many Treatment days will occur this week
+        #for now this has been reduced to max 2
+        i < 8 ? mod = 0 : mod = 1
+        weekly_photo_sum = rand(2 - mod..2 - mod)
+
+        #Move to Sunday, so we can add weekday to get proper day
+        date = date.beginning_of_week(start_day = :sunday)
+        selected_weekdays = weekdays_array.shuffle.take(weekly_photo_sum)
+
+        #Map these weekdays to DB rows
+        selected_weekdays.each do |weekday|
+          patient.photo_days.create!(date: date + weekday.days)
+        end
+      end
+
+      date = date + 1.week
+      i += 1
+    end
+  end
+
+  def every_day_schedule(date)
+    (0..6).to_a.each do |day|
+      self.photo_days.create!(date: date + day.days)
+    end
+  end
+
 end

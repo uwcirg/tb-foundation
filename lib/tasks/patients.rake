@@ -1,7 +1,6 @@
-require 'rest-client'
+require "rest-client"
 
 namespace :patients do
-
   desc "Fix patient reports from inital launch downtime"
   task :fix_inital_reports => :environment do
     patients = Patient.where("treatment_start < TO_DATE('20201125','YYYYMMDD')")
@@ -9,7 +8,6 @@ namespace :patients do
 
     ActiveRecord::Base.transaction do
       puts(patient.treatment_start)
-
     end
 
     puts " All done now!"
@@ -70,18 +68,17 @@ namespace :patients do
   task :generate_test_reports => :environment do
     if (Rails.env == "development")
       ActiveRecord::Base.transaction do
-
         DailyReport.all.delete_all
         PhotoReport.all.delete_all
         MedicationReport.all.delete_all
         SymptomReport.all.delete_all
 
         Patient.all.active.each do |patient|
-          patient.seed_test_reports([true,true,false].sample)
+          patient.seed_test_reports([true, true, false].sample)
           print "."
         end
-        
-        PhotoReport.joins(:daily_report).where('daily_reports.date < ?', DateTime.now() - 1.day).update_all(approved: true)
+
+        PhotoReport.joins(:daily_report).where("daily_reports.date < ?", DateTime.now() - 1.day).update_all(approved: true)
       end
     else
       puts("Can only be run in development - is destructive to patient data")
@@ -95,7 +92,7 @@ namespace :patients do
     if (Rails.env == "development")
       ActiveRecord::Base.transaction do
         Patient.all.active.each do |patient|
-          patient.create_seed_report(Date.today, [true,true,false].sample)
+          patient.create_seed_report(Date.today, [true, true, false].sample)
           print "."
         end
       end
@@ -106,18 +103,48 @@ namespace :patients do
     puts " All done now!"
   end
 
-
   desc "Transfer data"
-  task :transfer_test_instance_data, [:url,:patient_id,:email,:password] => :environment do |t, args|
-
-    response = RestClient.post("#{args[:url]}/auth", {email: args[:email],password: args[:password]})
+  task :transfer_test_instance_data, [:live_patient_id, :url, :demo_patient_id, :email, :password] => :environment do |t, args|
+    response = RestClient.post("#{args[:url]}/auth", { email: args[:email], password: args[:password] })
     good_cookie = response.cookies
+
+    reports = RestClient.get("#{args[:url]}/patient/#{args[:demo_patient_id]}/json_reports", { :cookies => good_cookie })
+    parsed = JSON.parse(reports)
+
+    ActiveRecord::Base.transaction do
+
+    patient = Patient.find(args[:live_patient_id])
+
+    parsed[0..1].each do |report|
+
+      if(!report["photo_report"].nil?)
+        photo_report = report["photo_report"]
+        photo_report["user_id"] =  patient.id
+
+        medication_report = report["medication_report"]
+        medication_report["user_id"] = patient.id
+
+        symptom_report = report["symptom_report"]
+        symptom_report["user_id"] = patient.id
+
+        new_p = patient.photo_reports.create!(photo_report)
+        new_m = patient.medication_reports.create!(medication_report)
+        new_s = patient.symptom_reports.create!(symptom_report)
+
+        report["photo_report"] = new_p
+        report["medication_report"] = new_m
+        report["symptom_report"] = new_s
+        report["user_id"] = patient.id
+
+        patient.daily_reports.create!(report)
+      end
+
+      end
+    end
+
     
-    reports = RestClient.get("#{args[:url]}/practitioner/patient/#{args[:patient_id]}",{:cookies => good_cookie})
-    puts(reports.body)
+    # puts(parsed[1])
+    # puts("Patient were adding reports for: ")
+    # puts(Patient.find(args[:live_patient_id]).full_name)
   end
-
-
-
-
 end
