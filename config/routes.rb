@@ -90,4 +90,6 @@ Rails.application.routes.draw do
     resources :organizations, only: [:index, :create, :show], controller: "organization/organizations"
 
     get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
+
+    get "/study/patients", to: "administrator#patient_list"
 end
