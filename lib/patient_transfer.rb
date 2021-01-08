@@ -20,6 +20,8 @@ class PatientTransfer
               photo_report["practitioner_id"] = patient.organization.practitioners.first.id;
               photo_report["user_id"] = patient.id
               photo_report.delete("id")
+              photo_report.delete("daily_report_id")
+
               new_p = patient.photo_reports.create!(photo_report)
               patient.photo_days.create!(date: report["date"])
               report["photo_report"] = new_p
@@ -28,10 +30,12 @@ class PatientTransfer
             medication_report = report["medication_report"]
             medication_report["user_id"] = patient.id
             medication_report.delete("id")
+            medication_report.delete("daily_report_id")
     
             symptom_report = report["symptom_report"]
             symptom_report["user_id"] = patient.id
             symptom_report.delete("id")
+            symptom_report.delete("daily_report_id")
     
             new_m = patient.medication_reports.create!(medication_report)
             new_s = patient.symptom_reports.create!(symptom_report)
@@ -39,7 +43,7 @@ class PatientTransfer
             report["medication_report"] = new_m
             report["symptom_report"] = new_s
             report["user_id"] = patient.id
-            report.delete(:id)
+            report.delete("id")
     
             # if(patient.daily_reports.find_by(report["date"]))
     
