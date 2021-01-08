@@ -1,5 +1,6 @@
 require "rest-client"
 
+#One off script to transfer records from instance to instance
 class PatientTransfer
 
     def transfer_patient(args)
@@ -44,8 +45,6 @@ class PatientTransfer
             report["symptom_report"] = new_s
             report["user_id"] = patient.id
             report.delete("id")
-    
-            # if(patient.daily_reports.find_by(report["date"]))
     
             if (patient.daily_reports.where(date: report["date"]).exists?)
               patient.daily_reports.find_by(date: report["date"]).update!(report)
