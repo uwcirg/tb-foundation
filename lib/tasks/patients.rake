@@ -1,7 +1,6 @@
-require 'rest-client'
+require './lib/patient_transfer'
 
 namespace :patients do
-
   desc "Create PhotoSchedule for each patient"
   task :set_photo_schedule => :environment do
     users = Patient.all
@@ -57,18 +56,17 @@ namespace :patients do
   task :generate_test_reports => :environment do
     if (Rails.env == "development")
       ActiveRecord::Base.transaction do
-
         DailyReport.all.delete_all
         PhotoReport.all.delete_all
         MedicationReport.all.delete_all
         SymptomReport.all.delete_all
 
         Patient.all.active.each do |patient|
-          patient.seed_test_reports([true,true,false].sample)
+          patient.seed_test_reports([true, true, false].sample)
           print "."
         end
-        
-        PhotoReport.joins(:daily_report).where('daily_reports.date < ?', DateTime.now() - 1.day).update_all(approved: true)
+
+        PhotoReport.joins(:daily_report).where("daily_reports.date < ?", DateTime.now() - 1.day).update_all(approved: true)
       end
     else
       puts("Can only be run in development - is destructive to patient data")
@@ -82,7 +80,7 @@ namespace :patients do
     if (Rails.env == "development")
       ActiveRecord::Base.transaction do
         Patient.all.active.each do |patient|
-          patient.create_seed_report(Date.today, [true,true,false].sample)
+          patient.create_seed_report(Date.today, [true, true, false].sample)
           print "."
         end
       end
@@ -93,15 +91,10 @@ namespace :patients do
     puts " All done now!"
   end
 
-
   desc "Transfer data"
-  task :transfer_test_instance_data, [:url,:patient_id,:email,:password] => :environment do |t, args|
+  task :transfer_test_instance_data, [:live_patient_id, :url, :demo_patient_id, :email, :password] => :environment do |t, args|
+    transfer = PatientTransfer.new
+    transfer.transfer_patient(args)
 
-    response = RestClient.post("#{args[:url]}/auth", {email: args[:email],password: args[:password]})
-    good_cookie = response.cookies
-    
-    reports = RestClient.get("#{args[:url]}/practitioner/patient/#{args[:patient_id]}",{:cookies => good_cookie})
-    puts(reports.body)
   end
-
 end

@@ -18,7 +18,7 @@ class DailyReport < ApplicationRecord
   scope :symptoms_last_week, -> { last_week.where(:symptom_report => SymptomReport.has_symptom) }
 
   scope :active_patient, -> { where(:patient => Patient.active) }
-  scope :was_taken, -> { joins(:medication_report).where(medication_reports: { medication_was_taken: true }) }
+  scope :was_taken, -> { joins(:medication_report).where(medication_reports: { medication_was_taken: true }).distinct }
   scope :before_today, -> { where("date < ?", Time.now.to_date) }
   scope :unresolved_symptoms, -> { active_patient.joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, "resolutions.id": Resolution.last_symptom_from_user).where("daily_reports.updated_at > resolutions.resolved_at") }
   scope :since_last_missing_resolution, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_medication_from_user).where("daily_reports.created_at > resolutions.resolved_at") }
