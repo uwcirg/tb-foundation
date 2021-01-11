@@ -92,4 +92,10 @@ Rails.application.routes.draw do
     get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
 
     get "/study/patients", to: "administrator#patient_list"
+
+    namespace "v2" do
+      resources :medication_reports, only: [:create]
+      resources :symptom_reports, only: [:create]
+      resources :photo_reports, only: [:create]
+    end
 end

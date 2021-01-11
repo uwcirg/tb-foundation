@@ -9,9 +9,8 @@ class Patient::PatientsController < UserController
     patient_hash.delete(:is_tester)
     new_patient = @current_user.organization.add_pending_patient(patient_hash, code)
 
-    #TODO Remove this code after usability testing is complete
+    #On deve instances allow seeding of data for training + testing
     if new_patient.save
-
       if is_test_account && Rails.env.development?
         new_patient.update!(treatment_start: DateTime.now() - 1.month)
         new_patient.seed_test_reports

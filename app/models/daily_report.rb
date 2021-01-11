@@ -7,8 +7,8 @@ class DailyReport < ApplicationRecord
   has_one :symptom_report
   has_one :photo_report
 
-  validates :medication_report, presence: true
-  validates :symptom_report, presence: true
+  #validates :medication_report, presence: true
+  #validates :symptom_report, presence: true
   validates :date, presence: true
   validate :limit_one_report_per_day, on: :create
 
@@ -24,11 +24,21 @@ class DailyReport < ApplicationRecord
   scope :since_last_missing_resolution, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_medication_from_user).where("daily_reports.created_at > resolutions.resolved_at") }
   scope :has_symptoms, -> { active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.has_symptom) }
   scope :unresolved_support_request, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_support_request, "daily_reports.doing_okay": false).where("daily_reports.created_at > resolutions.resolved_at") }
-
+  
   def limit_one_report_per_day
     if self.patient.daily_reports.where(date: self.date).count > 0
       errors.add(:base, "Only one report allowed daily. Edit the report instead.")
     end
+  end
+
+  def self.create_if_not_exists(patient_id,date)
+    report = DailyReport.where(user_id: patient_id,date: date)
+    if report.exists?
+      return report.first
+    end
+
+    return DailyReport.create!(user_id: patient_id,date: date)
+
   end
 
   def self.user_missed_days(user_id)
