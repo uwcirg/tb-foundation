@@ -160,7 +160,7 @@ class Patient < User
         medication_taken: today_report.medication_was_taken,
         photo: today_report.photo_submitted,
         photo_required: self.photo_days.where(date: Date.today).exists?,
-        number_symptoms: today_report.symptom_report.number_symptoms,
+        number_symptoms: today_report.symptom_report.nil? ? 0 : today_report.symptom_report.number_symptoms,
       }
     end
 
