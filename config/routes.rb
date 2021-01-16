@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
     #Notifications
     post "/push", to: "login#send_push_to_user"
     get "/push_key", to: "user#push_key"
@@ -100,4 +101,10 @@ Rails.application.routes.draw do
       resources :daily_report, only: [:index]
       resources :mood_reports, only: [:create]
     end
+
+    get "/health-check", to: "health_check#index"
+
+
+
+
 end
