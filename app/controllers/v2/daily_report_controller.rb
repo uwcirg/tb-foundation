@@ -11,10 +11,28 @@ class V2::DailyReportController < UserController
     end
   end
 
+  def create
+    
+  end
+
   private
 
   def find_daily_report_params
     params.require(:date)
     params.permit(:date)
   end
+
+  def create_daily_report_params
+    params.require(:date)
+    params.permit( :date,
+    :nausea,:nausea_rating,:redness,
+    :hives, :fever, :appetite_loss,
+    :blurred_vision, :sore_belly,
+    :yellow_coloration, :difficulty_breathing,
+    :facial_swelling, :dizziness, :headache,
+    :other, :photo_url, :captured_at, :doing_okay, :doing_okay_reason,
+    :datetime_taken,:medication_was_taken,:why_medication_not_taken )
+
+  end
+
 end

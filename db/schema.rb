@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_04_171349) do
+ActiveRecord::Schema.define(version: 2021_02_04_183849) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -147,6 +147,8 @@ ActiveRecord::Schema.define(version: 2020_11_04_171349) do
     t.bigint "user_id", null: false
     t.bigint "practitioner_id"
     t.date "date"
+    t.boolean "photo_was_skipped", default: false
+    t.text "why_photo_was_skipped"
     t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
     t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
   end
