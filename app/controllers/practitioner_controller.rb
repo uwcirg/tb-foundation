@@ -80,6 +80,10 @@ class PractitionerController < UserController
     render(json: list, status: 200)
   end
 
+  def patietns_missed_photo
+    
+  end
+
   def patients_with_adherence
     render(json: @current_practitoner.patients, status: 200)
   end

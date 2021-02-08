@@ -54,7 +54,7 @@ class Practitioner < User
     reports_per_patient = DailyReport.since_last_missing_resolution.where(patient: self.patients).group(:user_id).count()
 
     latest_resolutions.each do |resolution|
-    days_since = (DateTime.now.to_date - resolution.last_resolution.to_date).to_i
+      days_since = (DateTime.now.to_date - resolution.last_resolution.to_date).to_i
 
       #If there are no reports found for that patient, then default to zero instead of skipping them
       total_reports = reports_per_patient[resolution.patient_id] || 0
@@ -64,6 +64,15 @@ class Practitioner < User
     end
 
     return(new_list)
+  end
+
+  def patients_missed_photo
+
+    missed_days = PhotoDay.since_last_missing_photo_resolution.joins("LEFT JOIN daily_reports on daily_reports.date = photo_days.date AND daily_reports.user_id = photo_days.patient_id",
+      "LEFT JOIN photo_reports on photo_reports.daily_report_id = daily_reports.id").where("daily_reports.id IS NULL OR photo_reports.photo_was_skipped = true ")
+
+    missed_days.select(:patient_id).pluck(:patient_id)
+
   end
 
   def tasks_completed_today
@@ -79,5 +88,12 @@ class Practitioner < User
              .where(is_private: true, users: { organization_id: self.organization_id, type: "Patient" })
              .or(Channel.joins(:user).where(user_id: self.id))
              .or(Channel.joins(:user).where(is_private: false)).order(:created_at)
+  end
+
+
+  private
+
+  def latest_resolution_by_kind(kind)
+    Resolution.where(kind: kind , patient: self.patients.active).select("MAX(resolved_at) as last_resolution, patient_id").group(:patient_id)
   end
 end

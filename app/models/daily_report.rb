@@ -25,6 +25,12 @@ class DailyReport < ApplicationRecord
   scope :has_symptoms, -> { active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.has_symptom) }
   scope :unresolved_support_request, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_support_request, "daily_reports.doing_okay": false).where("daily_reports.created_at > resolutions.resolved_at") }
   
+
+  scope :photo_missing, -> {joins(:photo_report).where("photo_reports.id = ?", nil)}
+
+
+
+
   def limit_one_report_per_day
     if self.patient.daily_reports.where(date: self.date).count > 0
       errors.add(:base, "Only one report allowed daily. Edit the report instead.")
