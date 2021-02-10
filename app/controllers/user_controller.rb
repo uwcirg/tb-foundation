@@ -108,7 +108,7 @@ class UserController < ApplicationController
     end
   end
 
-  # ----- Restful patient record access control methods
+  # ----- Patient record access control methods
 
   #Authorize a patient or a practitioner to view records
   def check_patient_record_access

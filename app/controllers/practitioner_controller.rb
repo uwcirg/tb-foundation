@@ -145,6 +145,10 @@ class PractitionerController < UserController
     render(json: patient.daily_reports.as_json(include: [:photo_report,:symptom_report,:medication_report]),status: :ok)
   end
 
+  def patients_who_missed_photo
+    render(json: @current_practitoner.patients_missed_photo, status: 200)
+  end
+
   private
 
   def get_patient_by_id(id)

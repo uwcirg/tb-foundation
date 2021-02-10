@@ -67,12 +67,23 @@ class Practitioner < User
   end
 
   def patients_missed_photo
+    missed_days = PhotoDay.since_last_missing_photo_resolution.where("photo_days.date > ?", Date.today - 1.week)
+      .where(patient: self.patients.active)
+      .joins("LEFT JOIN daily_reports on daily_reports.date = photo_days.date AND daily_reports.user_id = photo_days.patient_id",
+             "LEFT JOIN photo_reports on photo_reports.daily_report_id = daily_reports.id")
+      .where("photo_reports.id IS NULL OR photo_reports.photo_was_skipped = true ")
+      .order("photo_days.date DESC, daily_reports.user_id")
+      .pluck("photo_days.patient_id", "photo_reports.why_photo_was_skipped", "photo_days.date")
 
-    missed_days = PhotoDay.since_last_missing_photo_resolution.joins("LEFT JOIN daily_reports on daily_reports.date = photo_days.date AND daily_reports.user_id = photo_days.patient_id",
-      "LEFT JOIN photo_reports on photo_reports.daily_report_id = daily_reports.id").where("daily_reports.id IS NULL OR photo_reports.photo_was_skipped = true ")
+    hash = {}
 
-    missed_days.select(:patient_id).pluck(:patient_id)
+    missed_days.each do |patient_day|
+      old_entry = hash["#{patient_day[0]}"] || []
+      day_to_add = { date: patient_day[2], reason: patient_day[1] || "" }
+      hash["#{patient_day[0]}"] = old_entry.append(day_to_add)
+    end
 
+    return hash
   end
 
   def tasks_completed_today
@@ -90,10 +101,9 @@ class Practitioner < User
              .or(Channel.joins(:user).where(is_private: false)).order(:created_at)
   end
 
-
   private
 
   def latest_resolution_by_kind(kind)
-    Resolution.where(kind: kind , patient: self.patients.active).select("MAX(resolved_at) as last_resolution, patient_id").group(:patient_id)
+    Resolution.where(kind: kind, patient: self.patients.active).select("MAX(resolved_at) as last_resolution, patient_id").group(:patient_id)
   end
 end
