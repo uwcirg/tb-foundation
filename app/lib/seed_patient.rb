@@ -16,7 +16,7 @@ module SeedPatient
     end
   end
 
-  def create_seed_report(day, is_good)
+  def create_seed_report(day, is_good, photo_url="test_photo.jpg")
   
     datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
 
@@ -43,7 +43,7 @@ module SeedPatient
     end
 
     if(is_photo_day)
-      photo_report = PhotoReport.create!(user_id: self.id, photo_url: "test_photo.jpg")
+      photo_report = PhotoReport.create!(user_id: self.id, photo_url: photo_url)
     end
 
     new_report = DailyReport.create(date: day, user_id: self.id,doing_okay: [true,true,true,false].sample)
