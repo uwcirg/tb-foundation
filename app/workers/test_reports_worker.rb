@@ -10,7 +10,6 @@ class TestReportsWorker
     if (Rails.env.development?)
       ActiveRecord::Base.transaction do
         #Relevant test accounts
-        #For local development [100, 101, 102]
         accounts = Patient.where(id: [100, 101, 102])
         accounts.each do |patient|
             patient.add_photo_day();
