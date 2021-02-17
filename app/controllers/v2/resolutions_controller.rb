@@ -13,7 +13,6 @@ class V2::ResolutionsController < UserController
       return
     end
 
-    puts(resolution_params)
     new_resolution = @current_practitoner.patients.find(params[:patient_id]).resolutions.create!(resolution_params.merge(:practitioner_id => @current_practitoner.id))
     render(json: new_resolution, status: :ok)
   end
