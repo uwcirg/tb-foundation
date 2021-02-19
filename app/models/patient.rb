@@ -75,10 +75,6 @@ class Patient < User
     self.daily_notification.update!(active: false)
   end
 
-  def last_report
-    self.daily_reports.last
-  end
-
   def create_milestone
     self.milestones.create(title: "Treatment Start", datetime: self.treatment_start, all_day: true)
     self.milestones.create(title: "One Month of Treatment", datetime: self.treatment_start + 1.month, all_day: true)

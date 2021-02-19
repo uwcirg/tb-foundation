@@ -7,7 +7,6 @@ class PatientSerializer < ActiveModel::Serializer
     :adherence,
     :percentage_complete, 
     :days_in_treatment, 
-    :last_report, 
     :treatment_start, 
     :current_streak, 
     :phone_number,
@@ -30,6 +29,10 @@ class PatientSerializer < ActiveModel::Serializer
     attribute :last_symptoms, if: -> {@instance_options[:include_last_symptoms].present?}
     attribute :last_missed_day, if: -> {@instance_options[:include_last_missed_day].present?}
     attribute :support_requests, if: -> {@instance_options[:include_support_requests].present?}
+    
+    has_many :daily_reports do
+        @object.daily_reports.where(date: [Date.today, Date.today-1])
+      end
 
     def full_name
         return("#{object.given_name} #{object.family_name}")

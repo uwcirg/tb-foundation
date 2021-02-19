@@ -1,5 +1,6 @@
 require "sidekiq-scheduler"
 
+#This worker is used to aide usability testing, creating fake reports for mock patients
 class TestReportsWorker
   include Sidekiq::Worker
 

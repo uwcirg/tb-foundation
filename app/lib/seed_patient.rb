@@ -39,7 +39,7 @@ module SeedPatient
       )
     else
       med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: true, datetime_taken: datetime)
-      symptom_report = SymptomReport.create!(user_id: self.id, redness: [true, false, false, false, false, false].sample)
+      symptom_report = SymptomReport.create!(user_id: self.id )
     end
 
     if(is_photo_day)

@@ -4,8 +4,8 @@ class TrialSummary < ActiveModelSerializers::Model
     
     def patients
         {
-            active: Patient.active.count,
-            pending: Patient.pending.count,
+            active: Patient.non_test.active.count,
+            pending: Patient.non_test.pending.count,
             priorities: priority_summary
         }
     end
@@ -13,11 +13,11 @@ class TrialSummary < ActiveModelSerializers::Model
     def photos
         return(
             {
-                number_requested: PhotoDay.requested.count,
+                number_requested: PhotoDay.requested.where(patient: Patient.non_test.active).count,
                 number_of_submissions: PhotoReport.all.count,
                 number_conclusive: PhotoReport.where(approved: true).count,
                 today: {
-                  number_requested: PhotoDay.where(date: Date.today).count,
+                  number_requested: PhotoDay.requested.where(patient: Patient.non_test.active, date: Date.today).count,
                   number_of_submissions: PhotoReport.where(date: Date.today).count
                 }
             }
