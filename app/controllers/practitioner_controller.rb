@@ -80,14 +80,6 @@ class PractitionerController < UserController
     render(json: list, status: 200)
   end
 
-  def patietns_missed_photo
-    
-  end
-
-  def patients_with_adherence
-    render(json: @current_practitoner.patients, status: 200)
-  end
-
   def patient_unresolved_symptoms
     render(json: @current_practitoner.patients.find(params["patient_id"]).symptom_summary, status: 200)
   end
@@ -123,6 +115,7 @@ class PractitionerController < UserController
     render(json: { newCode: code }, status: 200)
   end
 
+  #Responds with individual days missing for a single patient, used in sidebar summary
   def patient_missed_days
     render(json: { last_resolved: Resolution.where(patient_id: params[:patient_id], kind: "MissedMedication").order("created_at DESC").first, days: get_patient_by_id(params[:patient_id]).missed_days }, status: 200)
   end

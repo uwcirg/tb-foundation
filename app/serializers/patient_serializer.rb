@@ -31,8 +31,12 @@ class PatientSerializer < ActiveModel::Serializer
     attribute :support_requests, if: -> {@instance_options[:include_support_requests].present?}
     
     has_many :daily_reports do
-        @object.daily_reports.where(date: [Date.today, Date.today-1])
+        @object.daily_reports.where(date: [Date.today, Date.today-1]).order("date DESC")
       end
+
+    has_one :last_report do
+        @object.daily_reports.last
+    end
 
     def full_name
         return("#{object.given_name} #{object.family_name}")

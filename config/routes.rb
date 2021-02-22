@@ -42,7 +42,6 @@ Rails.application.routes.draw do
     get "/patients/missed", to: "practitioner#patients_missed_reporting"
     get "/patients/need_support", to: "practitioner#patients_need_support"
     get "/patients/missed-photo", to: "practitioner#patients_who_missed_photo"
-    get "/test/patients", to: "practitioner#patients_with_adherence"
 
     get "/patient/:patient_id/symptoms", to: "practitioner#patient_unresolved_symptoms"
     get "/patient/:patient_id/symptom_summary", to: "practitioner#patient_symptom_summary"
