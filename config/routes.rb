@@ -86,7 +86,7 @@ Rails.application.routes.draw do
 
     resources :trial_summary, only: [:index], :path => "/trial-summary"
 
-    resources :patients, only: [:create], controller: "patient/patients"
+    resources :patients, only: [:create, :index], controller: "patient/patients"
     resources :practitioners, only: [:index], controller: "practitioner/practitioners"
     resources :organizations, only: [:index, :create, :show], controller: "organization/organizations"
 

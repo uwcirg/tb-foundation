@@ -206,7 +206,7 @@ class Patient < User
       days = days - 1
     end
 
-    return (number_of_treatments_taken.to_f / days.to_f)
+    return (number_of_treatments_taken.to_f / days.to_f).round(2)
   end
 
   def weeks_in_treatment

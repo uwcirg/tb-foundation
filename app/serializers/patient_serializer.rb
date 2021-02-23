@@ -73,10 +73,6 @@ class PatientSerializer < ActiveModel::Serializer
         return day.treatment_day
     end
 
-    def adherence
-        object.adherence.round(2)
-    end
-
     def gender
         object.gender == "Other" ? object.gender_other || "Other" : object.gender
     end

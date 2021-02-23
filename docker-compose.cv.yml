@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+  image-api:
+    image: kjgoodwins/image-api
+    restart: always
+    environment:
+      - URL_MINIO=bucket:9000
+      - MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
+      - MINIO_SECRET_KEY=$MINIO_SECRET_KEY
+    ports:
+      - 9898:80
