@@ -10,8 +10,10 @@ class TestReportsWorker
     #Ensure that this will only run when the environment = development
     if (Rails.env.development?)
       ActiveRecord::Base.transaction do
-        #Relevant test accounts
-        accounts = Patient.where(id: [100, 101, 102])
+        
+        #Choose user_ids based on which development deployment we are working with 
+        patient_ids = (ENV["URL_API"] == "http://localhost:5062") ? [33,5,12] : [100, 101, 102]
+        accounts = Patient.where(id:  patient_ids)
         accounts.each do |patient|
             patient.add_photo_day();
             patient.create_seed_report(DateTime.current.to_date, [true,true,true,false].sample, ["sample_one.jpg","sample_two.jpg","sample_three.jpg"].sample)
