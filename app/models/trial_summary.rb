@@ -16,6 +16,10 @@ class TrialSummary < ActiveModelSerializers::Model
                 number_requested: PhotoDay.requested.count,
                 number_of_submissions: PhotoReport.all.count,
                 number_conclusive: PhotoReport.where(approved: true).count,
+                today: {
+                  number_requested: PhotoDay.where(date: Date.today).count,
+                  number_of_submissions: PhotoReport.where(date: Date.today).count
+                }
             }
         )
     end

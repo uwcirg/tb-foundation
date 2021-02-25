@@ -1,5 +1,5 @@
 require "securerandom"
-require 'sidekiq/web'
+require "sidekiq/web"
 
 class PractitionerController < UserController
   before_action :auth_practitioner, :except => [:upload_lab_test, :generate_presigned_url, :get_all_tests]
@@ -15,15 +15,13 @@ class PractitionerController < UserController
   def get_patients
     hash = {}
     pp = @current_practitoner.organization.patient_priorities
-    @current_practitoner.patients.active.includes('daily_reports','medication_reports','photo_reports','channels','messages').each do |patient|
-      serialization = ActiveModelSerializers::SerializableResource.new(patient, 
-        include_reporting_status: true, 
-        include_last_symptoms: true,
-      include_last_missed_day: true,
-      include_support_requests: true
-    ).as_json
+    @current_practitoner.patients.active.includes("daily_reports", "medication_reports", "photo_reports", "channels", "messages").each do |patient|
+      serialization = ActiveModelSerializers::SerializableResource.new(patient,
+                                                                       include_reporting_status: true,
+                                                                       include_last_symptoms: true,
+                                                                       include_last_missed_day: true,
+                                                                       include_support_requests: true).as_json
       hash[patient.id] = serialization.merge(pp[patient.id])
-
     end
     render(json: hash, status: 200)
   end
@@ -54,8 +52,7 @@ class PractitionerController < UserController
     if (params[:approved])
       photo.approve(@current_practitoner.id)
     else (!params[:approved])
-      photo.deny(@current_practitoner.id)    
-    end
+      photo.deny(@current_practitoner.id)     end
 
     render(json: { message: "Photo status updated" }, status: 200)
   end
@@ -72,9 +69,9 @@ class PractitionerController < UserController
 
   def patients_with_symptoms
     patients = []
-      @current_practitoner.patients.where( id: DailyReport.unresolved_symptoms.select("user_id").distinct).select("id").each do |patient|
-        patients.push({"patientId": patient.id})
-      end
+    @current_practitoner.patients.where(id: DailyReport.unresolved_symptoms.select("user_id").distinct).select("id").each do |patient|
+      patients.push({ "patientId": patient.id })
+    end
     render(json: patients, status: 200)
   end
 
@@ -94,12 +91,11 @@ class PractitionerController < UserController
   def patient_symptom_summary
     hash = {}
     patient = get_patient_by_id(params[:patient_id])
-    hash['week'] = patient.symptom_summary_by_days(7)
-    hash['month'] = patient.symptom_summary_by_days(30)
-    hash['all'] = patient.symptom_summary_by_days(180)
-    render(json: hash, status: :ok )
+    hash["week"] = patient.symptom_summary_by_days(7)
+    hash["month"] = patient.symptom_summary_by_days(30)
+    hash["all"] = patient.symptom_summary_by_days(180)
+    render(json: hash, status: :ok)
   end
-
 
   def create_resolution
     case params["type"]
@@ -124,20 +120,25 @@ class PractitionerController < UserController
   end
 
   def patient_missed_days
-    render(json: {last_resolved: Resolution.where(patient_id: params[:patient_id], kind: "MissedMedication").order("created_at DESC").first, days: get_patient_by_id(params[:patient_id]).missed_days}, status: 200)
+    render(json: { last_resolved: Resolution.where(patient_id: params[:patient_id], kind: "MissedMedication").order("created_at DESC").first, days: get_patient_by_id(params[:patient_id]).missed_days }, status: 200)
   end
 
   def tasks_completed_today
     response = {
       count: @current_practitoner.tasks_completed_today,
-      medicationReporting: @current_practitoner.summary_of_daily_medication_reporting
+      medicationReporting: @current_practitoner.summary_of_daily_medication_reporting,
     }
     render(json: response, status: :ok)
   end
 
   def patients_need_support
-  list = @current_practitoner.patients.where( id: DailyReport.unresolved_support_request.select("user_id").distinct).pluck('users.id')
-   render(json: list ,status: :ok )
+    list = @current_practitoner.patients.where(id: DailyReport.unresolved_support_request.select("user_id").distinct).pluck("users.id")
+    render(json: list, status: :ok)
+  end
+
+  def transfer_patient_data
+    patient = get_patient_by_id(params[:patient_id])
+    render(json: patient.daily_reports.as_json(include: [:photo_report,:symptom_report,:medication_report]),status: :ok)
   end
 
   private

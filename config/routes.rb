@@ -73,6 +73,8 @@ Rails.application.routes.draw do
 
     get "/unread_messages", to: "channel/unread_messages#index"
 
+    get "/patient/:patient_id/json_reports", to: "practitioner#transfer_patient_data"
+
     resources :patient, only: [] do
       scope module: :patient do
         resources :notes, only: [:index, :create, :update]
@@ -88,4 +90,6 @@ Rails.application.routes.draw do
     resources :organizations, only: [:index, :create, :show], controller: "organization/organizations"
 
     get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
+
+    get "/study/patients", to: "administrator#patient_list"
 end

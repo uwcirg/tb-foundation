@@ -19,7 +19,6 @@ class Practitioner < User
     self.channels.create!(title: "tb-expert-chat", is_private: true)
   end
 
-  #TODO: change to get_unresolved_photos
   def get_photos
     #If you need more information from the DailyReport change this query to use DailyReport as the base, then join the other tables
     photos_needing_approval = PhotoReport.where(approved: nil).joins(:daily_report).joins(:patient).where(patient: self.patients.active).order("daily_reports.created_at desc")
