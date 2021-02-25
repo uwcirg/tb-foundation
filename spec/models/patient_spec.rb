@@ -29,7 +29,7 @@ RSpec.describe Patient, :type => :model do
       travel_to((Time.current + 2.day).change(hour: 12)) do
         expect(patient.adherence).to eq(1.0 / 2)
         patient.create_bad_report(Date.today)
-        expect(patient.adherence).to eq(1.0 / 3)
+        expect(patient.adherence).to eq((1.0 / 3).round(2))
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe Patient, :type => :model do
       travel_to((Time.current + 2.day).change(hour: 12)) do
         expect(patient.adherence).to eq(1.0 / 2)
         patient.create_seed_report(Date.today,true)
-        expect(patient.adherence).to eq(2.0 / 3)
+        expect(patient.adherence).to eq((2.0 / 3).round(2))
       end
     end
 

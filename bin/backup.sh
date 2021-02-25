@@ -54,7 +54,7 @@ dump_filename="psql_dump-$(date --iso-8601=seconds)-${web_image_hash}-${compose_
 
 echo "Backing up current database..."
 
-docker-compose exec --user postgres db bash -c '\
+docker-compose exec -T --user postgres db bash -c '\
     PGPASSWORD=$POSTGRES_PASSWORD pg_dump \
         --dbname $RAILS_DB_NAME \
         --username webuser \

@@ -45,16 +45,8 @@ namespace :photo_schedule do
   task :initalize_missed_photo_resolution => :environment do
     ActiveRecord::Base.transaction do
       Patient.all.each do |patient|
-        patient.resolutions.create!(practitioner_id: 1, kind: "MissedPhoto", resolved_at: DateTime.now - 5.days)
-      end
-    end
-  end
-
-  desc "Delete Last Resolution"
-  task :delete_last_photo_resolution => :environment do
-    ActiveRecord::Base.transaction do
-      Patient.all.each do |patient|
-        patient.resolutions.where(kind: "MissedPhoto").last.destroy!
+        patient.resolutions.create!(practitioner_id: patient.organization.practitioners.first.id , kind: "MissedPhoto", resolved_at: DateTime.now - 5.days)
+        puts("Patient #{patient.id} done")
       end
     end
   end
