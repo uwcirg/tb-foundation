@@ -9,8 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Build the stack
-        run: docker build -t uwcirg/tb-foundation:github-build .
-        run: docker-compose run --rm  -e "RAILS_ENV=test" -e  "COMPOSE_FILE=docker-compose.test.yml" web 'bundle exec rake db:create; rspec'
+        run: docker build -t uwcirg/tb-foundation:github-build . && docker-compose run --rm  -e "RAILS_ENV=test" -e  "COMPOSE_FILE=docker-compose.test.yml" web 'bundle exec rake db:create; rspec'
         env:
           COMPOSE_FILE: docker-compose.test.yml
           PORT_API: 5061
