@@ -2,10 +2,7 @@
 # deliver docker images to configured repo with tags to match branches and git tags
 ---
 name: test
-on:
-  push:
-    branches:
-      - '*' 
+on: push
 jobs:   
   test:
     runs-on: ubuntu-latest
