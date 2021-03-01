@@ -2,7 +2,14 @@
 # deliver docker images to configured repo with tags to match branches and git tags
 ---
 name: test
-on: push
+
+#Build on pushes, ignore tag pushes
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*.*'
 jobs:   
   test:
     runs-on: ubuntu-latest
