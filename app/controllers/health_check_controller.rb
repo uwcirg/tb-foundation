@@ -1,9 +1,11 @@
 class HealthCheckController < ApplicationController
+
   def index
-    basic_query = { 
-        "status": "Functional",
-        "organizationCount": Organization.all.count, 
-        "userCount": User.all.count }
-    render(json: basic_query, status: :ok)
+    health_check = HealthCheck.new
+    render(
+      json: health_check, 
+      status: health_check.status ? :ok : :internal_server_error,
+      content_type: "application/health+json")
   end
+
 end
