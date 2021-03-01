@@ -1,5 +1,11 @@
 class HealthCheckController < ApplicationController
+
   def index
-    render(json: HealthCheck.new, status: :ok)
+    health_check = HealthCheck.new
+    render(
+      json: health_check, 
+      status: health_check.status ? :ok : :internal_server_error,
+      content_type: "application/health+json")
   end
+
 end
