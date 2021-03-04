@@ -3,9 +3,7 @@ require "rails_helper"
 
 describe "get all patients route", :type => :request do
   before(:all) do
-    @organization = FactoryBot.create(:organization)
-    @practitioner = FactoryBot.create(:practitioner, organization: @organization)
-    @patients = FactoryBot.create_list(:random_patients, 3, organization: @organization)
+    create_first_organization
   end
 
   before do |example|
