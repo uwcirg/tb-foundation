@@ -19,7 +19,8 @@ class PatientSerializer < ActiveModel::Serializer
     :education_status,
     :age,
     :gender,
-    :last_education_status
+    :last_education_status,
+    :force_password_change
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
@@ -73,9 +74,12 @@ class PatientSerializer < ActiveModel::Serializer
         return day.treatment_day
     end
 
-
     def gender
         object.gender == "Other" ? object.gender_other || "Other" : object.gender
+    end
+
+    def force_password_change
+        object.has_temp_password
     end
 
 

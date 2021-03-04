@@ -1,3 +1,5 @@
+require "securerandom"
+
 class Patient < User
 
   #Medicaiton Schedules are defined in this file ./medication_scheudle.rb
@@ -225,5 +227,11 @@ class Patient < User
     if(!self.photo_days.where(date: date).exists?)
           self.photo_days.create!(date: date)
     end
+  end
+
+  def reset_password
+    temporary_password = SecureRandom.hex(10).upcase[0, 5]
+    self.update_password(temporary_password,true)
+    return temporary_password
   end
 end

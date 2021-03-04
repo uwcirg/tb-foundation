@@ -81,6 +81,7 @@ Rails.application.routes.draw do
         resources :notes, only: [:index, :create, :update]
         resources :reminders, only: [:index, :create, :destroy]
         resources :education_statuses, only: [:create, :index]
+        resources :password_reset, only: [:create],:path => "/password-reset"
       end
     end
 

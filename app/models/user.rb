@@ -87,18 +87,15 @@ class User < ApplicationRecord
       end
   end
 
+  #Used in seeding the database with test data - so that a bunch of notificaitons are not set
   def send_message_no_push(body, channel_id)
     one = self.messages.new(body: body, channel_id: channel_id)
     one.skip_notify = true
     one.save
   end
 
-  def update_password(new_password_string)
-    self.update(password_digest: BCrypt::Password.create(new_password_string))
-  end
-
-  def update_password_test
-    params[:currentPassword]
+  def update_password(new_password_string, is_password_reset=false)
+    self.update(password_digest: BCrypt::Password.create(new_password_string),has_temp_password: is_password_reset)
   end
 
   def check_current_password(password)
