@@ -44,6 +44,25 @@ RSpec.describe Patient, :type => :model do
 
   end
 
+  describe ".has_temp_password" do
+    let(:patient) { FactoryBot.create(:patient, treatment_start: DateTime.now()) }
+
+    it("inital password reset state is false") do
+      expect(patient.has_temp_password).to be false
+    end
+
+    it("after password reset, temp password state is true ") do
+      patient.reset_password
+      expect(patient.has_temp_password).to be true
+    end
+
+    it("after changing password again, the reset state should be false") do
+      patient.update_password("new_password")
+      expect(patient.has_temp_password).to be false
+    end
+
+  end
+
   # it "start of treatment is day 1" do
   #   patient = create_fresh_patient
   #   expect(patient.days_in_treatment).to eq(1)
