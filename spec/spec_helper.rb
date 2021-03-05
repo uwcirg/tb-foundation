@@ -1,7 +1,7 @@
-# require "capybara/rspec"
-# require "factory_bot"
+# If you want to add helpers you have to add to the config below
 require 'active_support/testing/time_helpers'
 require 'helpers/patient_helper.rb'
+require 'helpers/organization_helper.rb'
 
 # SELENIUM_HOST = ENV.fetch("SELENIUM_HOST")
 # TEST_APP_HOST = ENV.fetch("TEST_APP_HOST")
@@ -26,6 +26,7 @@ require 'helpers/patient_helper.rb'
 RSpec.configure do |config|
   config.include ActiveSupport::Testing::TimeHelpers
   config.include PatientHelper
+  config.include OrganizationHelper
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

@@ -1,18 +1,10 @@
 require "rails_helper"
 
-def create_second_org
-  @organization_two = FactoryBot.create(:organization)
-  @practitioner_two = FactoryBot.create(:practitioner, organization: @organization_two)
-  @patients_two = FactoryBot.create_list(:random_patients, 1, organization: @organization_two)
-end
-
 HEADERS = { "CONTENT_TYPE" => "application/json" }
 
 describe "POST v2/resolution", :type => :request do
   before(:all) do
-    @organization = FactoryBot.create(:organization)
-    @practitioner = FactoryBot.create(:practitioner, organization: @organization)
-    @patients = FactoryBot.create_list(:random_patients, 3, organization: @organization)
+    create_first_organization
   end
 
   before do |example|
