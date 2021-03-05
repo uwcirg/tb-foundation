@@ -12,22 +12,25 @@ gem "pg", "~> 0.18"
 gem "puma", "~> 3.12"
 gem "rails", "~> 6.0"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-gem 'jwt'
-gem 'rubyzip'
-gem 'webpush'
-gem 'aws-sdk-s3', '~> 1'
-gem 'sidekiq'
-gem 'sidekiq-scheduler'
-gem 'active_model_serializers'
-gem 'rest-client'
+gem "jwt"
+gem "rubyzip"
+gem "webpush"
+gem "aws-sdk-s3", "~> 1"
+gem "sidekiq"
+gem "sidekiq-scheduler"
+gem "active_model_serializers"
+gem "rest-client"
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "pry"
-  gem 'rspec-rails', '~> 4.0.1'
-  gem 'faker'
-  gem 'factory_bot_rails'
-  gem 'database_cleaner-active_record'
+  gem "rspec-rails", "~> 4.0.1"
+  gem "faker"
+  gem "factory_bot_rails"
+  gem "database_cleaner-active_record"
+  gem "rswag"
+  gem "rswag-specs"
+  gem "rswag-api"
+  gem "rswag-ui"
 end
-
