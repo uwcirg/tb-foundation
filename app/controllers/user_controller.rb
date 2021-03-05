@@ -141,7 +141,9 @@ class UserController < ApplicationController
 
   #Authenticaiton Functions
   def decode_token
-    jwt = cookies.signed[:jwt]
+    puts("Barere")
+    puts(bearer_token)
+    jwt = cookies.signed[:jwt] || bearer_token
     begin
       @decoded = JsonWebToken.decode(jwt)
     rescue JWT::DecodeError => e
@@ -168,4 +170,11 @@ class UserController < ApplicationController
       render json: { error: "Unauthorized: incorrect password", status: 401, isLogin: true }, status: :unauthorized
     end
   end
+
+  def bearer_token
+    pattern = /^Bearer /
+    header  = request.headers['Authorization']
+    header.gsub(pattern, '') if header && header.match(pattern)
+  end
+
 end

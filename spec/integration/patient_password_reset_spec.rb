@@ -1,51 +1,46 @@
-require 'swagger_helper'
+require "swagger_helper"
 
-describe 'Patient Password Reset Route' do
+describe "Patient Password Reset Route" do
+  before(:all) do
+    create_first_organization
+  end
 
-  path '/patients/:patient_id/password-reset' do
-
-    post 'Resets a patients password' do
-      tags 'Patient'
-
-      response '200', 'password reset' do
-        let(:blog) { { title: 'foo', content: 'bar' } }
-        run_test!
-      end
-
-      response '422', 'invalid request' do
-        let(:blog) { { title: 'foo' } }
-        run_test!
-      end
+  before do |example|
+    unless example.metadata[:skip_login]
+      cookie_for_user({ password: "password", email: @practitioner.email })
     end
   end
 
-  path '/blogs/{id}' do
+  after(:all) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
 
-    get 'Retrieves a blog' do
-      tags 'Blogs'
-      produces 'application/json', 'application/xml'
+  path "/patient/{id}/password-reset" do
+    
+    post "Resets a patients password" do
+      tags "Password"
+      produces "application/json"
       parameter name: :id, in: :path, type: :string
 
-      response '200', 'blog found' do
+      response "201", "password reset successful" do
         schema type: :object,
-          properties: {
-            id: { type: :integer },
-            title: { type: :string },
-            content: { type: :string }
-          },
-          required: [ 'id', 'title', 'content' ]
+               properties: {
+                 temporaryPassword: { type: :string },
+               },
+               required: ["temporaryPassword"]
 
-        let(:id) { Blog.create(title: 'foo', content: 'bar').id }
+        let(:id) { @patients[0].id }
         run_test!
       end
 
-      response '404', 'blog not found' do
-        let(:id) { 'invalid' }
-        run_test!
-      end
+      response "401", "password reset unauthorized", skip_login: true do
+        schema type: :object,
+               properties: {
+                 status: {type: :integer},
+                 error: {type: :string}
+               }
 
-      response '406', 'unsupported accept header' do
-        let(:'Accept') { 'application/foo' }
+        let(:id) { @patients[0].id }
         run_test!
       end
     end
