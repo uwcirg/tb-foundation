@@ -1,0 +1,51 @@
+---
+openapi: 3.0.1
+components:
+  securitySchemes:
+    cookie_auth:
+      type: apiKey
+      name: jwt
+      in: cookie
+info:
+  title: API V1
+  version: v1
+paths:
+  "/patient/{id}/password-reset":
+    post:
+      summary: Resets a patients password
+      tags:
+      - Password
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: password reset successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  temporaryPassword:
+                    type: string
+                required:
+                - temporaryPassword
+        '401':
+          description: password reset unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  error:
+                    type: string
+servers:
+- url: http://localhost:5062
+  variables:
+    defaultHost:
+      default: http://localhost:5062

@@ -21,3 +21,17 @@ Add a photo day to the first test account (for debugging)
 Patient.first.add_photo_day
 ```
 
+## Adding a new Ruby Gem
+- Add gem to Gemfile
+- run docker build -t uwcirg/tb-foundation .
+- Redeploy
+
+## Tests + API Documentation with rswag
+
+- An alias has been created in the docker build ```create_docs``` that will generate the Swagger Documentation 
+    - ```RAILS_ENV=test bundle exec rake rswag:specs:swaggerize PATTERN="spec/integration/\*\*/\*_spec.rb"```
+- These docs can be accessed from https://base-url.com/api-docs
+    - They will only be available in development environment
+- Generating the docs does not run the tests, you can still run with the normal command above
+- This is a good time saver, you can test the validity of API responses while also getting documentation out of it
+
