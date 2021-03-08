@@ -7,7 +7,7 @@ class Channel < ApplicationRecord
     validates :title, presence: true, length: {maximum: 50}
     validates :subtitle, length: {maximum: 250}
 
-    after_create :create_notifications
+    after_commit :create_notifications
 
     scope :active, -> { where(:status => ("Active")) }
 
@@ -35,6 +35,12 @@ class Channel < ApplicationRecord
 
     def user_type
         return user.type
+    end
+
+    private
+
+    def create_notifications_async
+        ::NewChannelNotificationWorker.perform_async(self.id)
     end
 
 

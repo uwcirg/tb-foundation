@@ -15,7 +15,7 @@ class User < ApplicationRecord
   validates :email, uniqueness: true, allow_nil: true
   validates :phone_number, uniqueness: true, allow_nil: true
 
-  after_create :create_unread_messages_async
+  after_commit :create_unread_messages_async
 
   def full_name
     "#{self.given_name} #{self.family_name}"
