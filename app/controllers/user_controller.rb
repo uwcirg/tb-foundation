@@ -141,9 +141,7 @@ class UserController < ApplicationController
 
   #Authenticaiton Functions
   def decode_token
-    puts("Barere")
-    puts(bearer_token)
-    jwt = cookies.signed[:jwt] || bearer_token
+    jwt = cookies.signed[:jwt] # To add Authorization header based auth add this: || bearer_token
     begin
       @decoded = JsonWebToken.decode(jwt)
     rescue JWT::DecodeError => e
@@ -160,7 +158,6 @@ class UserController < ApplicationController
     end
 
     #Check if the user has the correct password
-    #TODO: BEFORE PUSHING MUST CHANGE Time.now + 5.seconds to 1.week
     if @user && BCrypt::Password.new(@user.password_digest) == params[:password]
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 7.days.to_i

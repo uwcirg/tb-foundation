@@ -21,7 +21,7 @@ WORKDIR /foundation
 ADD Gemfile* /foundation/
 RUN gem install bundler
 RUN bundle install
-RUN echo 'alias make_swag="RAILS_ENV=test bundle exec rake rswag:specs:swaggerize PATTERN="spec/integration/\*\*/\*_spec.rb""' >> ~/.bashrc
+RUN echo 'alias create_docs="RAILS_ENV=test bundle exec rake rswag:specs:swaggerize PATTERN="spec/integration/\*\*/\*_spec.rb""' >> ~/.bashrc
 RUN echo 'alias rls="bundle exec rails"' >> ~/.bashrc
 
 # Add code for a generic Assemble Foundation
