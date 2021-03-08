@@ -9,6 +9,9 @@ This is the backend API for a project intended to improve tuberculosis treatment
 ## Run Rspec tests (example file provided)
 docker-compose run --rm -e "RAILS_ENV=test" web rspec spec/requests/get_patients_spec.rb
 
+- To skip to a specific test you can include the line number at the end (ie ```:104```)
+- Can also run a whole "it" block if you specify that line
+
 ## Helpful Commands
 
 Launch Rails Console
@@ -34,4 +37,3 @@ Patient.first.add_photo_day
     - They will only be available in development environment
 - Generating the docs does not run the tests, you can still run with the normal command above
 - This is a good time saver, you can test the validity of API responses while also getting documentation out of it
-
