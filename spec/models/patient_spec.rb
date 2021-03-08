@@ -1,4 +1,3 @@
-# spec/models/auction_spec.rb
 require "rails_helper"
 
 RSpec.describe Patient, :type => :model do
@@ -92,15 +91,16 @@ RSpec.describe Patient, :type => :model do
     end
   end
 
-  describe "daily_report creation" do
-    it "cannot create more than one daily report per day, but will record individual report parts" do
-      patient = create_fresh_patient
-      report_1 = patient.create_seed_report(Date.today, true)
-      report_2 = patient.create_seed_report(Date.today, false)
-      expect(patient.daily_reports.count).to eq(1)
-      expect(patient.medication_reports.count).to eq(2)
-    end
-  end
+  # Should probably move this to -> daily_report_spec.rb
+  # describe "daily_report creation" do
+  #   it "cannot create more than one daily report per day, but will record individual report parts" do
+  #     patient = create_fresh_patient
+  #     report_1 = patient.create_seed_report(Date.today, true)
+  #     report_2 = patient.create_seed_report(Date.today, false)
+  #     expect(patient.daily_reports.count).to eq(1)
+  #     expect(patient.medication_reports.count).to eq(2)
+  #   end
+  # end
 
   describe ".messaging_notifications" do
     let(:patient) { create_fresh_patient }
