@@ -3,6 +3,7 @@ class MessageWorker
     # call this from the channel controller ::IncrementCountWorker.perform_async(params[:post_id])
     #Dont retry if any of them fail ( will send duplicate notifications)
     sidekiq_options retry: 0
+    
     def perform(channel_id, channel_title,sender_id)
 
         MessagingNotification.where(channel_id: channel_id, is_subscribed: true).each do |item| 

@@ -101,4 +101,23 @@ RSpec.describe Patient, :type => :model do
       expect(patient.medication_reports.count).to eq(2)
     end
   end
+
+  describe ".messaging_notifications" do
+    let(:patient) { create_fresh_patient }
+    it "creates one unread messagee for  " do
+      expect(patient.messaging_notifications.count).to eq(1)
+    end
+
+    it "creates unread messages for existing public channels" do
+      @practitioner.channels.create!(title: "Test",subtitle: "Test")
+      expect(patient.messaging_notifications.count).to eq(2)
+    end
+
+    it "creates unread messages when a new channel is created" do
+      expect(patient.messaging_notifications.count).to eq(1)
+      @practitioner.channels.create!(title: "Test",subtitle: "Test",is_private: false).messages.create!(body: "Test", user_id: @practitioner.id)
+      expect(patient.messaging_notifications.count).to eq(2)
+    end
+
+  end
 end
