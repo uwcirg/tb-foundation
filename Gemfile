@@ -20,6 +20,7 @@ gem "sidekiq"
 gem "sidekiq-scheduler"
 gem "active_model_serializers"
 gem "rest-client"
+gem 'twilio-ruby'
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console
