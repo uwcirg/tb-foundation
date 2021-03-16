@@ -1,8 +1,25 @@
 Rails.application.routes.draw do
   mount Rswag::Ui::Engine => "/api-docs" unless Rails.env.production?
   mount Rswag::Api::Engine => "/api-docs" unless Rails.env.production?
+
+  # In progress, implementing a stable API
+  # Will used underscored routes,
+  # Not doing so requires extensive manual work or configuration changes
+  # Reference for updating in the future if required 
+  # https://stackoverflow.com/questions/5334465/routes-with-dash-instead-of-underscore-in-ruby-on-rails
+  namespace "v2" do
+    resources :daily_report, only: [:index]
+    resources :medication_reports, only: [:create]
+    resources :symptom_reports, only: [:create]
+    resources :photo_reports, only: [:create]
+    resources :mood_reports, only: [:create]
+    resources :resolutions, only: [:create]
+  end
+
+  #Routes below were developed over time and standarization / organization is lacking
+  #Over time converting these to stable and better organized "v2" routes
+
   #Notifications
-  post "/push", to: "login#send_push_to_user"
   get "/push_key", to: "user#push_key"
   patch "/update_user_subscription", to: "user#update_user_subscription"
 
@@ -32,7 +49,7 @@ Rails.application.routes.draw do
   #Notification Reminder
   patch "/patient/reminder", to: "patient#update_notification_time"
 
-  #New Ones
+  #Practitioner Facing Patient Routes
   get "/patients/photo_reports", to: "practitioner#get_photos"
   get "/patients/photo_reports/processed", to: "practitioner#get_historical_photos"
   get "/patient/:patient_id/reports", to: "practitioner#get_patient_reports"
@@ -56,7 +73,6 @@ Rails.application.routes.draw do
 
   #i18n
   get "/config/locales", to: "application#get_locales"
-  #post '/patient/me/education_status', to: 'patient#mark_educational_message_viewed'
 
   get "/user/current", to: "user#get_current_user"
 
@@ -77,6 +93,8 @@ Rails.application.routes.draw do
 
   get "/patient/:patient_id/json_reports", to: "practitioner#transfer_patient_data"
 
+
+  #Start of better routing organization, implementation improving over time
   resources :patient, only: [] do
     scope module: :patient do
       resources :notes, only: [:index, :create, :update]
@@ -96,14 +114,9 @@ Rails.application.routes.draw do
 
   get "/study/patients", to: "administrator#patient_list"
 
-  namespace "v2" do
-    resources :medication_reports, only: [:create]
-    resources :symptom_reports, only: [:create]
-    resources :photo_reports, only: [:create]
-    resources :daily_report, only: [:index]
-    resources :mood_reports, only: [:create]
-    resources :resolutions, only: [:create]
-  end
-
   get "/health-check", to: "health_check#index"
+
+
+
+
 end

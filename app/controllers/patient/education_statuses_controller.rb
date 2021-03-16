@@ -10,10 +10,11 @@ class Patient::EducationStatusesController < UserController
     status = @selected_patient.education_message_statuses.create(create_status_params)
 
     if (status.save!)
-      render(json: status.as_json, status: :ok)
+      render(json: @selected_patient.education_message_statuses, status: :ok)
     else
-      render(json: { message: "Problem updating education message status" }, status: 422)
+      render(json: { message: "Problem updating education message status" }, status: 500)
     end
+
   rescue ActiveRecord::RecordNotUnique
     render(json: { message: "Already marked as read" }, status: 422)
   end
