@@ -1,18 +1,29 @@
-DSTAMP=$(date +%Y.%m.%d.%H.%M.%S)
+#!/bin/sh -e
 
-TEMP_LOCATION=/tmp/mc-$DSTAMP
-BACKUP_FOLDER=/Users/kylegoodwin/Desktop/minio-test #Should I let this be an input to the script?
-FINAL_LOCATION=$BACKUP_FOLDER/mc-$DSTAMP.tgz
+default_backup_folder=/srv/www/tb-files.cirg.washington.edu/docker/backups
+bin_path="$(cd "$(dirname "$0")" && pwd)"
+repo_path="${bin_path}/.."
+date_stamp=$(date +%Y.%m.%d.%H.%M.%S)
+temp_location=/tmp/mc-$date_stamp
+backup_folder=${1:-$default_backup_folder}
+backup_location=$backup_folder/mc-$date_stamp.tgz
 
-mkdir $TEMP_LOCATION
+if [ ! -d $temp_location ]; then
+  mkdir -p $temp_location
+fi
 
-docker-compose --file=docker-compose.minio-backup.yml \
-run --rm \
--v $TEMP_LOCATION:/output \
-mc -c '
-mc alias set local-minio http://bucket:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
-mc mirror local-minio /output
+if [ ! -d $backup_folder ]; then
+  mkdir -p $backup_folder
+fi
+
+cd "${repo_path}"
+
+docker-compose --file=docker-compose.minio-backup.yml run --rm -v $temp_location:/output \
+mc -c \
 '
-tar zcvpf $FINAL_LOCATION $TEMP_LOCATION
-rm -rf $TEMP_LOCATION
-find $BACKUP_FOLDER -type f -mtime +7 -exec rm {} \;
+    mc alias set local-minio http://bucket:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+    mc mirror local-minio /output
+'
+
+tar zcvpf $backup_location $temp_location
+rm -rf $temp_location
