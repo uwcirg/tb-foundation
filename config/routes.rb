@@ -14,6 +14,9 @@ Rails.application.routes.draw do
     resources :photo_reports, only: [:create]
     resources :mood_reports, only: [:create]
     resources :resolutions, only: [:create]
+
+    resources :patients, only: [:update]
+
   end
 
   #Routes below were developed over time and standarization / organization is lacking
