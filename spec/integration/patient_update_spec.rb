@@ -1,7 +1,7 @@
 require "swagger_helper"
 
 describe "Patient Update Route" do
-  before(:each) do
+  before(:all) do
     create_first_organization
     @id = @patients[0].id
   end
@@ -12,7 +12,7 @@ describe "Patient Update Route" do
     end
   end
 
-  after(:each) do
+  after(:all) do
     DatabaseCleaner.clean_with(:truncation)
   end
 
