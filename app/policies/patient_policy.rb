@@ -7,6 +7,6 @@ class PatientPolicy < ApplicationPolicy
     end
   
     def update?
-      user.practitioner?
+      user.type == "Practitioner" && user.organization_id == patient.organization_id
     end
   end
