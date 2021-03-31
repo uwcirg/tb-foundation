@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   mount Rswag::Ui::Engine => "/api-docs" unless Rails.env.production?
   mount Rswag::Api::Engine => "/api-docs" unless Rails.env.production?
 
+  match '/spec', :to => redirect('/swagger/v2/swagger.yaml')
+
   # In progress, implementing a stable API
   # Will used underscored routes,
   # Not doing so requires extensive manual work or configuration changes
