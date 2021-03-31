@@ -32,8 +32,8 @@ components:
       name: jwt
       in: cookie
 info:
-  title: API V2
-  version: v2
+  title: API V1
+  version: v1
 paths:
   "/patient/{id}/password-reset":
     post:
@@ -91,7 +91,7 @@ paths:
         content:
           application/json:
             schema:
-              type: string
+              "$ref": "#/components/schemas/update_patient"
 servers:
 - url: http://localhost:5062
   variables:
