@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     resources :mood_reports, only: [:create]
     resources :resolutions, only: [:create]
 
-    resources :patients, only: [:update]
+    resources :patient, only: [:update]
 
   end
 

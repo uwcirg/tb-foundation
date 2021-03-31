@@ -15,9 +15,29 @@ RSpec.configure do |config|
   # document below. You can override this behavior by adding a swagger_doc tag to the
   # the root example_group in your specs, e.g. describe '...', swagger_doc: 'v2/swagger.json'
   config.swagger_docs = {
-    "v1/swagger.yaml" => {
+    "v2/swagger.yaml" => {
       openapi: "3.0.1",
       components: {
+        schemas: {
+          update_patient:{
+            type: "object",
+            properties:{
+              phoneNumber: {type: "string"},
+              givenName: {type: "string"},
+              familyName: {type: "string"},
+              treatmentStart:{type: "string", format: "datetime"}
+            }
+          },
+          patient: {
+            type: "object",
+            properties: {
+              givenName: { type: "string" },
+              familyName: { type: "string" },
+              treatmentStart: { type: "string" },
+            },
+            required: %w[givenName familyName]
+          },
+        },
         securitySchemes: {
           cookie_auth: {
             type: :apiKey,
@@ -27,8 +47,8 @@ RSpec.configure do |config|
         },
       },
       info: {
-        title: "API V1",
-        version: "v1",
+        title: "API V2",
+        version: "v2",
       },
       paths: {},
       servers: [
@@ -36,7 +56,7 @@ RSpec.configure do |config|
           url: ENV["URL_API"],
           variables: {
             defaultHost: {
-              default:  ENV["URL_API"],
+              default: ENV["URL_API"],
             },
           },
         },
