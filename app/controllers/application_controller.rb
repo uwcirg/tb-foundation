@@ -1,7 +1,10 @@
 class ApplicationController < ActionController::Base
+  include Pundit
   include ::ActionController::Cookies
   protect_from_forgery with: :exception
   skip_before_action :verify_authenticity_token
+
+  helper_method :current_user 
 
   def confirm_password
     if (params["password"] != params["passwordConfirmation"])
@@ -32,6 +35,12 @@ class ApplicationController < ActionController::Base
   def get_locales
     locales = User.locales
     render(json: locales, status: 200)
+  end
+
+  private
+
+  def current_user
+   @current_user
   end
 
 end

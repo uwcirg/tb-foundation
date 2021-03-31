@@ -103,6 +103,10 @@ class Practitioner < User
              .or(Channel.joins(:user).where(is_private: false)).order(:created_at)
   end
 
+  def practitioner?
+    true
+  end
+
   private
 
   def latest_resolution_by_kind(kind)

@@ -3,6 +3,7 @@ class V2::PatientController < UserController
     before_action :check_patient_record_access, only: [:update]
 
     def update
+        authorize @selected_patient
         @selected_patient.update!(update_patient_params)
         render(json: @selected_patient, status: :created)
     end
