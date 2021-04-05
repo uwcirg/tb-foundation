@@ -1,6 +1,7 @@
 class V2::PatientController < UserController
     before_action :snake_case_params
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+    rescue_from ActiveRecord::RecordNotFound, :with => :patient_not_found
 
     def show
         patient = find_and_authorized_patient
@@ -25,9 +26,12 @@ class V2::PatientController < UserController
         params.permit(:phone_number, :given_name, :family_name, :id)
     end
 
+    def patient_not_found
+        render(json: {error: "A patient with id #{params[:id]} does not exist", code: 404},status: 404)
+    end
+
     def user_not_authorized
-        render(json: {error: "You are not authorized to access that patients records", code: 401
-            },status: 401)
+        render(json: {error: "You are not authorized to access that patients records", code: 401},status: 401)
     end
 
 
