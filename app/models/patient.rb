@@ -29,7 +29,7 @@ class Patient < User
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
   validates :treatment_start, presence: true
 
-  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule
+  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule, :add_treatment_end
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
@@ -234,4 +234,11 @@ class Patient < User
     self.update_password(temporary_password,true)
     return temporary_password
   end
+
+  def add_treatment_end_date
+    if(self.treatment_end_date.nil?)
+      self.update!(treatment_end_date: (self.treatment_start + 180.days).to_date)
+    end
+  end
+
 end

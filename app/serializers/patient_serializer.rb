@@ -20,7 +20,8 @@ class PatientSerializer < ActiveModel::Serializer
     :age,
     :gender,
     :last_education_status,
-    :force_password_change
+    :force_password_change,
+    :treatment_end_date
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
