@@ -120,4 +120,11 @@ RSpec.describe Patient, :type => :model do
     end
 
   end
+
+  describe ".treatment_end_date" do
+    let(:patient) { create_fresh_patient }
+    it "has a treatment default end date of + 6 months " do
+      expect(patient.treatment_end_date).to eq( (DateTime.now + 180.days).to_date)
+    end
+  end
 end
