@@ -240,4 +240,9 @@ class Patient < User
       self.update!(treatment_end_date: (self.treatment_start + 180.days).to_date)
     end
   end
+
+  def has_forced_password_change
+    self.has_temp_password && self.status != "Pending"
+  end
+
 end

@@ -28,7 +28,7 @@ class V2::PatientController < UserController
   end
 
   def update_patient_params
-    params.permit(:phone_number, :given_name, :family_name, :id)
+    params.permit(:phone_number, :given_name, :family_name, :id, :treatment_end_date)
   end
 
   def patient_not_found
