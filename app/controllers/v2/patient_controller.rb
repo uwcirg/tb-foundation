@@ -28,7 +28,11 @@ class V2::PatientController < UserController
   end
 
   def update_patient_params
-    params.permit(:phone_number, :given_name, :family_name, :id, :treatment_end_date)
+    new_params = params.permit(:phone_number, :given_name, :family_name, :id, :treatment_end_date)
+    if(new_params[:phone_number])
+      new_params[:phone_number] = new_params[:phone_number].delete('^0-9')
+    end
+    return new_params
   end
 
   def patient_not_found

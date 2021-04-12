@@ -57,7 +57,7 @@ class UserController < ApplicationController
     snake_case_params
 
     if(!params[:phone_number].nil?)
-      #delete(^0-9) allows users to format thier phone numbers as they please
+      #delete(^0-9) allows users to format their phone numbers as they please
       @user = Patient.find_by(phone_number: params[:phone_number].delete('^0-9') )
     else
       #Must exclude patients from this search - or any patient with nil email will be selected
