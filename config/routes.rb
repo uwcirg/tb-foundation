@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  mount Rswag::Ui::Engine => "/api-docs" unless Rails.env.production?
-  mount Rswag::Api::Engine => "/api-docs" unless Rails.env.production?
+  # mount Rswag::Ui::Engine => "/api-docs" unless Rails.env.production?
+  # mount Rswag::Api::Engine => "/api-docs" unless Rails.env.production?
 
   # In progress, implementing a stable API
   # Will used underscored routes,
