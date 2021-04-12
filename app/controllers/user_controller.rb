@@ -57,7 +57,7 @@ class UserController < ApplicationController
     snake_case_params
 
     if(!params[:phone_number].nil?)
-      #delete(^0-9) allows users to format thier phone numbers as they please
+      #delete(^0-9) allows users to format their phone numbers as they please
       @user = Patient.find_by(phone_number: params[:phone_number].delete('^0-9') )
     else
       #Must exclude patients from this search - or any patient with nil email will be selected
@@ -112,7 +112,8 @@ class UserController < ApplicationController
 
   #Authorize a patient or a practitioner to view records
   def check_patient_record_access
-    @selected_patient = Patient.find(params["patient_id"]) rescue nil
+    patient_id = params["patient_id"] || params["id"]
+    @selected_patient = Patient.find(patient_id) rescue nil
 
     if (@selected_patient.nil?)
       render(json: "That patient does not exist", status: 404)
@@ -141,7 +142,7 @@ class UserController < ApplicationController
 
   #Authenticaiton Functions
   def decode_token
-    jwt = cookies.signed[:jwt] # To add Authorization header based auth add this: || bearer_token
+    jwt = cookies.signed[:jwt] || bearer_token
     begin
       @decoded = JsonWebToken.decode(jwt)
     rescue JWT::DecodeError => e
@@ -162,7 +163,7 @@ class UserController < ApplicationController
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 7.days.to_i
       cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week }
-      render json: { user_id: @user.id, user_type: @user.type }, status: :ok
+      render json: { user_id: @user.id, user_type: @user.type, token: token }, status: :ok
     else
       render json: { error: "Unauthorized: incorrect password", status: 401, isLogin: true }, status: :unauthorized
     end

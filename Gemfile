@@ -20,9 +20,11 @@ gem "sidekiq"
 gem "sidekiq-scheduler"
 gem "active_model_serializers"
 gem "rest-client"
+gem "pundit"
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console
+  gem "rufo"
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "pry"
   gem "rspec-rails", "~> 4.0.1"

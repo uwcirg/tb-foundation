@@ -16,7 +16,6 @@ describe "Patient Password Reset Route" do
   end
 
   path "/patient/{id}/password-reset" do
-    
     post "Resets a patients password" do
       tags "Password"
       produces "application/json"
@@ -36,8 +35,8 @@ describe "Patient Password Reset Route" do
       response "401", "password reset unauthorized", skip_login: true do
         schema type: :object,
                properties: {
-                 status: {type: :integer},
-                 error: {type: :string}
+                 status: { type: :integer },
+                 error: { type: :string },
                }
 
         let(:id) { @patients[0].id }

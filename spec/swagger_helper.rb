@@ -18,6 +18,26 @@ RSpec.configure do |config|
     "v1/swagger.yaml" => {
       openapi: "3.0.1",
       components: {
+        schemas: {
+          update_patient:{
+            type: "object",
+            properties:{
+              phoneNumber: {type: "string"},
+              givenName: {type: "string"},
+              familyName: {type: "string"},
+              treatmentStart:{type: "string", format: "datetime"}
+            }
+          },
+          patient: {
+            type: "object",
+            properties: {
+              givenName: { type: "string" },
+              familyName: { type: "string" },
+              treatmentStart: { type: "string" },
+            },
+            required: %w[givenName familyName]
+          },
+        },
         securitySchemes: {
           cookie_auth: {
             type: :apiKey,
@@ -36,7 +56,7 @@ RSpec.configure do |config|
           url: ENV["URL_API"],
           variables: {
             defaultHost: {
-              default:  ENV["URL_API"],
+              default: ENV["URL_API"],
             },
           },
         },

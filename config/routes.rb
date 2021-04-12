@@ -14,6 +14,9 @@ Rails.application.routes.draw do
     resources :photo_reports, only: [:create]
     resources :mood_reports, only: [:create]
     resources :resolutions, only: [:create]
+
+    resources :patient, only: [:update,:show]
+
   end
 
   #Routes below were developed over time and standarization / organization is lacking
@@ -111,9 +114,7 @@ Rails.application.routes.draw do
   resources :organizations, only: [:index, :create, :show], controller: "organization/organizations"
 
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
-
   get "/study/patients", to: "administrator#patient_list"
-
   get "/health-check", to: "health_check#index"
 
 

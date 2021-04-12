@@ -29,12 +29,12 @@ class Patient < User
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
   validates :treatment_start, presence: true
 
-  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule
+  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
-  scope :non_test, -> {where('organization_id > 0')}
+  scope :non_test, -> { where("organization_id > 0") }
 
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
@@ -184,8 +184,8 @@ class Patient < User
     days = self.missed_days.first["date"] rescue nil
   end
 
-  def has_reported_today(datetime=DateTime.now)
-    self.daily_reports.where(date: datetime.to_date ).exists?
+  def has_reported_today(datetime = DateTime.now)
+    self.daily_reports.where(date: datetime.to_date).exists?
   end
 
   def support_requests
@@ -224,14 +224,25 @@ class Patient < User
   end
 
   def add_photo_day(date = Date.today)
-    if(!self.photo_days.where(date: date).exists?)
-          self.photo_days.create!(date: date)
+    if (!self.photo_days.where(date: date).exists?)
+      self.photo_days.create!(date: date)
     end
   end
 
   def reset_password
     temporary_password = SecureRandom.hex(10).upcase[0, 5]
-    self.update_password(temporary_password,true)
+    self.update_password(temporary_password, true)
     return temporary_password
   end
+
+  def add_treatment_end_date
+    if (self.treatment_end_date.nil?)
+      self.update!(treatment_end_date: (self.treatment_start + 180.days).to_date)
+    end
+  end
+
+  def has_forced_password_change
+    self.has_temp_password && self.status != "Pending"
+  end
+
 end

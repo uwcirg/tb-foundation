@@ -109,14 +109,38 @@ RSpec.describe Patient, :type => :model do
     end
 
     it "creates unread messages for existing public channels" do
-      @practitioner.channels.create!(title: "Test",subtitle: "Test")
+      @practitioner.channels.create!(title: "Test", subtitle: "Test")
       expect(patient.messaging_notifications.count).to eq(2)
     end
 
     it "creates unread messages when a new channel is created" do
       expect(patient.messaging_notifications.count).to eq(1)
-      @practitioner.channels.create!(title: "Test",subtitle: "Test",is_private: false).messages.create!(body: "Test", user_id: @practitioner.id)
+      @practitioner.channels.create!(title: "Test", subtitle: "Test", is_private: false).messages.create!(body: "Test", user_id: @practitioner.id)
       expect(patient.messaging_notifications.count).to eq(2)
+    end
+  end
+
+  describe ".treatment_end_date" do
+    let(:patient) { create_fresh_patient }
+    it "has a treatment default end date of + 6 months " do
+      expect(patient.treatment_end_date).to eq((DateTime.now + 180.days).to_date)
+    end
+  end
+
+  describe ".has_forced_password_change" do
+    let(:patient) { create_fresh_patient }
+    it "initally does not have password reset request" do
+      expect(patient.has_forced_password_change).to eq(false)
+    end
+    
+    it "changes state after password reset" do
+      patient.reset_password
+      expect(patient.has_forced_password_change).to eq(true) 
+    end
+
+    it "is not true when patient is pending" do
+      patient.update!(status: "Pending")
+      expect(patient.has_forced_password_change).to eq(false)
     end
 
   end

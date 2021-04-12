@@ -97,4 +97,17 @@ namespace :patients do
     transfer.transfer_patient(args)
 
   end
+
+  desc "Add treatment_end for all patients"
+  task :add_treatment_end => :environment do
+
+    users = Patient.all
+    print("Addedin treatment_end_date for #{users.count} patients")
+    ActiveRecord::Base.transaction do
+      users.each do |user|
+        user.add_treatment_end_date
+        print "."
+      end
+    end
+  end
 end

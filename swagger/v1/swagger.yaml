@@ -1,6 +1,31 @@
 ---
 openapi: 3.0.1
 components:
+  schemas:
+    update_patient:
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+        givenName:
+          type: string
+        familyName:
+          type: string
+        treatmentStart:
+          type: string
+          format: datetime
+    patient:
+      type: object
+      properties:
+        givenName:
+          type: string
+        familyName:
+          type: string
+        treatmentStart:
+          type: string
+      required:
+      - givenName
+      - familyName
   securitySchemes:
     cookie_auth:
       type: apiKey
@@ -44,6 +69,29 @@ paths:
                     type: integer
                   error:
                     type: string
+  "/v2/patient/{id}":
+    patch:
+      summary: Updates phone number
+      tags:
+      - Patient
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: patient update successful
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/patient"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/update_patient"
 servers:
 - url: http://localhost:5062
   variables:

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_04_032130) do
+ActiveRecord::Schema.define(version: 2021_04_07_220353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -233,6 +233,7 @@ ActiveRecord::Schema.define(version: 2021_03_04_032130) do
     t.datetime "app_start"
     t.string "gender_other"
     t.boolean "has_temp_password", default: false
+    t.date "treatment_end_date"
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
 
