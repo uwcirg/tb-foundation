@@ -21,6 +21,7 @@ gem "sidekiq-scheduler"
 gem "active_model_serializers"
 gem "rest-client"
 gem "pundit"
+gem "rswag"
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console
@@ -31,8 +32,4 @@ group :development, :test do
   gem "faker"
   gem "factory_bot_rails"
   gem "database_cleaner-active_record"
-  gem "rswag"
-  gem "rswag-specs"
-  gem "rswag-api"
-  gem "rswag-ui"
 end
