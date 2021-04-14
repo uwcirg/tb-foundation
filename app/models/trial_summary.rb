@@ -1,6 +1,6 @@
 class TrialSummary < ActiveModelSerializers::Model
 
-    include DashboardSQL
+    include OrganizationSQL
     
     def patients
         {
@@ -24,11 +24,15 @@ class TrialSummary < ActiveModelSerializers::Model
         )
     end
 
+    def adherence_summary
+      exec_query(ADHERENCE)
+    end
+
     private
 
     def exec_query(query)
-        sql = ActiveRecord::Base.sanitize_sql [query]
-        return ActiveRecord::Base.connection.exec_query(sql).to_a
+      sql = ActiveRecord::Base.sanitize_sql [query, { organization_ids: Organization.all.pluck(:id) }]
+      return ActiveRecord::Base.connection.exec_query(sql).to_a
       end
 
     def priority_summary

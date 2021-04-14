@@ -10,7 +10,7 @@ module OrganizationSQL
 
   PATIENTS_IN_COHORT = <<-SQL
 SELECT id from users
-WHERE type = 0 AND organization_id = :organization_id AND users.status = 1
+WHERE type = 0 AND organization_id IN (:organization_ids) AND users.status = 1
 SQL
 
   NUMBER_DAYS_SYMPTOMS = <<-SQL
@@ -71,7 +71,7 @@ SQL
 
   PATIENT_STATUS = <<-SQL
     SELECT status,count(id) from users
-    WHERE type = 0 AND organization_id = :organization_id
+    WHERE type = 0 AND organization_id IN (:organization_ids)
     GROUP BY status
 SQL
 
@@ -89,7 +89,7 @@ sum(facial_swelling::int) as facial_swelling,
 sum(nausea::int) as nausea FROM 
 ( SELECT * FROM symptom_reports
     JOIN users on symptom_reports.user_id = users.id
-    WHERE users.organization_id = :organization_id) as org_symptoms
+    WHERE users.organization_id IN (:organization_ids)) as org_symptoms
 INNER JOIN daily_reports ON org_symptoms.daily_report_id = daily_reports.id 
 WHERE daily_reports.date > CURRENT_TIMESTAMP - interval '1 week'
 

@@ -1,4 +1,4 @@
-class TrialSummaryController < UserController
+class V2::TrialSummaryController < UserController
   before_action :auth_admin
 
   def index
