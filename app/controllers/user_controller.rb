@@ -162,7 +162,7 @@ class UserController < ApplicationController
     if @user && BCrypt::Password.new(@user.password_digest) == params[:password]
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 7.days.to_i
-      cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week }
+      cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week, secure: true, same_site: "None" }
       render json: { user_id: @user.id, user_type: @user.type, token: token }, status: :ok
     else
       render json: { error: "Unauthorized: incorrect password", status: 401, isLogin: true }, status: :unauthorized
