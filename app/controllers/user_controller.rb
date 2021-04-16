@@ -162,7 +162,12 @@ class UserController < ApplicationController
     if @user && BCrypt::Password.new(@user.password_digest) == params[:password]
       token = JsonWebToken.encode(user_id: @user.id)
       time = Time.now + 7.days.to_i
-      cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week, secure: true, same_site: "None" }
+
+      if is_localhost
+        cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week }
+      else
+        cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week, secure: true, same_site: "None" }
+      end
       render json: { user_id: @user.id, user_type: @user.type, token: token }, status: :ok
     else
       render json: { error: "Unauthorized: incorrect password", status: 401, isLogin: true }, status: :unauthorized
@@ -173,6 +178,12 @@ class UserController < ApplicationController
     pattern = /^Bearer /
     header  = request.headers['Authorization']
     header.gsub(pattern, '') if header && header.match(pattern)
+  end
+
+  private
+  
+  def is_localhost
+    ENV["URL_API"].include? "http://localhost"
   end
 
 end
