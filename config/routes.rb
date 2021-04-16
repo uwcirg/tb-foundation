@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     resources :resolutions, only: [:create]
 
     resources :patient, only: [:update,:show]
+    resources :user, only: [:index]
+
+    resources :trial_summary, only: [:index]
+    resources :organizations, only: [:index]
 
   end
 
@@ -107,11 +111,8 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :trial_summary, only: [:index], :path => "/trial-summary"
-
   resources :patients, only: [:create, :index], controller: "patient/patients"
   resources :practitioners, only: [:index], controller: "practitioner/practitioners"
-  resources :organizations, only: [:index, :create, :show], controller: "organization/organizations"
 
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
   get "/study/patients", to: "administrator#patient_list"

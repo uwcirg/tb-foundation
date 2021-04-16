@@ -66,7 +66,7 @@ class Organization < ApplicationRecord
   private
 
   def exec_query(query)
-    sql = ActiveRecord::Base.sanitize_sql [query, { organization_id: self.id }]
+    sql = ActiveRecord::Base.sanitize_sql [query, { organization_ids: [self.id] }]
     return ActiveRecord::Base.connection.exec_query(sql).to_a
   end
   
