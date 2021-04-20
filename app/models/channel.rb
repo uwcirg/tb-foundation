@@ -1,17 +1,17 @@
 class Channel < ApplicationRecord
+    enum category: { Default: 0, Site: 1, Patient: 2}
     has_many :messages, dependent: :destroy
-    #Enable this to allow deleting of these records
-    #has_many :messaging_notifications, dependent: :destroy
+    has_many :messaging_notifications, dependent: :destroy
 
     belongs_to :user
     validates :title, presence: true, length: {maximum: 50}
     validates :subtitle, length: {maximum: 250}
 
-    after_commit :create_notifications
+    after_commit :create_unread_messages_async
 
     scope :active, -> { where(:status => ("Active")) }
 
-    def create_notifications
+    def create_unread_messages
         User.all.map do |u|
             if(u.available_channels.where(id: self.id).exists?)
                 begin
@@ -39,7 +39,7 @@ class Channel < ApplicationRecord
 
     private
 
-    def create_notifications_async
+    def create_unread_messages_async
         ::NewChannelNotificationWorker.perform_async(self.id)
     end
 

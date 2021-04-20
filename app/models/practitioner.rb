@@ -99,8 +99,8 @@ class Practitioner < User
   def available_channels
     return Channel.joins(:user)
              .where(is_private: true, users: { organization_id: self.organization_id, type: "Patient" })
-             .or(Channel.joins(:user).where(user_id: self.id))
-             .or(Channel.joins(:user).where(is_private: false)).order(:created_at)
+             .or(Channel.joins(:user).where(is_private: true, category: "Site", organization_id: self.organization_id ))
+             .or(Channel.joins(:user).where(is_private: false)).order(:organization_id, :created_at)
   end
 
   private

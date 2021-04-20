@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_07_220353) do
+ActiveRecord::Schema.define(version: 2021_04_19_204639) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,9 @@ ActiveRecord::Schema.define(version: 2021_04_07_220353) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_private", default: false, null: false
     t.integer "messages_count", default: 0, null: false
+    t.integer "category", default: 0
+    t.bigint "organization_id"
+    t.index ["organization_id"], name: "index_channels_on_organization_id"
   end
 
   create_table "contact_tracings", force: :cascade do |t|
@@ -237,6 +240,7 @@ ActiveRecord::Schema.define(version: 2021_04_07_220353) do
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
 
+  add_foreign_key "channels", "organizations"
   add_foreign_key "channels", "users"
   add_foreign_key "education_message_statuses", "users", column: "patient_id"
   add_foreign_key "messages", "channels"
