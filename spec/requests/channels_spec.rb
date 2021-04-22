@@ -17,15 +17,14 @@ describe "get all patients route", :type => :request do
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  it "coordinator has access to patient channels and expert chat" do
+  it "coordinator has access to patient channels" do
 
     cookie_for_user({ password: "password", email: @practitioner.email, type: "Practitioner" })
     get "/channels"
     parsed = JSON.parse(response.body)
     expect(response).to have_http_status(:ok)
-    expect(parsed.length).to equal(2)
-    expect(parsed[0]["title"]).to eq("tb-expert-chat")
-    expect(parsed[1]["title"]).to eq(@patient.full_name)
+    expect(parsed.length).to equal(1)
+    expect(parsed[0]["title"]).to eq(@patient.full_name)
   end
   
   it "returns status code 401 when not authorized" do

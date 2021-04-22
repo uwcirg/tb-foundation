@@ -102,9 +102,14 @@ class User < ApplicationRecord
     BCrypt::Password.new(self.password_digest) == password
   end
 
+
   def available_channels
-    return self.channels
+    Pundit.policy_scope!(self, Channel)
   end
+
+  # def available_channels
+  #   return self.channels
+  # end
 
   private
 

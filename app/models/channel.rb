@@ -1,5 +1,5 @@
 class Channel < ApplicationRecord
-    enum category: { Default: 0, Site: 1, Patient: 2}
+    enum category: { Default: 0, SiteGroup: 1, Patient: 2, StudyGroup: 3}
     has_many :messages, dependent: :destroy
     has_many :messaging_notifications, dependent: :destroy
 
@@ -10,6 +10,8 @@ class Channel < ApplicationRecord
     after_commit :create_unread_messages_async
 
     scope :active, -> { where(:status => ("Active")) }
+
+    scope :expert_access, -> (expert){joins(:user).where(is_private: true, users: { type: "Practitioner" }).or(Channel.joins(:user).where(is_private: false)).order(:created_at)}
 
     def create_unread_messages
         User.all.map do |u|

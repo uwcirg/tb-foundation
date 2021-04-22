@@ -14,5 +14,19 @@ namespace :channels do
   
       puts " All done now!"
     end
+
+    desc "convert old public channels to new format"
+    task :convert_existing_channels => :environment do
+      public_channels = Channel.where(is_private: false)
+      patient_channels = Channel.where(user: Patient.all)
+
+      ActiveRecord::Base.transaction do
+        public_channels.update_all(category: "StudyGroup")
+        patient_channels.update_all(category: "Patient")
+      end
+
+    end
+
+
   end
   

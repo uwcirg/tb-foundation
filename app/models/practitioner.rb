@@ -96,13 +96,6 @@ class Practitioner < User
     DailyReport.today.joins(:medication_report).where(user_id: self.patients.active.pluck(:id)).group("medication_reports.medication_was_taken").count
   end
 
-  def available_channels
-    return Channel.joins(:user)
-             .where(is_private: true, users: { organization_id: self.organization_id, type: "Patient" })
-             .or(Channel.joins(:user).where(is_private: true, category: "Site", organization_id: self.organization_id ))
-             .or(Channel.joins(:user).where(is_private: false)).order(:organization_id, :created_at)
-  end
-
   private
 
   def latest_resolution_by_kind(kind)
