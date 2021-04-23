@@ -7,8 +7,6 @@ class DailyReport < ApplicationRecord
   has_one :symptom_report
   has_one :photo_report
 
-  #validates :medication_report, presence: true
-  #validates :symptom_report, presence: true
   validates :date, presence: true
   validate :limit_one_report_per_day, on: :create
 

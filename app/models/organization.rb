@@ -1,8 +1,10 @@
 class Organization < ApplicationRecord
+  include OrganizationSQL
+
   has_many :practitioners
   has_many :patients
 
-  include OrganizationSQL
+  after_commit :create_organization_channel
 
   def add_pending_patient(params,code)
     code_digest = BCrypt::Password.create(code)
@@ -64,6 +66,10 @@ class Organization < ApplicationRecord
   end
 
   private
+
+  def create_organization_channel
+    Channel.create!(title: self.title, organization_id: self.id, is_private: true, category: "SiteGroup")
+  end
 
   def exec_query(query)
     sql = ActiveRecord::Base.sanitize_sql [query, { organization_ids: [self.id] }]
