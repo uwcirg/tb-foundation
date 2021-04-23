@@ -36,7 +36,10 @@ class Channel < ApplicationRecord
     end
 
     def user_type
-        return user.type
+        if(not user.nil?)
+            return user.type
+        end
+        return "System"
     end
 
     def is_site_channel
