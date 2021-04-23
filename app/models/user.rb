@@ -78,7 +78,14 @@ class User < ApplicationRecord
   end
 
   def update_last_message_seen(channel_id, number)
-    MessagingNotification.where(channel_id: channel_id, user_id: self.id).first.update(read_message_count: number)
+    messaging_notification = MessagingNotification.find_by(channel_id: channel_id, user_id: self.id)
+
+    if(messaging_notification.nil?)
+      MessagingNotification.create!(channel_id: channel_id, user_id: self.id, read_message_count: number )
+    else
+      messaging_notification.update(read_message_count: number)
+    end
+
   end
 
   def create_unread_messages
