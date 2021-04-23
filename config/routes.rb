@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # In progress, implementing a stable API
   # Will used underscored routes,
   # Not doing so requires extensive manual work or configuration changes
-  # Reference for updating in the future if required 
+  # Reference for updating in the future if required
   # https://stackoverflow.com/questions/5334465/routes-with-dash-instead-of-underscore-in-ruby-on-rails
   namespace "v2" do
     resources :daily_report, only: [:index]
@@ -15,11 +15,15 @@ Rails.application.routes.draw do
     resources :mood_reports, only: [:create]
     resources :resolutions, only: [:create]
 
-    resources :patient, only: [:update,:show]
+    resources :patient, only: [:update, :show] do
+        resources :contact_traces, only: [:index, :create, :update], controller: "contact_tracing"
+    end
+    
     resources :user, only: [:index]
 
     resources :trial_summary, only: [:index]
     resources :organizations, only: [:index]
+
 
   end
 
@@ -100,7 +104,6 @@ Rails.application.routes.draw do
 
   get "/patient/:patient_id/json_reports", to: "practitioner#transfer_patient_data"
 
-
   #Start of better routing organization, implementation improving over time
   resources :patient, only: [] do
     scope module: :patient do
@@ -117,8 +120,4 @@ Rails.application.routes.draw do
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
   get "/study/patients", to: "administrator#patient_list"
   get "/health-check", to: "health_check#index"
-
-
-
-
 end

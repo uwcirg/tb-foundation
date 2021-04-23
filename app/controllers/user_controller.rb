@@ -1,6 +1,6 @@
 class UserController < ApplicationController
-  before_action :decode_token, :except => [:login, :generate_presigned_url, :get_all_tests]
-  around_action :switch_locale, :except => [:login, :generate_presigned_url, :get_all_tests]
+  before_action :decode_token, :except => [:login, :generate_presigned_url]
+  around_action :switch_locale, :except => [:login, :generate_presigned_url]
 
   def switch_locale(&action)
     auth_user
@@ -132,10 +132,6 @@ class UserController < ApplicationController
     if (@current_user != @selected_patient)
       render(json: "You cannot access another patients records", status: 401)
     end
-  end
-
-  def snake_case_params
-    request.parameters.deep_transform_keys!(&:underscore)
   end
 
   private

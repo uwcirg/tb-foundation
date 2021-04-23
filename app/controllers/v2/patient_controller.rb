@@ -4,7 +4,8 @@ class V2::PatientController < UserController
   rescue_from ActiveRecord::RecordNotFound, :with => :patient_not_found
 
   def show
-    patient = find_and_authorized_patient
+    patient = Patient.find(params[:id])
+    authorize patient
     render(json: patient, status: :ok)
   end
 
