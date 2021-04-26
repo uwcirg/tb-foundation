@@ -19,13 +19,28 @@ RSpec.configure do |config|
       openapi: "3.0.1",
       components: {
         schemas: {
+          channel:{
+            type: "object",
+            properties:{
+              id: { type: "integer"},
+              title: { type: "string", example: "General Discussion"},
+              subtitle: {type: "string"},
+              messagesCount: {type: "integer"},
+              isPrivate: {type: "boolean"},
+              updatedAt: {type: "string", format: "date-time"},
+              userId: {type: "integer"},
+              lastMessageTime: {type: "string", format: "date-time"},
+              userType: {type: "string"},
+              isSiteChannel: {type: "boolean"},
+            }
+          },
           update_patient:{
             type: "object",
             properties:{
               phoneNumber: {type: "string"},
               givenName: {type: "string"},
               familyName: {type: "string"},
-              treatmentStart:{type: "string", format: "datetime"}
+              treatmentStart:{type: "string", format: "date-time"}
             }
           },
           patient: {

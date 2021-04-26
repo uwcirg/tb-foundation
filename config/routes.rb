@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  # mount Rswag::Ui::Engine => "/api-docs" unless Rails.env.production?
-  # mount Rswag::Api::Engine => "/api-docs" unless Rails.env.production?
+  mount Rswag::Ui::Engine => "/api-docs" unless Rails.env.production?
+  mount Rswag::Api::Engine => "/api-docs" unless Rails.env.production?
 
   # In progress, implementing a stable API
   # Will used underscored routes,
@@ -23,6 +23,10 @@ Rails.application.routes.draw do
 
     resources :trial_summary, only: [:index]
     resources :organizations, only: [:index]
+
+    resources :channels, only: [:index, :create], module: "channel" do
+      resources :messages, only: [:index, :create]
+    end
 
 
   end

@@ -2,6 +2,32 @@
 openapi: 3.0.1
 components:
   schemas:
+    channel:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+          example: General Discussion
+        subtitle:
+          type: string
+        messagesCount:
+          type: integer
+        isPrivate:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+        userId:
+          type: integer
+        lastMessageTime:
+          type: string
+          format: date-time
+        userType:
+          type: string
+        isSiteChannel:
+          type: boolean
     update_patient:
       type: object
       properties:
@@ -13,7 +39,7 @@ components:
           type: string
         treatmentStart:
           type: string
-          format: datetime
+          format: date-time
     patient:
       type: object
       properties:
@@ -35,6 +61,20 @@ info:
   title: API V1
   version: v1
 paths:
+  "/v2/channels":
+    get:
+      summary: channels
+      tags:
+      - Channel
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/channel"
   "/patient/{id}/password-reset":
     post:
       summary: Resets a patients password
