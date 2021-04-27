@@ -89,8 +89,11 @@ class User < ApplicationRecord
   end
 
   def create_unread_messages
-    Channel.where(is_private: false).map do |c|
-      self.messaging_notifications.create!(channel_id: c.id, user_id: self.id, read_message_count: 0)
+    self.available_channels.map do |c|
+      new_unread = self.messaging_notifications.create(channel_id: c.id, user_id: self.id, read_message_count: 0)
+      if(new_unread.valid?)
+        new_unread.save
+      end
     end
   end
 

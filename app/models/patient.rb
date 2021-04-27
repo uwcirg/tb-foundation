@@ -53,7 +53,6 @@ class Patient < User
   end
 
   def generate_photo_schedule
-    puts("Generating Photo Schedule")
     generate_schedule(self)
   end
 

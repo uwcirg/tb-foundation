@@ -22,5 +22,17 @@ RSpec.describe Organization, type: :model do
       expect(@practitioner.available_channels).to include(Channel.find_by(organization_id: @organization.id))
     end
 
+    it("Creating a new site will create the channel and unread messages") do
+      create_second_organization
+      channel_id = Channel.find_by(organization_id: @organization_two.id).id
+      expect(Organization.all.count).to be(2)
+      expect(Channel.where(organization_id: @organization_two.id).count).to be(1)
+      expect(@patients_two[0].available_channels).to include(Channel.find_by(organization_id: @organization_two.id))
+      
+      #One patient and one asistant
+      expect(MessagingNotification.where(channel_id: channel_id).count).to be(2)
+     
+    end
+
   end
 end

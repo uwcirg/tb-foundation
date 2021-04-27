@@ -8,13 +8,6 @@ class Practitioner < User
 
   after_create :create_private_message_channel
 
-  def create_unread_messages
-    super
-    Channel.where(is_private: true, user: self.patients).map do |c|
-      self.messaging_notifications.create!(channel_id: c.id, user_id: self.id, read_message_count: 0)
-    end
-  end
-
   def create_private_message_channel
     self.channels.create!(title: "tb-expert-chat", is_private: true)
   end
