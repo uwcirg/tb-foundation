@@ -1,5 +1,7 @@
 class ChannelPolicy < ApplicationPolicy
+  
   class Scope < Scope
+
     def resolve
       if @user.type == "Practitioner"
         scope.where(is_private: true, user: @user.patients)
@@ -10,7 +12,7 @@ class ChannelPolicy < ApplicationPolicy
         .or(Channel.where(is_private: true, category: "SiteGroup", organization_id: @user.organization_id ))
         .order(:created_at)
       else
-        return Model.none 
+        raise Pundit::NotAuthorizedError, 'not allowed to view this action'
       end
     end
   end

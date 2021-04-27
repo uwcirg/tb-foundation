@@ -24,7 +24,9 @@ Rails.application.routes.draw do
     resources :trial_summary, only: [:index]
     resources :organizations, only: [:index]
 
-    resources :channels, only: [:index, :create], module: "channel" do
+    resources :channels, only: [:index, :create]
+
+    resources :channel, only: [:show], controller: "channels" do
       resources :messages, only: [:index, :create]
     end
 

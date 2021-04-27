@@ -24,13 +24,13 @@ RSpec.configure do |config|
             properties:{
               id: { type: "integer"},
               title: { type: "string", example: "General Discussion"},
-              subtitle: {type: "string"},
+              subtitle: {type: "string", nullable: true },
               messagesCount: {type: "integer"},
               isPrivate: {type: "boolean"},
               updatedAt: {type: "string", format: "date-time"},
-              userId: {type: "integer"},
+              userId: {type: "integer", nullable: true },
               lastMessageTime: {type: "string", format: "date-time"},
-              userType: {type: "string"},
+              userType: {type: "string", nullable: true },
               isSiteChannel: {type: "boolean"},
             }
           },
