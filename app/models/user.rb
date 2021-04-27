@@ -25,19 +25,6 @@ class User < ApplicationRecord
     self.update(push_p256dh: nil, push_auth: nil, push_url: nil)
   end
 
-  def as_fhir_json(*args)
-    return {
-             givenName: given_name,
-             familyName: family_name,
-             identifier: [
-               { value: id, use: "official" },
-               { value: "test", use: "messageboard" },
-             ],
-             managingOrganization: managing_organization,
-
-           }
-  end
-
   def send_push_to_user(title, body, app_url = "/", type = nil)
 
     #Check to make sure their subscription information is up to date
@@ -116,10 +103,6 @@ class User < ApplicationRecord
   def available_channels
     Pundit.policy_scope!(self, Channel)
   end
-
-  # def available_channels
-  #   return self.channels
-  # end
 
   private
 
