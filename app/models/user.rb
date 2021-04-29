@@ -29,7 +29,7 @@ class User < ApplicationRecord
 
     #Check to make sure their subscription information is up to date
     if (self.push_url.nil? || self.push_auth.nil? || self.push_p256dh.nil?)
-      return
+      return false
     end
 
     data = { url: app_url }
@@ -61,7 +61,9 @@ class User < ApplicationRecord
     rescue => exception
       puts("User Push Info Was Probably Expired")
       puts(exception)
+      return false
     end
+    return true
   end
 
   def update_last_message_seen(channel_id, number)
