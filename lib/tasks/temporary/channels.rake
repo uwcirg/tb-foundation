@@ -8,7 +8,7 @@ namespace :channels do
 
       ActiveRecord::Base.transaction do
         sites.each do |site|
-          Channel.create!(user_id: admin_id, is_private: true, title: site.title, category: "Site", organization_id: site.id);
+          site.create_organization_channel
         end
       end
   

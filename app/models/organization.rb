@@ -65,11 +65,11 @@ class Organization < ApplicationRecord
     hash
   end
 
-  private
-
   def create_organization_channel
     Channel.create!(title: self.title, organization_id: self.id, is_private: true, category: "SiteGroup")
   end
+
+  private
 
   def exec_query(query)
     sql = ActiveRecord::Base.sanitize_sql [query, { organization_ids: [self.id] }]
