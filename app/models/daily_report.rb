@@ -74,6 +74,10 @@ class DailyReport < ApplicationRecord
   end
 
   def medication_was_taken
+    if(medication_report.nil?)
+      return false
+    end
+    
     return medication_report.medication_was_taken
   end
 
