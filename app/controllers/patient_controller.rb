@@ -31,11 +31,12 @@ class PatientController < UserController
     end
 
     if (!@current_user.contact_tracing.nil?)
-      @current_user.contact_tracing.update!(number_of_contacts: params[:numberContacts], contacts_tested: params[:contactsTested], patient_id: @current_user.id)
+      @current_user.contact_tracing.update!(number_of_contacts: params[:numberOfContacts], contacts_tested: params[:contactsTested], patient_id: @current_user.id)
     else
       @current_user.contact_tracing = ContactTracing.create!(number_of_contacts: params[:numberContacts], contacts_tested: params[:contactsTested], patient_id: @current_user.id)
     end
-    @current_user.add_photo_day
+
+    @current_user.add_photo_day(params[:date] || Date.today)
     @current_user.update(gender: params[:gender], age: params[:age], app_start: DateTime.now(), status: "Active", gender_other: params[:genderOther] || nil)
     @current_user.save!
 

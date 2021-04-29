@@ -53,7 +53,6 @@ class Patient < User
   end
 
   def generate_photo_schedule
-    puts("Generating Photo Schedule")
     generate_schedule(self)
   end
 
@@ -217,10 +216,6 @@ class Patient < User
 
   def percentage_complete
     return (self.days_in_treatment.to_f / 180).round(2)
-  end
-
-  def available_channels
-    return Channel.where(is_private: false).or(Channel.where(is_private: true, user_id: self.id)).order(:created_at)
   end
 
   def add_photo_day(date = Date.today)

@@ -7,10 +7,10 @@ class TrialSummary < ActiveModelSerializers::Model
 
   def patients
     {
-          active: Patient.non_test.active.count,
-          pending: Patient.non_test.pending.count,
-          priorities: priority_summary,
-        }
+      active: Patient.non_test.active.count,
+      pending: Patient.non_test.pending.count,
+      priorities: priority_summary,
+    }
   end
 
   def photos
@@ -30,7 +30,19 @@ class TrialSummary < ActiveModelSerializers::Model
   end
 
   def site_summaries
-    groups = @priorities.select{|d| !d["organization_id"].nil?}
+    groups = @priorities.select { |d| !d["organization_id"].nil? }
+  end
+
+  def request_stats
+    ((Date.today - 1.month)..Date.today).map { |date| { date: date.iso8601, submitted: PhotoReport.where(patient: Patient.active.non_test, daily_report_id: DailyReport.where(date: date)).count, requested: PhotoDay.where(patient: Patient.active.non_test, date: date).count } }.to_json
+  end
+
+  def daily_reports
+    ((Date.today - 1.month)..Date.today).map { |date| { date: date.iso8601, submitted: DailyReport.where(date: date, patient: Patient.active.non_test).count, total: Patient.active.non_test.where("app_start <= ? OR app_start IS NULL", date).count } }.to_json
+  end
+
+  def patient_registration
+    Patient.non_test.active.group("DATE_TRUNC('week',treatment_start)").count
   end
 
   private

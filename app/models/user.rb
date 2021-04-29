@@ -25,19 +25,6 @@ class User < ApplicationRecord
     self.update(push_p256dh: nil, push_auth: nil, push_url: nil)
   end
 
-  def as_fhir_json(*args)
-    return {
-             givenName: given_name,
-             familyName: family_name,
-             identifier: [
-               { value: id, use: "official" },
-               { value: "test", use: "messageboard" },
-             ],
-             managingOrganization: managing_organization,
-
-           }
-  end
-
   def send_push_to_user(title, body, app_url = "/", type = nil)
 
     #Check to make sure their subscription information is up to date
@@ -78,12 +65,22 @@ class User < ApplicationRecord
   end
 
   def update_last_message_seen(channel_id, number)
-    MessagingNotification.where(channel_id: channel_id, user_id: self.id).first.update(read_message_count: number)
+    messaging_notification = MessagingNotification.find_by(channel_id: channel_id, user_id: self.id)
+
+    if(messaging_notification.nil?)
+      MessagingNotification.create!(channel_id: channel_id, user_id: self.id, read_message_count: number )
+    else
+      messaging_notification.update(read_message_count: number)
+    end
+
   end
 
   def create_unread_messages
-    Channel.where(is_private: false).map do |c|
-      self.messaging_notifications.create!(channel_id: c.id, user_id: self.id, read_message_count: 0)
+    self.available_channels.map do |c|
+      new_unread = self.messaging_notifications.create(channel_id: c.id, user_id: self.id, read_message_count: 0)
+      if(new_unread.valid?)
+        new_unread.save
+      end
     end
   end
 
@@ -102,8 +99,9 @@ class User < ApplicationRecord
     BCrypt::Password.new(self.password_digest) == password
   end
 
+
   def available_channels
-    return self.channels
+    Pundit.policy_scope!(self, Channel)
   end
 
   private

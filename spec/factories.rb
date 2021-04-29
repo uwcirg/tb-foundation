@@ -1,4 +1,5 @@
 FactoryBot.define do
+
   orgs_array = ["Test Organization", "UW"]
 
   factory :practitioner do

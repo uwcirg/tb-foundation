@@ -8,13 +8,6 @@ class Practitioner < User
 
   after_create :create_private_message_channel
 
-  def create_unread_messages
-    super
-    Channel.where(is_private: true, user: self.patients).map do |c|
-      self.messaging_notifications.create!(channel_id: c.id, user_id: self.id, read_message_count: 0)
-    end
-  end
-
   def create_private_message_channel
     self.channels.create!(title: "tb-expert-chat", is_private: true)
   end
@@ -94,13 +87,6 @@ class Practitioner < User
 
   def summary_of_daily_medication_reporting
     DailyReport.today.joins(:medication_report).where(user_id: self.patients.active.pluck(:id)).group("medication_reports.medication_was_taken").count
-  end
-
-  def available_channels
-    return Channel.joins(:user)
-             .where(is_private: true, users: { organization_id: self.organization_id, type: "Patient" })
-             .or(Channel.joins(:user).where(user_id: self.id))
-             .or(Channel.joins(:user).where(is_private: false)).order(:created_at)
   end
 
   private
