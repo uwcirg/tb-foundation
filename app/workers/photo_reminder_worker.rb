@@ -13,7 +13,7 @@ class PhotoReminderWorker
         patients_to_notify = Patient.joins(:photo_days).where(photo_days: {date: todays_date})
 
         patients_to_notify.each do |patient|
-            puts(patient.send_push_to_user(title, body, "/"))
+            patient.send_push_to_user(title, body, "/","test_strip_reminder")
         end
 
     end

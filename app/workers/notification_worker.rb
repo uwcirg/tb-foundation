@@ -13,7 +13,7 @@ class NotificationWorker
                 user = notification.user
                 puts(user.given_name)
                 I18n.with_locale(user.locale) do
-                    user.send_push_to_user(I18n.t('medication_reminder'), I18n.t('medication_reminder_body'), "/home/report/0")
+                    user.send_push_to_user(I18n.t('medication_reminder'), I18n.t('medication_reminder_body'), "/home/report/0", "medication_reminder")
                 end
                 
                 puts("Sent notification to #{user.given_name} at #{Time.now.strftime("%H:%M")} with #{user.locale} locale")
