@@ -16,7 +16,7 @@ class ReminderWorker
 
 
                 I18n.with_locale(user.locale) do
-                    user.send_push_to_user(I18n.t('appointment.reminder'), body, "/")
+                    user.send_push_to_user(I18n.t('appointment.reminder'), body, "/", "appointment_reminder")
                 end
                 
                 puts("Sent reminder to #{user.given_name} at #{Time.now.strftime("%H:%M")} with #{user.locale} locale")
