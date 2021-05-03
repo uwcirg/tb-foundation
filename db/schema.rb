@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_23_195100) do
+ActiveRecord::Schema.define(version: 2021_05_03_170908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -154,6 +154,18 @@ ActiveRecord::Schema.define(version: 2021_04_23_195100) do
     t.text "why_photo_was_skipped"
     t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
     t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
+  end
+
+  create_table "push_notification_statuses", force: :cascade do |t|
+    t.bigint "user_id"
+    t.boolean "sent_successfully", default: false
+    t.boolean "delivered_successfully", default: false
+    t.boolean "clicked", default: false
+    t.datetime "clicked_at"
+    t.integer "notification_type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_push_notification_statuses_on_user_id"
   end
 
   create_table "reminders", force: :cascade do |t|

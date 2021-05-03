@@ -9,7 +9,7 @@ class MessageWorker
         MessagingNotification.where(channel_id: channel_id, is_subscribed: true).each do |item| 
 
             if(item.user_id != sender_id)
-                item.user.send_push_to_user("Nuevos Mensajes", "#{channel_title} tiene un nuevo mensaje", "/messaging/channel/#{channel_id}", "messaging")
+                item.user.send_push_to_user("Nuevos Mensajes", "#{channel_title} tiene un nuevo mensaje", "/messaging/channel/#{channel_id}", "Messaging")
             else
 
             end
