@@ -1,0 +1,2 @@
+class PushNotificationStatus < ApplicationRecord
+end

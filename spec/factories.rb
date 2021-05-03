@@ -1,4 +1,11 @@
 FactoryBot.define do
+  factory :push_notification_status do
+    sent_successfully { false }
+    delivered_successfully { false }
+    clicked { false }
+    clicked_at { "2021-05-03 17:09:08" }
+  end
+
 
   orgs_array = ["Test Organization", "UW"]
 
