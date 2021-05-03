@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :channels, dependent: :destroy
   has_many :messaging_notifications, dependent: :destroy
+  has_many :push_notification_status
 
   enum locale: { "en": 0, "es-AR": 1 }
   enum type: { Patient: 0, Practitioner: 1, Administrator: 2, Expert: 3 }

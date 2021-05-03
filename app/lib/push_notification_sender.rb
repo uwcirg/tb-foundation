@@ -34,7 +34,7 @@ class PushNotificationSender
              title: "#{@title}",
              body: "#{@body}",
              url: "#{ENV["URL_CLIENT"]}",
-             data: { url: @app_url, id: @status.id }
+             data: { url: @app_url, id: @status.id, type: @status.notification_type }
            )
   end
 

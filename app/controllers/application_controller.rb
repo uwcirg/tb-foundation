@@ -24,6 +24,10 @@ class ApplicationController < ActionController::Base
     render(json: locales, status: 200)
   end
 
+  def handle_unauthorized_access
+    render(json: { error: "You do not have access to the requested resource", code: 401 }, status: 401)
+  end
+
   private
 
   def current_user

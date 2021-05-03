@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(version: 2021_05_03_170908) do
     t.boolean "delivered_successfully", default: false
     t.boolean "clicked", default: false
     t.datetime "clicked_at"
+    t.datetime "delivered_at"
     t.integer "notification_type"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
