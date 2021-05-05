@@ -35,6 +35,8 @@ class Patient < User
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
   scope :non_test, -> { where("organization_id > 0") }
+  scope :requested_test_not_submitted, -> (date) {joins(:photo_days).where(photo_days: {date: date}).where.not(id: PhotoReport.where(date: date).select(:patient_id))
+}
 
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
