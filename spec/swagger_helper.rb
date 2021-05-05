@@ -52,6 +52,15 @@ RSpec.configure do |config|
             },
             required: %w[givenName familyName]
           },
+          push_notification_status_update: {
+            type: "object",
+            properties:{
+              delivered_successfully: {type: "boolean", example: true},
+              delivered_at: {type: "string", format: "date-time"}, 
+              clicked: {type: "boolean", example: true},
+              clicked_at: {type: "string", format: "date-time"}
+            }
+          }
         },
         securitySchemes: {
           cookie_auth: {

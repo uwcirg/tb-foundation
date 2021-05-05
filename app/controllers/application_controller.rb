@@ -1,8 +1,10 @@
 class ApplicationController < ActionController::Base
   include Pundit
   include ::ActionController::Cookies
+
   protect_from_forgery with: :exception
   skip_before_action :verify_authenticity_token
+  rescue_from Pundit::NotAuthorizedError, with: :handle_unauthorized_access
 
   helper_method :current_user 
 
