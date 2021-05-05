@@ -30,6 +30,8 @@ Rails.application.routes.draw do
       resources :messages, only: [:index, :create]
     end
 
+    resources :push_notification_status, only: [:update]
+
 
   end
 

@@ -12,6 +12,7 @@ components:
           example: General Discussion
         subtitle:
           type: string
+          nullable: true
         messagesCount:
           type: integer
         isPrivate:
@@ -21,11 +22,13 @@ components:
           format: date-time
         userId:
           type: integer
+          nullable: true
         lastMessageTime:
           type: string
           format: date-time
         userType:
           type: string
+          nullable: true
         isSiteChannel:
           type: boolean
     update_patient:
@@ -52,6 +55,21 @@ components:
       required:
       - givenName
       - familyName
+    push_notification_status_update:
+      type: object
+      properties:
+        delivered_successfully:
+          type: boolean
+          example: true
+        delivered_at:
+          type: string
+          format: date-time
+        clicked:
+          type: boolean
+          example: true
+        clicked_at:
+          type: string
+          format: date-time
   securitySchemes:
     cookie_auth:
       type: apiKey
@@ -132,6 +150,27 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/update_patient"
+  "/v2/push_notification_status/{id}":
+    patch:
+      summary: update push status
+      tags:
+      - Push Notification Status
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: push notification status update successful
+        '401':
+          description: push notification status update successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/push_notification_status_update"
 servers:
 - url: http://localhost:5062
   variables:
