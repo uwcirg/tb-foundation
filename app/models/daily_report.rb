@@ -90,7 +90,7 @@ class DailyReport < ApplicationRecord
   private
 
   def update_reminders_since_last_report
-    self.patient_information.update!(reminders_since_last_report: 0)
+    self.patient.patient_information.update!(reminders_since_last_report: 0)
   end
 
 end

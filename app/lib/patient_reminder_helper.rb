@@ -17,11 +17,15 @@ class PatientReminderHelper
   def send_missed_day_reminder
     
     # TODO 
-    # Create patient_information table missed_day_notif_count:integer
-    # add has_one relationship on patient model
-
-
     #increment number of missed_day_notifications in PatientProfile table 
+    
+    
+    #Patients where last report was more than 3 days ago
+    patients_to_notify = Patient.has_not_reported_in_more_than_three_days.include(:patient_information)
+    
+    days_since_last_report = (DateTime.now - patient.daily_reports.order("created_at DESC").last.created_at).to_i
+
+
     #Check Number -> send corresponding message 
     #If == 3 return
     #else

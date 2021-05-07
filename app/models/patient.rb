@@ -29,14 +29,15 @@ class Patient < User
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
   validates :treatment_start, presence: true
 
-  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date, :create_patient_information
+  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date
+  after_commit :create_patient_information
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
   scope :non_test, -> { where("organization_id > 0") }
-  scope :requested_test_not_submitted, -> (date) {joins(:photo_days).where(photo_days: {date: date}).where.not(id: PhotoReport.where(date: date).select(:patient_id))
-}
+  scope :requested_test_not_submitted, -> (date) {joins(:photo_days).where(photo_days: {date: date}).where.not(id: PhotoReport.where(date: date).select(:patient_id))}
+  scope :has_not_reported_in_more_than_three_days, -> {where.not(id: DailyReport.where("created_at > ?",DateTime.now - 3.days).select(:patient_id))}
 
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
@@ -246,7 +247,7 @@ class Patient < User
 
   def create_patient_information
     if(self.patient_information.nil?)
-      self.patient_information.create!(added)
+      PatientInformation.create!(patient_id: self.id, datetime_patient_added: DateTime.now)
     end
   end
 end

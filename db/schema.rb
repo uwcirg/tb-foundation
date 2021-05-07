@@ -124,9 +124,9 @@ ActiveRecord::Schema.define(version: 2021_05_07_134402) do
   end
 
   create_table "patient_informations", force: :cascade do |t|
-    t.datetime "datetime_created"
-    t.datetime "datetime_activated"
-    t.integer "reminders_since_last_report"
+    t.datetime "datetime_patient_added"
+    t.datetime "datetime_patient_activated"
+    t.integer "reminders_since_last_report", default: 0
     t.bigint "patient_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
