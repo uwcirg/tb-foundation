@@ -1,4 +1,8 @@
 class PatientReminderHelper
+  REPORTING_BODY_STRINGS = ["Hola, han pasado 3 dias desde el ultimo reporte de medicacion. Por favor recuerde contactar a su asistente de tratamiento si tiene algun problema o alguna dificultad con la aplicacion. Gracias",
+                            "Hola, No hemos recibido su reporte de medicacion en la ultima semana. Por favor contacte a su asistente de tratamiento en cuanto pueda para resolver cualquier dificultad. Gracias",
+                            "Hola, por favor recuerde que es muy importante seguir tomando la medicacion para curar la TB. Necesitamos saber que Ud. esta bien. Por favor contacte a su asistente o a su medico a la brevedad posible.  Gracias"]
+
   def send_test_reminders(reminder_number)
 
     #TODO - add i18n refs instead of hardcoded
@@ -14,32 +18,50 @@ class PatientReminderHelper
     end
   end
 
-  def send_missed_day_reminder
-    
-    # TODO 
-    #increment number of missed_day_notifications in PatientProfile table 
-    
-    
-    #Patients where last report was more than 3 days ago
-    patients_to_notify = Patient.has_not_reported_in_more_than_three_days.include(:patient_information)
-    
-    days_since_last_report = (DateTime.now - patient.daily_reports.order("created_at DESC").last.created_at).to_i
+  def send_missed_day_reminders
 
+    patients_to_notify = Patient.includes(:patient_information, :daily_reports).active.has_not_reported_in_more_than_three_days
 
-    #Check Number -> send corresponding message 
-    #If == 3 return
-    #else
-    #Send message and increment number of messages sent
+    patients_to_notify.each do |patient|
+      reminder_type = evaluate_history_and_send_reminder(patient)
+      send_reporting_reminder(patient,reminder_type) unless reminder_type == 0
+    end
 
-    #Spec from Fernando
-    # Hello, it has been 3 days since your last report of the medication. Please remember to contact your treatment assistant if you are having any problems  or any difficulty with the app.
-    # Hola, han pasado 3 dias desde el ultimo reporte de medicacion. Por favor recuerde contactar a su asistente de tratamiento si tiene algun problema o alguna dificultad con la aplicacion. Gracias
+  end
 
-    # 7 days without notification - Hello, we have no records of your reports for the last week days. Please contact your treatment assistant who will help you resolve any difficulty.
-    #  Hola, No hemos recibido su reporte de medicacion en la ultima semana. Por favor contacte a su asistente de tratamiento en cuanto pueda para resolver cualquier dificultad. Gracias
+  private
 
-    # 30 days without notification - Hello, Please remember that it is very important to keep taking the medication to cure TB . We need to know that you are OK. Please contact your assistant or your doctor as soon as possible.
-    # Hola, por favor recuerde que es muy importante seguir tomando la medicacion para curar la TB. Necesitamos saber que Ud. esta bien. Por favor contacte a su asistente o a su medico a la brevedad posible.  Gracias
+  def send_reporting_reminder(patient,type)
+    patient.send_push_to_user("Por favor háganos saber que está progresando bien en su tratamiento", REPORTING_BODY_STRINGS[type-1] , app_url = "/missing-reporting/#{type}", 5)
+    patient.update_number_of_missed_reporting_reminders_sent(type)
+  end
 
+  def evaluate_history_and_send_reminder(patient)
+    days_since = days_since_patients_last_report(patient)
+    n_reminders_sent = patient.patient_information.reminders_since_last_report
+
+    if (days_since >= 30 and n_reminders_sent < 3)
+      return 3
+    end
+
+    if (days_since >= 7 and n_reminders_sent < 2)
+      return 2
+    end
+
+    if (days_since >= 3 and n_reminders_sent < 1)
+      return 1
+    end
+
+    return 0
+  end
+
+  def days_since_patients_last_report(patient)
+    last_report = patient.daily_reports.order("created_at").last
+    datetime_last_report = patient.patient_information.datetime_patient_activated || patient.treatment_start
+
+    if (not last_report.nil?)
+      datetime_last_report = last_report.created_at
+    end
+    days_since_last_report = (Time.zone.now.to_date - datetime_last_report.to_date).to_i
   end
 end

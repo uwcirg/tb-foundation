@@ -37,7 +37,7 @@ class Patient < User
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
   scope :non_test, -> { where("organization_id > 0") }
   scope :requested_test_not_submitted, -> (date) {joins(:photo_days).where(photo_days: {date: date}).where.not(id: PhotoReport.where(date: date).select(:patient_id))}
-  scope :has_not_reported_in_more_than_three_days, -> {where.not(id: DailyReport.where("created_at > ?",DateTime.now - 3.days).select(:patient_id))}
+  scope :has_not_reported_in_more_than_three_days, -> {where.not(id: DailyReport.where("created_at >= ?",DateTime.now - 3.days).select(:user_id))}
 
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
@@ -241,6 +241,10 @@ class Patient < User
 
   def has_forced_password_change
     self.has_temp_password && self.status != "Pending"
+  end
+
+  def update_number_of_missed_reporting_reminders_sent(new_number)
+    self.patient_information.update!(reminders_since_last_report: new_number)
   end
 
   private 
