@@ -2,7 +2,6 @@ require "securerandom"
 
 class Patient < User
 
-  #Medicaiton Schedules are defined in this file ./medication_scheudle.rb
   include PhotoSchedule
   include SeedPatient
   include PatientSQL
@@ -22,6 +21,7 @@ class Patient < User
 
   has_one :daily_notification, :foreign_key => :user_id
   has_one :contact_tracing
+  has_one :patient_information
 
   #validates :user_type, value:
   validates :family_name, presence: true
@@ -29,7 +29,7 @@ class Patient < User
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
   validates :treatment_start, presence: true
 
-  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date
+  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date, :create_patient_information
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
@@ -242,4 +242,11 @@ class Patient < User
     self.has_temp_password && self.status != "Pending"
   end
 
+  private 
+
+  def create_patient_information
+    if(self.patient_information.nil?)
+      self.patient_information.create!(added)
+    end
+  end
 end

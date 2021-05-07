@@ -1,4 +1,12 @@
 FactoryBot.define do
+
+  # factory :patient_information do
+    # t.datetime :datetime_created
+    # t.datetime :datetime_activated
+    # t.integer :reminders_since_last_report
+    # t.references :patient, foreign_key: { to_table: :users }, null: false
+  # end
+
   factory :push_notification_status do
     sent_successfully { false }
     delivered_successfully { false }
