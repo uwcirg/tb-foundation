@@ -16,3 +16,6 @@
     cron: '0 19 * * * America/Argentina/Buenos_Aires'   # Runs once per day at 7pm ART, first reminder for completing test
     class: PhotoReminderWorker
     args: [2]
+  misssed_reporting_reminder:
+    cron: '0 * * * *'
+    class: MissedReportingReminderWorker

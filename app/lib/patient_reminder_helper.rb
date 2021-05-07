@@ -20,7 +20,7 @@ class PatientReminderHelper
     end
   end
 
-  def send_missed_day_reminders
+  def send_missed_reporting_reminders
 
     patients_to_notify = Patient.includes(:patient_information, :daily_reports).active.has_not_reported_in_more_than_three_days
 
@@ -64,6 +64,7 @@ class PatientReminderHelper
     if (not last_report.nil?)
       datetime_last_report = last_report.created_at
     end
-    days_since_last_report = (Time.zone.now.to_date - datetime_last_report.to_date).to_i
+    days_since_last_report = (Time.now.in_time_zone("America/Argentina/Buenos_Aires").to_date - datetime_last_report.to_date).to_i
+
   end
 end
