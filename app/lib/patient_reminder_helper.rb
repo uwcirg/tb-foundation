@@ -3,6 +3,8 @@ class PatientReminderHelper
                             "Hola, No hemos recibido su reporte de medicacion en la ultima semana. Por favor contacte a su asistente de tratamiento en cuanto pueda para resolver cualquier dificultad. Gracias",
                             "Hola, por favor recuerde que es muy importante seguir tomando la medicacion para curar la TB. Necesitamos saber que Ud. esta bien. Por favor contacte a su asistente o a su medico a la brevedad posible.  Gracias"]
 
+  REPORTING_SEGMENTS = ["3","7", "30"]
+
   def send_test_reminders(reminder_number)
 
     #TODO - add i18n refs instead of hardcoded
@@ -32,7 +34,7 @@ class PatientReminderHelper
   private
 
   def send_reporting_reminder(patient,type)
-    patient.send_push_to_user("Por favor háganos saber que está progresando bien en su tratamiento", REPORTING_BODY_STRINGS[type-1] , app_url = "/missing-reporting/#{type}", 5)
+    patient.send_push_to_user("No ha reportado en los últimos #{REPORTING_SEGMENTS[type-1]} días", REPORTING_BODY_STRINGS[type-1] , app_url = "/missing-reporting/#{type}", 5)
     patient.update_number_of_missed_reporting_reminders_sent(type)
   end
 

@@ -38,6 +38,7 @@ class PatientController < UserController
 
     @current_user.add_photo_day(params[:date] || Date.today)
     @current_user.update(gender: params[:gender], age: params[:age], app_start: DateTime.now(), status: "Active", gender_other: params[:genderOther] || nil)
+    @current_user.patient_information.upate!(datetime_patient_activated: DateTime.now)
     @current_user.save!
 
     render(json: @current_user, status: 200)
@@ -57,6 +58,7 @@ class PatientController < UserController
     render(json: reports)
   end
 
+  #Legacy code for posting a report - need to move for better organization
   #@TODO move this code to new filepatients/daily_reports_controller.rb
   def post_daily_report
     med_report = MedicationReport.create!(date: params["date"], user_id: @current_user.id, medication_was_taken: params["medicationWasTaken"], datetime_taken: params["dateTimeTaken"], why_medication_not_taken: params["whyMedicationNotTaken"])

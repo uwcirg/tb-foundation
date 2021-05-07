@@ -13,6 +13,6 @@
     class: PhotoReminderWorker
     args: [1]
   second_test_reminder:
-    cron: '0 19 * * * America/Argentina/Buenos_Aires'   # Runs once per day at 9am ART, first reminder for completing test
+    cron: '0 19 * * * America/Argentina/Buenos_Aires'   # Runs once per day at 7pm ART, first reminder for completing test
     class: PhotoReminderWorker
     args: [2]
