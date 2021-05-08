@@ -14,7 +14,7 @@ module PhotoSchedule
         every_day_schedule(patient, date)
       else
         #Decide How Many Treatment days will occur this week
-        weekly_photo_sum = 2
+        weekly_photo_sum = 1
 
         #Move to Sunday, so we can add weekday to get proper day
         date = date.beginning_of_week(start_day = :sunday)

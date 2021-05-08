@@ -15,7 +15,7 @@ namespace :photo_schedule do
         i = 0
 
         while i < (28)
-          weekly_photo_sum = 2
+          weekly_photo_sum = 1
 
           #Move to Sunday, so we can add weekday to get randomized day
           date = date.beginning_of_week(start_day = :sunday)
