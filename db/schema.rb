@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_03_170908) do
+ActiveRecord::Schema.define(version: 2021_05_07_134402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,6 +121,16 @@ ActiveRecord::Schema.define(version: 2021_05_03_170908) do
   create_table "organizations", force: :cascade do |t|
     t.string "title", null: false
     t.index ["title"], name: "index_organizations_on_title", unique: true
+  end
+
+  create_table "patient_informations", force: :cascade do |t|
+    t.datetime "datetime_patient_added"
+    t.datetime "datetime_patient_activated"
+    t.integer "reminders_since_last_report", default: 0
+    t.bigint "patient_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["patient_id"], name: "index_patient_informations_on_patient_id"
   end
 
   create_table "patient_notes", force: :cascade do |t|
@@ -260,6 +270,7 @@ ActiveRecord::Schema.define(version: 2021_05_03_170908) do
   add_foreign_key "messaging_notifications", "channels"
   add_foreign_key "messaging_notifications", "messages", column: "last_message_id"
   add_foreign_key "messaging_notifications", "users"
+  add_foreign_key "patient_informations", "users", column: "patient_id"
   add_foreign_key "patient_notes", "users", column: "patient_id"
   add_foreign_key "patient_notes", "users", column: "practitioner_id"
   add_foreign_key "photo_days", "users", column: "patient_id"

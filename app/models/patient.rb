@@ -2,7 +2,6 @@ require "securerandom"
 
 class Patient < User
 
-  #Medicaiton Schedules are defined in this file ./medication_scheudle.rb
   include PhotoSchedule
   include SeedPatient
   include PatientSQL
@@ -22,6 +21,7 @@ class Patient < User
 
   has_one :daily_notification, :foreign_key => :user_id
   has_one :contact_tracing
+  has_one :patient_information
 
   #validates :user_type, value:
   validates :family_name, presence: true
@@ -30,11 +30,14 @@ class Patient < User
   validates :treatment_start, presence: true
 
   after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date
+  after_commit :create_patient_information
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
   scope :non_test, -> { where("organization_id > 0") }
+  scope :requested_test_not_submitted, -> (date) {joins(:photo_days).where(photo_days: {date: date}).where.not(id: PhotoReport.where(date: date).select(:patient_id))}
+  scope :has_not_reported_in_more_than_three_days, -> {where.not(id: DailyReport.where("created_at >= ?",DateTime.now - 3.days).select(:user_id))}
 
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
@@ -240,4 +243,15 @@ class Patient < User
     self.has_temp_password && self.status != "Pending"
   end
 
+  def update_number_of_missed_reporting_reminders_sent(new_number)
+    self.patient_information.update!(reminders_since_last_report: new_number)
+  end
+
+  private 
+
+  def create_patient_information
+    if(self.patient_information.nil?)
+      PatientInformation.create!(patient_id: self.id, datetime_patient_added: DateTime.now)
+    end
+  end
 end

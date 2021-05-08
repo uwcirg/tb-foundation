@@ -10,6 +10,8 @@ class DailyReport < ApplicationRecord
   validates :date, presence: true
   validate :limit_one_report_per_day, on: :create
 
+  after_commit :update_reminders_since_last_report
+
   scope :today, -> { where(:date => (Date.today)) }
   scope :last_week, -> { where("date > ?", Time.now - 1.week) }
   scope :symptoms_last_week, -> { last_week.where(:symptom_report => SymptomReport.has_symptom) }
@@ -83,6 +85,12 @@ class DailyReport < ApplicationRecord
 
   def photo_submitted
     return !photo_report.nil?
+  end
+
+  private
+
+  def update_reminders_since_last_report
+    self.patient.patient_information.update!(reminders_since_last_report: 0)
   end
 
 end
