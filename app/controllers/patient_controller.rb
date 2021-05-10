@@ -38,7 +38,7 @@ class PatientController < UserController
 
     @current_user.add_photo_day(params[:date] || Date.today)
     @current_user.update(gender: params[:gender], age: params[:age], app_start: DateTime.now(), status: "Active", gender_other: params[:genderOther] || nil)
-    @current_user.patient_information.upate!(datetime_patient_activated: DateTime.now)
+    @current_user.patient_information.update!(datetime_patient_activated: DateTime.now)
     @current_user.save!
 
     render(json: @current_user, status: 200)
