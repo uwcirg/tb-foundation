@@ -10,10 +10,6 @@ class PhotoReportSerializer < ActiveModel::Serializer
         object.id
     end
 
-    # def full_name
-    #     object.patient.full_name
-    # end
-
     def patient_id
         object.patient.id
     end

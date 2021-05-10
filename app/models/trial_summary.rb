@@ -33,11 +33,11 @@ class TrialSummary < ActiveModelSerializers::Model
     groups = @priorities.select { |d| !d["organization_id"].nil? }
   end
 
-  def request_stats
+  def photo_request_stats
     ((Date.today - 1.month)..Date.today).map { |date| { date: date.iso8601, submitted: PhotoReport.where(patient: Patient.active.non_test, daily_report_id: DailyReport.where(date: date)).count, requested: PhotoDay.where(patient: Patient.active.non_test, date: date).count } }
   end
 
-  def daily_reports
+  def reporting_stats
     ((Date.today - 1.month)..Date.today).map { |date| { date: date.iso8601, submitted: DailyReport.where(date: date, patient: Patient.active.non_test).count, requested: Patient.active.non_test.where("app_start <= ? OR app_start IS NULL", date).count } }
   end
 
