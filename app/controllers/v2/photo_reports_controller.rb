@@ -1,6 +1,11 @@
 class V2::PhotoReportsController < UserController
   before_action :snake_case_params
-  before_action :auth_patient
+  before_action :auth_patient, except: :index
+
+  def index
+    @photo_reports = policy_scope(PhotoReport).limit(10)
+    render(json: @photo_reports, status: :ok)
+  end 
 
   def create
     daily_report = DailyReport.create_if_not_exists(@current_user.id, params["date"])

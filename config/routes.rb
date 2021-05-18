@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     resources :daily_report, only: [:index]
     resources :medication_reports, only: [:create]
     resources :symptom_reports, only: [:create]
-    resources :photo_reports, only: [:create]
+    resources :photo_reports, only: [:create, :index]
     resources :mood_reports, only: [:create]
     resources :resolutions, only: [:create]
 
