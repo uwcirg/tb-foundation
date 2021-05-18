@@ -70,4 +70,5 @@ class TrialSummary < ActiveModelSerializers::Model
     end
     return hash
   end
+
 end
