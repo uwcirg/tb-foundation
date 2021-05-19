@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   # Reference for updating in the future if required
   # https://stackoverflow.com/questions/5334465/routes-with-dash-instead-of-underscore-in-ruby-on-rails
   namespace "v2" do
+    resources :time_summary, only: [:index]
     resources :daily_report, only: [:index]
     resources :medication_reports, only: [:create]
     resources :symptom_reports, only: [:create]

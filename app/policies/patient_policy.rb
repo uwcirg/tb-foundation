@@ -14,8 +14,6 @@ class PatientPolicy < ApplicationPolicy
     end
   end
 
-
-
   attr_reader :user, :patient
 
   def initialize(user, patient)
