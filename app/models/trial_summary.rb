@@ -50,7 +50,7 @@ class TrialSummary < ActiveModelSerializers::Model
 
   def symptom_summary
     hash = {}
-    results = exec_query(SYMPTOM_SUMMARY)[0]
+    results = exec_query(FULL_SYMPTOM_SUMMARY)[0]
     results.keys.each do |value|
       hash[value] = results[value]
     end
