@@ -1,6 +1,19 @@
 include PolicyHelper
 
 class PatientPolicy < ApplicationPolicy
+
+  class Scope < Scope
+    def resolve
+      if  @user.admin?
+        scope.all
+      elsif @user.practitioner?
+        scope.where(organization_id: @user.organization_id)
+      else
+        raise Pundit::NotAuthorizedError, 'not allowed to view this action'
+      end
+    end
+  end
+
   attr_reader :user, :patient
 
   def initialize(user, patient)
@@ -19,6 +32,5 @@ class PatientPolicy < ApplicationPolicy
   def show?
     patient_belongs_to_practitioner or user_is_current_patient
   end
-
 
 end

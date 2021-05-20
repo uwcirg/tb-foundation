@@ -1,5 +1,10 @@
 class V2::PatientController < PatientDataController
 
+  def index
+    @patients = policy_scope(Patient)
+    render( json: @patients, status: :ok, each_serializer: serializer )
+  end
+
   def show
     patient = Patient.find(params[:id])
     authorize patient
@@ -36,5 +41,11 @@ class V2::PatientController < PatientDataController
   def param_errors(patient)
     patient.errors.as_json.as_json.deep_transform_keys! { |key| key.camelize(:lower) }
   end
+
+  def serializer
+    return PatientSerializer unless @current_user.admin?
+    return PatientAnonSerializer
+  end
+
 
 end

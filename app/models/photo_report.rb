@@ -1,14 +1,15 @@
 class PhotoReport < ApplicationRecord
     belongs_to :daily_report, optional: true
     belongs_to :patient, :foreign_key=> :user_id
-    #has_one :daily_report
+
+    def self.policy_class
+        PatientRecordPolicy
+      end
 
     def assigned_practitioner
         return self.user.practitioner_id
     end
 
-
-    #Pass in a practitioner id, to keep track of who approved photo
     def approve(id)
         self.update(approved: true,practitioner_id: id, approval_timestamp: DateTime.now() )
         self.save
@@ -18,7 +19,6 @@ class PhotoReport < ApplicationRecord
         self.update(approved: false,practitioner_id: id, approval_timestamp: DateTime.now() )
         self.save
     end
-
 
     def get_url
         if(self.photo_url.nil?)
@@ -30,7 +30,6 @@ class PhotoReport < ApplicationRecord
 
         return tempURL
     end
-
 
     def pretty_json
         return {

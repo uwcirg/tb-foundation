@@ -66,6 +66,14 @@ class User < ApplicationRecord
     Pundit.policy_scope!(self, Channel)
   end
 
+  def admin?
+    self.type == "Administrator"
+  end
+
+  def practitioner?
+    self.type == "Practitioner"
+  end
+
   private
 
   def create_unread_messages_async

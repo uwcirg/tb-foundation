@@ -77,7 +77,7 @@ SQL
     GROUP BY status
 SQL
 
-SYMPTOM_SUMMARY = <<-SQL
+FULL_SYMPTOM_SUMMARY = <<-SQL
 
 SELECT sum(redness::int) as redness,
 sum(hives::int) as hives,
@@ -93,9 +93,12 @@ sum(nausea::int) as nausea FROM
     JOIN users on symptom_reports.user_id = users.id
     WHERE users.organization_id IN (:organization_ids)) as org_symptoms
 INNER JOIN daily_reports ON org_symptoms.daily_report_id = daily_reports.id 
-WHERE daily_reports.date > CURRENT_TIMESTAMP - interval '1 week'
 
 SQL
 
+SYMPTOM_SUMMARY = <<-SQL
+#{FULL_SYMPTOM_SUMMARY}
+WHERE daily_reports.date > CURRENT_TIMESTAMP - interval '1 week'
+SQL
 
 end

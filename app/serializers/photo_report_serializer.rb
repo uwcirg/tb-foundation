@@ -15,11 +15,11 @@ class PhotoReportSerializer < ActiveModel::Serializer
     end
 
     def date
-        object.daily_report.date
+        object.daily_report ? object.daily_report.date : nil
     end
 
     def created_at
-        object.daily_report.created_at
+        object.daily_report ? object.daily_report.created_at : nil
     end
 
 
