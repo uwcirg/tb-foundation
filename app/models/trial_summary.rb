@@ -9,7 +9,8 @@ class TrialSummary < ActiveModelSerializers::Model
     {
       active: Patient.non_test.active.count,
       pending: Patient.non_test.pending.count,
-      priorities: priority_summary,
+      archived: Patient.non_test.archived.count,
+      priorities: priority_summary
     }
   end
 
@@ -41,8 +42,19 @@ class TrialSummary < ActiveModelSerializers::Model
     ((Date.today - 1.month)..Date.today).map { |date| { date: date.iso8601, submitted: DailyReport.where(date: date, patient: Patient.active.non_test).count, requested: Patient.active.non_test.where("app_start <= ? OR app_start IS NULL", date).count } }
   end
 
-  def patient_registration
-    Patient.non_test.active.group("DATE_TRUNC('week',treatment_start)").count
+  def registration_by_month
+    results = Patient.non_test.group("DATE_TRUNC('month',treatment_start AT TIME ZONE
+      'America/Argentina/Buenos_Aires')::date").order("DATE_TRUNC('month',treatment_start AT TIME ZONE
+      'America/Argentina/Buenos_Aires')::date").count
+  end
+
+  def symptom_summary
+    hash = {}
+    results = exec_query(SYMPTOM_SUMMARY)[0]
+    results.keys.each do |value|
+      hash[value] = results[value]
+    end
+    hash
   end
 
   private
