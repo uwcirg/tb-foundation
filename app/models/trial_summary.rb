@@ -60,7 +60,7 @@ class TrialSummary < ActiveModelSerializers::Model
   private
 
   def exec_query(query)
-    sql = ActiveRecord::Base.sanitize_sql [query, { organization_ids: Organization.all.pluck(:id) }]
+    sql = ActiveRecord::Base.sanitize_sql [query, { organization_ids: Organization.where("id > 0").pluck(:id) }]
     return ActiveRecord::Base.connection.exec_query(sql).to_a
   end
 
