@@ -29,7 +29,7 @@ class Patient < User
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
   validates :treatment_start, presence: true
 
-  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date
+  after_create :create_private_message_channel, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date
   after_commit :create_patient_information
 
   scope :active, -> { where(:status => ("Active")) }
@@ -46,7 +46,7 @@ class Patient < User
   end
 
   def create_private_message_channel
-    channel = self.channels.create!(title: self.full_name, is_private: true)
+    channel = self.channels.create!(title: self.full_name, is_private: true, category: "Patient")
   end
 
   def create_resolutions
@@ -78,12 +78,6 @@ class Patient < User
 
   def disable_daily_notification
     self.daily_notification.update!(active: false)
-  end
-
-  def create_milestone
-    self.milestones.create(title: "Treatment Start", datetime: self.treatment_start, all_day: true)
-    self.milestones.create(title: "One Month of Treatment", datetime: self.treatment_start + 1.month, all_day: true)
-    self.milestones.create(title: "End of Treatment", datetime: self.treatment_start + 6.month, all_day: true)
   end
 
   def symptom_summary
@@ -199,7 +193,11 @@ class Patient < User
     return (Date.today - self.treatment_start.to_date).to_i + 1
   end
 
-  def number_of_treatments_taken
+  def reported_adherent_days
+    return self.daily_reports.was_taken.count.to_f
+  end
+
+  def reported_photo_days
     return self.daily_reports.was_taken.count.to_f
   end
 
@@ -211,7 +209,7 @@ class Patient < User
       days = days - 1
     end
 
-    return (number_of_treatments_taken.to_f / days.to_f).round(2)
+    return (reported_adherent_days.to_f / days.to_f).round(2)
   end
 
   def weeks_in_treatment
