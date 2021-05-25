@@ -79,4 +79,5 @@ class PatientSerializer < ActiveModel::Serializer
         object.gender == "Other" ? object.gender_other || "Other" : object.gender
     end
 
+
 end

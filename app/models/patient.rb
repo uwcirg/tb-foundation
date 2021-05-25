@@ -1,7 +1,6 @@
 require "securerandom"
 
 class Patient < User
-
   include PhotoSchedule
   include SeedPatient
   include PatientSQL
@@ -37,8 +36,8 @@ class Patient < User
   scope :archived, -> { where(:status => ("Archived")) }
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
   scope :non_test, -> { where("organization_id > 0") }
-  scope :requested_test_not_submitted, -> (date) {joins(:photo_days).where(photo_days: {date: date}).where.not(id: PhotoReport.where(date: date).select(:patient_id))}
-  scope :has_not_reported_in_more_than_three_days, -> {where.not(id: DailyReport.where("created_at >= ?",DateTime.now - 3.days).select(:user_id))}
+  scope :requested_test_not_submitted, ->(date) { joins(:photo_days).where(photo_days: { date: date }).where.not(id: PhotoReport.where(date: date).select(:patient_id)) }
+  scope :has_not_reported_in_more_than_three_days, -> { where.not(id: DailyReport.where("created_at >= ?", DateTime.now - 3.days).select(:user_id)) }
 
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
@@ -193,23 +192,22 @@ class Patient < User
     return (Date.today - self.treatment_start.to_date).to_i + 1
   end
 
-  def reported_adherent_days
-    return self.daily_reports.was_taken.count.to_f
+  def number_of_adherent_days
+    return self.daily_reports.was_taken.count
   end
 
-  def reported_photo_days
-    return self.daily_reports.was_taken.count.to_f
+  def number_of_days_with_photo_report
+    return self.daily_reports.has_photo.count
   end
 
   def adherence
-    #Is treatment start or has reported today
-    days = days_in_treatment
+    days = days_since_app_start
 
-    if (!has_reported_today && days_in_treatment > 1)
+    if (!has_reported_today && days_since_app_start > 1)
       days = days - 1
     end
 
-    return (reported_adherent_days.to_f / days.to_f).round(2)
+    return (number_of_adherent_days.to_f / days.to_f).round(2)
   end
 
   def weeks_in_treatment
@@ -246,10 +244,18 @@ class Patient < User
     self.patient_information.update!(reminders_since_last_report: new_number)
   end
 
-  private 
+  def days_since_app_start
+    return (Date.today - self.patient_information.datetime_patient_activated.to_date).to_i + 1
+  end
+
+  def number_of_photo_requests
+    PhotoDay.where(patient_id: self.id).where("date < ? ", localized_date_today).count
+  end
+
+  private
 
   def create_patient_information
-    if(self.patient_information.nil?)
+    if (self.patient_information.nil?)
       PatientInformation.create!(patient_id: self.id, datetime_patient_added: DateTime.now)
     end
   end
