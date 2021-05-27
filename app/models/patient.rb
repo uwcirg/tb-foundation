@@ -238,21 +238,25 @@ class Patient < User
     PhotoDay.where(patient_id: self.id).where("date < ? ", localized_date_today).count
   end
 
-  #For priority calculation
-  def had_symptom_in_past_week
+  def activate(time=Time.now)
+    self.patient_information.update!(datetime_patient_activated: time)
+  end
+
+  def had_symptom_in_past_week?
     self.daily_reports.last_week.has_symptoms.exists?
   end
 
-  def had_severe_symptom_in_past_week
+  def had_severe_symptom_in_past_week?
     self.daily_reports.last_week.has_severe_symptoms.exists?
   end
 
-  def adherence
-    self.patient_information.adherence
+  def negative_photo_in_past_week?
+    self.photo_days.missed_or_negative_in_past_week.exists?
   end
 
-  def activate(time=Time.now)
-    self.patient_information.update!(datetime_patient_activated: time)
+
+  def adherence
+    self.patient_information.adherence
   end
 
   private

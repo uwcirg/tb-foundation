@@ -40,8 +40,9 @@ class PatientInformation < ApplicationRecord
     self.update!(
       adherent_photo_days: self.patient.number_of_days_with_photo_report,
       adherent_days: self.patient.number_of_adherent_days,
-      had_severe_symptoms_in_past_week: self.patient.had_severe_symptom_in_past_week,
-      had_symptoms_in_past_week: self.patient.had_symptom_in_past_week,
+      had_severe_symptoms_in_past_week: self.patient.had_severe_symptom_in_past_week?,
+      had_symptoms_in_past_week: self.patient.had_symptom_in_past_week?,
+      negative_photo_in_past_week: self.patient.negative_photo_in_past_week?
     )
   end
 
