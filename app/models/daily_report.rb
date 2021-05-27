@@ -96,7 +96,7 @@ class DailyReport < ApplicationRecord
   end
 
   def update_adherent_days
-    self.patient.patient_information.update_all_adherence_values
+    self.patient.patient_information.update_cached_values
   end
 
 end
