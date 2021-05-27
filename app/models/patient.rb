@@ -193,7 +193,9 @@ class Patient < User
   end
 
   def number_of_adherent_days
-    return self.daily_reports.was_taken.count
+    # return self.daily_reports.was_taken.count
+    # self.medication_reports.where("daily_report_id IS NOT NULL AND medication_was_taken = true").where("date >= ?", self.patient_information.datetime_patient_activated.to_date).count
+    self.daily_reports.was_taken.where("daily_reports.date >= ?", self.patient_information.datetime_patient_activated.to_date).count
   end
 
   def number_of_days_with_photo_report

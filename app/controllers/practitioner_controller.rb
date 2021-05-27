@@ -13,11 +13,17 @@ class PractitionerController < UserController
   end
 
   def get_patients
-    patients = @current_practitoner.patients.active.includes("patient_information")
-    render(json: patients, include_reporting_status: true,
-      include_last_symptoms: true,
-      include_last_missed_day: true,
-      include_support_requests: true, status: 200)
+    hash = {}
+    pp = @current_practitoner.organization.patient_priorities
+    @current_practitoner.patients.active.includes("daily_reports", "medication_reports", "photo_reports", "channels", "messages").each do |patient|
+      serialization = ActiveModelSerializers::SerializableResource.new(patient,
+                                                                       include_reporting_status: true,
+                                                                       include_last_symptoms: true,
+                                                                       include_last_missed_day: true,
+                                                                       include_support_requests: true).as_json
+      hash[patient.id] = serialization.merge(pp[patient.id])
+    end
+    render(json: hash, status: 200)
   end
 
   def get_temp_accounts
