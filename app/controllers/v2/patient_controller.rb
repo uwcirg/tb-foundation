@@ -43,8 +43,9 @@ class V2::PatientController < PatientDataController
   end
 
   def serializer
-    return PatientSerializer unless @current_user.admin?
-    return PatientAnonSerializer
+    return PractitionerPatientSerializer if @current_user.practitioner?
+    return AdminPatientSerializer if @current_user.admin?
+    return PatientSerializer
   end
 
 

@@ -77,6 +77,10 @@ class User < ApplicationRecord
     self.type == "Practitioner"
   end
 
+  def patient?
+    self.type == "Patient"
+  end
+
   private
 
   def localized_date_today
