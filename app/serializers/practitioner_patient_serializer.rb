@@ -16,7 +16,6 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
     :last_contacted,
     :photo_schedule,
     :weeks_in_treatment,
-    :education_status,
     :age,
     :gender,
     :has_forced_password_change,
@@ -24,7 +23,8 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
     :photo_summary,
     :last_symptoms,
     :support_requests,
-    :last_missed_day
+    :last_missed_day,
+    :reporting_status
 
     # has_many :daily_reports do
     #     @object.daily_reports.where(date: [Date.today, Date.today-1]).order("date DESC")
