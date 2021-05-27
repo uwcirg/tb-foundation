@@ -43,7 +43,7 @@ module Assemble
     end
   end
 
-  config.filter_parameters += [:password_digest,:push_url]
+  config.filter_parameters += [:password_digest]
 
   
 

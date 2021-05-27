@@ -36,9 +36,9 @@ class PatientController < UserController
       @current_user.contact_tracing = ContactTracing.create!(number_of_contacts: params[:numberContacts], contacts_tested: params[:contactsTested], patient_id: @current_user.id)
     end
 
-    @current_user.add_photo_day(params[:date] || Date.today)
+    @current_user.add_photo_day(params[:date] || LocalizedDate.now_in_ar.to_date)
     @current_user.update(gender: params[:gender], age: params[:age], app_start: DateTime.now(), status: "Active", gender_other: params[:genderOther] || nil)
-    @current_user.patient_information.update!(datetime_patient_activated: DateTime.now)
+    @current_user.activate
     @current_user.save!
 
     render(json: @current_user, status: 200)

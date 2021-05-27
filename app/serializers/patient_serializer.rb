@@ -5,6 +5,7 @@ class PatientSerializer < ActiveModel::Serializer
     :id, 
     :full_name, 
     :adherence,
+    :photo_adherence,
     :percentage_complete, 
     :days_in_treatment, 
     :treatment_start, 
@@ -79,5 +80,8 @@ class PatientSerializer < ActiveModel::Serializer
         object.gender == "Other" ? object.gender_other || "Other" : object.gender
     end
 
+    def photo_adherence
+        object.patient_information.photo_adherence
+    end
 
 end

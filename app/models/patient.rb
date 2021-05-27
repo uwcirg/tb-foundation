@@ -200,16 +200,6 @@ class Patient < User
     return self.daily_reports.has_photo.count
   end
 
-  def adherence
-    days = days_since_app_start
-
-    if (!has_reported_today && days_since_app_start > 1)
-      days = days - 1
-    end
-
-    return (number_of_adherent_days.to_f / days.to_f).round(2)
-  end
-
   def weeks_in_treatment
     (Date.today - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
   end
@@ -244,19 +234,32 @@ class Patient < User
     self.patient_information.update!(reminders_since_last_report: new_number)
   end
 
-  def days_since_app_start
-    return (Date.today - self.patient_information.datetime_patient_activated.to_date).to_i + 1
-  end
-
   def number_of_photo_requests
     PhotoDay.where(patient_id: self.id).where("date < ? ", localized_date_today).count
+  end
+
+  #For priority calculation
+  def had_symptom_in_past_week
+    self.daily_reports.last_week.has_symptoms.exists?
+  end
+
+  def had_severe_symptom_in_past_week
+    self.daily_reports.last_week.has_severe_symptoms.exists?
+  end
+
+  def adherence
+    self.patient_information.adherence
+  end
+
+  def activate(time=Time.now)
+    self.patient_information.update!(datetime_patient_activated: time)
   end
 
   private
 
   def create_patient_information
     if (self.patient_information.nil?)
-      PatientInformation.create!(patient_id: self.id, datetime_patient_added: DateTime.now)
+      self.create_patient_information!(patient_id: self.id, datetime_patient_added: Time.now)
     end
   end
 end
