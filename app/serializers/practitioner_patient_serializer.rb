@@ -14,7 +14,6 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
     :status,
     :channel_id,
     :last_contacted,
-    :photo_schedule,
     :weeks_in_treatment,
     :age,
     :gender,
@@ -24,18 +23,15 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
     :last_symptoms,
     :support_requests,
     :last_missed_day,
-    :reporting_status
+    :reporting_status,
+    :priority
 
     # has_many :daily_reports do
     #     @object.daily_reports.where(date: [Date.today, Date.today-1]).order("date DESC")
     #   end
 
-    # has_one :last_report do
-    #     @object.daily_reports.last
-    # end
-
-    def full_name
-        return("#{object.given_name} #{object.family_name}")
+    has_one :last_report do
+        @object.daily_reports.last
     end
 
     def symptom_summary
@@ -66,6 +62,10 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
 
     def photo_summary
         object.patient_information.photo_reporting_summary
+    end
+
+    def priority
+        object.patient_information.priority
     end
 
 end

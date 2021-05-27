@@ -64,7 +64,7 @@ class PatientInformation < ApplicationRecord
   end
 
   def priority
-    PriorityCalculator.new(adherence, self.had_symptom_in_past_week, self.had_severe_symptom_in_past_week, self.negative_photo_in_past_week).calculate
+    PriorityCalculator.calculate(adherence, self.had_symptom_in_past_week, self.had_severe_symptom_in_past_week, self.negative_photo_in_past_week)
   end
 
 end

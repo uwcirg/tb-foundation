@@ -3,19 +3,11 @@
 
 class PriorityCalculator
 
-  #Precondition: takes in valid patient object
-  def initialize(adherence, had_symptoms, had_severe_symptoms, missed_or_negative_photo)
-    @adherence = adherence
-    @had_symptoms = had_symptoms
-    @had_severe_symptoms = had_severe_symptoms
-    @missed_or_negative_photo = missed_or_negative_photo
-  end
+  def self.calculate(adherence, had_symptoms, had_severe_symptoms, missed_or_negative_photo)
 
-  def calculate
-
-    if (@adherence < 0.9 or @had_severe_symptoms or @missed_or_negative_photo)
+    if (adherence < 0.9 or had_severe_symptoms or missed_or_negative_photo)
       return 2
-    elsif (@adherence < 0.95 or @had_symptoms)
+    elsif (adherence < 0.95 or had_symptoms)
       return 1
     end
 

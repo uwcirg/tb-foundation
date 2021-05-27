@@ -1,7 +1,7 @@
 class V2::PatientController < PatientDataController
 
   def index
-    @patients = policy_scope(Patient)
+    @patients = policy_scope(Patient).includes("patient_information")
     render( json: @patients, status: :ok, each_serializer: serializer )
   end
 
