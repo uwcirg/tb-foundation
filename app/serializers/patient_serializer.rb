@@ -22,7 +22,8 @@ class PatientSerializer < ActiveModel::Serializer
     :gender,
     :last_education_status,
     :has_forced_password_change,
-    :treatment_end_date
+    :treatment_end_date,
+    :photo_summary
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
@@ -82,6 +83,10 @@ class PatientSerializer < ActiveModel::Serializer
 
     def photo_adherence
         object.patient_information.photo_adherence
+    end
+
+    def photo_summary
+        object.patient_information.photo_reporting_summary
     end
 
 end

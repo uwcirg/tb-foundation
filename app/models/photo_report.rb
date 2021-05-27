@@ -2,6 +2,9 @@ class PhotoReport < ApplicationRecord
     belongs_to :daily_report, optional: true
     belongs_to :patient, :foreign_key=> :user_id
 
+    scope :has_daily_report, -> { where("daily_report_id IS NOT NULL") }
+    scope :conclusive, -> {where(approved: true) }
+
     def self.policy_class
         PatientRecordPolicy
       end

@@ -254,6 +254,9 @@ class Patient < User
     self.photo_days.missed_or_negative_in_past_week.exists?
   end
 
+  def number_of_conclusive_photos
+    self.photo_reports.has_daily_report.conclusive.count
+  end
 
   def adherence
     self.patient_information.adherence

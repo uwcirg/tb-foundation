@@ -1,6 +1,5 @@
 class PatientInformation < ApplicationRecord
   belongs_to :patient
-  after_update :reload_test
 
   #   create_table "patient_informations", force: :cascade do |t|
   #     t.datetime "datetime_patient_added"
@@ -40,13 +39,14 @@ class PatientInformation < ApplicationRecord
     self.update!(
       adherent_photo_days: self.patient.number_of_days_with_photo_report,
       adherent_days: self.patient.number_of_adherent_days,
-      had_severe_symptoms_in_past_week: self.patient.had_severe_symptom_in_past_week?,
-      had_symptoms_in_past_week: self.patient.had_symptom_in_past_week?,
-      negative_photo_in_past_week: self.patient.negative_photo_in_past_week?
+      had_severe_symptom_in_past_week: self.patient.had_severe_symptom_in_past_week?,
+      had_symptom_in_past_week: self.patient.had_symptom_in_past_week?,
+      negative_photo_in_past_week: self.patient.negative_photo_in_past_week?,
+      number_of_conclusive_photos: self.patient.number_of_conclusive_photos
     )
   end
 
-  def update_all_adherence_values
+  def update_cached_values
     update_adherence_denominators
     update_adherence_numerators
   end
@@ -55,10 +55,16 @@ class PatientInformation < ApplicationRecord
     (LocalizedDate.now_in_ar.to_date - self.datetime_patient_activated.to_date).to_i + 1
   end
 
-  private
-  
-  def reload_test
-    self.patient.patient_information.reload
+  def photo_reporting_summary
+    {
+      requests: self.number_of_photo_requests,
+      submissions: self.adherent_photo_days,
+      conclusive: self.number_of_conclusive_photos
+    }
+  end
+
+  def priority
+    PriorityCalculator.new(adherence, self.had_symptom_in_past_week, self.had_severe_symptom_in_past_week, self.negative_photo_in_past_week).calculate
   end
 
 end
