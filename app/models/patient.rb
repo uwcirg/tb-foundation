@@ -263,7 +263,7 @@ class Patient < User
 
   def create_patient_information
     if (self.patient_information.nil?)
-      self.create_patient_information!(patient_id: self.id, datetime_patient_added: Time.now)
+      self.create_patient_information!(patient_id: self.id, datetime_patient_added: Time.now, datetime_patient_activated: Rails.env.test? ? Time.now : nil)
     end
   end
 end
