@@ -58,9 +58,10 @@ class PatientInformation < ApplicationRecord
 
   def photo_reporting_summary
     {
-      requests: self.number_of_photo_requests,
-      submissions: self.adherent_photo_days,
-      conclusive: self.number_of_conclusive_photos
+      requested: self.number_of_photo_requests,
+      submitted: self.adherent_photo_days,
+      conclusive: self.number_of_conclusive_photos,
+      inconclusive: self.adherent_photo_days - self.number_of_conclusive_photos
     }
   end
 
