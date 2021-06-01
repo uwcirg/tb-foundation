@@ -4,7 +4,7 @@ namespace :adherence do
     patient = Patient.all
     ActiveRecord::Base.transaction do
       patient.each do |patient|
-        patient.patient_information.update_cached_values
+        patient.patient_information.update_patient_stats
       end
     end
 

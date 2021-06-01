@@ -125,7 +125,7 @@ class Patient < User
   end
 
   def current_streak
-    streak = DailyReport.user_streak_days(self)
+    self.patient_information.medication_streak
   end
 
   def missed_days
@@ -193,8 +193,6 @@ class Patient < User
   end
 
   def number_of_adherent_days
-    # return self.daily_reports.was_taken.count
-    # self.medication_reports.where("daily_report_id IS NOT NULL AND medication_was_taken = true").where("date >= ?", self.patient_information.datetime_patient_activated.to_date).count
     self.daily_reports.was_taken.where("daily_reports.date >= ?", self.patient_information.datetime_patient_activated.to_date).count
   end
 
@@ -262,6 +260,10 @@ class Patient < User
 
   def adherence
     self.patient_information.adherence
+  end
+
+  def update_stats_in_background
+    ::PatientStatsWorker.perform_async(self.id)
   end
 
   private

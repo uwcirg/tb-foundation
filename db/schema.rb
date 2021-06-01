@@ -133,11 +133,12 @@ ActiveRecord::Schema.define(version: 2021_05_24_171503) do
     t.integer "adherent_days", default: 0
     t.integer "adherent_photo_days", default: 0
     t.integer "number_of_photo_requests", default: 1
-    t.datetime "requests_updated_at", default: "2021-05-27 16:11:06"
+    t.datetime "requests_updated_at", default: "2021-06-01 14:35:18"
     t.boolean "had_symptom_in_past_week", default: false
     t.boolean "had_severe_symptom_in_past_week", default: false
     t.boolean "negative_photo_in_past_week", default: false
     t.integer "number_of_conclusive_photos", default: 0
+    t.integer "medication_streak", default: 0
     t.index ["patient_id"], name: "index_patient_informations_on_patient_id"
   end
 

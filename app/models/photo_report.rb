@@ -1,6 +1,7 @@
 class PhotoReport < ApplicationRecord
     belongs_to :daily_report, optional: true
     belongs_to :patient, :foreign_key=> :user_id
+    after_commit :update_patient_stats
 
     scope :has_daily_report, -> { where("daily_report_id IS NOT NULL") }
     scope :conclusive, -> {where(approved: true) }
@@ -38,6 +39,12 @@ class PhotoReport < ApplicationRecord
         return {
             url: get_url
           }
+    end
+
+    private
+
+    def update_patient_stats
+      self.patient.update_stats_in_background
     end
 
   end

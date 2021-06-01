@@ -46,9 +46,10 @@ class PatientInformation < ApplicationRecord
     )
   end
 
-  def update_cached_values
+  def update_patient_stats
     update_adherence_denominators
     update_adherence_numerators
+    update_streak
   end
 
   def days_since_app_start
@@ -61,6 +62,10 @@ class PatientInformation < ApplicationRecord
       submissions: self.adherent_photo_days,
       conclusive: self.number_of_conclusive_photos
     }
+  end
+
+  def update_streak
+    self.update!(medication_streak: DailyReport.user_streak_days(self.patient))
   end
 
   def priority

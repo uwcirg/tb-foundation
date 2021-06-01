@@ -10,7 +10,7 @@ class DailyReport < ApplicationRecord
   validates :date, presence: true
   validate :limit_one_report_per_day, on: :create
 
-  after_commit :update_reminders_since_last_report, :update_adherent_days
+  after_commit :update_reminders_since_last_report, :update_patient_stats
 
   scope :today, -> { where(:date => (LocalizedDate.now_in_ar)) }
   scope :last_week, -> { where("daily_reports.date > ?", LocalizedDate.now_in_ar - 1.week) }
@@ -95,8 +95,8 @@ class DailyReport < ApplicationRecord
     self.patient.patient_information.update!(reminders_since_last_report: 0)
   end
 
-  def update_adherent_days
-    self.patient.patient_information.update_cached_values
+  def update_patient_stats
+    self.patient.update_stats_in_background
   end
 
 end
