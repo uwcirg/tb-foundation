@@ -60,7 +60,8 @@ class DailyReportSerializer < ActiveModel::Serializer
       symptom_report: !object.symptom_report.nil?,
       photo_report: !object.photo_report.nil?,
       mood_report: !object.doing_okay.nil?,
-      complete: !object.medication_report.nil? && !object.symptom_report.nil? && (!photo_day || !object.photo_report.nil?) && !object.doing_okay.nil?
+      complete: !object.medication_report.nil? && !object.symptom_report.nil? && (!photo_day || !object.photo_report.nil?) && !object.doing_okay.nil?,
+      took_medication: !object.medication_report.nil? && object.medication_report.medication_was_taken
     }
   end
   
