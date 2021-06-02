@@ -42,7 +42,8 @@ class PatientInformation < ApplicationRecord
       had_severe_symptom_in_past_week: self.patient.had_severe_symptom_in_past_week?,
       had_symptom_in_past_week: self.patient.had_symptom_in_past_week?,
       negative_photo_in_past_week: self.patient.negative_photo_in_past_week?,
-      number_of_conclusive_photos: self.patient.number_of_conclusive_photos
+      number_of_conclusive_photos: self.patient.number_of_conclusive_photos,
+      days_reported_not_taking_medication: self.patient.number_days_reported_not_taking_medication
     )
   end
 

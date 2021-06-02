@@ -9,5 +9,6 @@ class AddAdherenceToInfoModel < ActiveRecord::Migration[6.0]
     add_column :patient_informations, :negative_photo_in_past_week, :boolean, default: false
     add_column :patient_informations, :number_of_conclusive_photos, :integer, default: 0
     add_column :patient_informations, :medication_streak, :integer, default: 0
+    add_column :patient_informations, :days_reported_not_taking_medication, :integer, default: 0
   end
 end

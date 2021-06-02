@@ -25,6 +25,7 @@ class DailyReport < ApplicationRecord
   scope :has_photo, -> { joins(:photo_report).where("photo_reports.photo_url IS NOT NULL") }
   scope :unresolved_support_request, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_support_request, "daily_reports.doing_okay": false).where("daily_reports.created_at > resolutions.resolved_at") }
   scope :photo_missing, -> {joins(:photo_report).where("photo_reports.id = ?", nil)}
+  scope :medication_was_not_taken, -> { joins(:medication_report).where(medication_reports: { medication_was_taken: false }).distinct }
 
   def limit_one_report_per_day
     if self.patient.daily_reports.where(date: self.date).count > 0

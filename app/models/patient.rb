@@ -142,18 +142,18 @@ class Patient < User
 
   def reporting_status
     hash = {}
-    today_report = self.daily_reports.find_by(date: Date.today)
-    yesterday_report = self.daily_reports.find_by(date: Date.yesterday)
+    today_report = self.daily_reports.find_by(date: localized_date_today)
+    yesterday_report = self.daily_reports.find_by(date: localized_date_today)
 
     if (today_report.nil?)
       hash["today"] = { reported: false,
-                        photo_required: self.photo_days.where(date: Date.today).exists? }
+                        photo_required: self.photo_days.where(date: localized_date_today).exists? }
     else
       hash["today"] = {
         reported: !today_report.nil?,
         medication_taken: today_report.medication_was_taken,
         photo: today_report.photo_submitted,
-        photo_required: self.photo_days.where(date: Date.today).exists?,
+        photo_required: self.photo_days.where(date: localized_date_today).exists?,
         number_symptoms: today_report.symptom_report.nil? ? 0 : today_report.symptom_report.number_symptoms,
       }
     end
@@ -264,6 +264,10 @@ class Patient < User
 
   def update_stats_in_background
     ::PatientStatsWorker.perform_async(self.id)
+  end
+
+  def number_days_reported_not_taking_medication
+    self.daily_reports.medication_was_not_taken.count
   end
 
   private
