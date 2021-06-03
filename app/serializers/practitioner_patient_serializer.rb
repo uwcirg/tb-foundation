@@ -33,10 +33,6 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
     @object.daily_reports.last
   end
 
-  def symptom_summary
-    object.daily_reports
-  end
-
   def daily_notification_time
     if (object.daily_notification)
       return object.daily_notification.formatted_time

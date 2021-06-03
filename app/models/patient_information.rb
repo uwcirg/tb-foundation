@@ -1,20 +1,5 @@
 class PatientInformation < ApplicationRecord
   belongs_to :patient
-  #   create_table "patient_informations", force: :cascade do |t|
-  #     t.datetime "datetime_patient_added"
-  #     t.datetime "datetime_patient_activated"
-  #     t.integer "reminders_since_last_report", default: 0
-  #     t.bigint "patient_id", null: false
-  #     t.datetime "created_at", precision: 6, null: false
-  #     t.datetime "updated_at", precision: 6, null: false
-  #     t.integer "adherent_days", default: 0
-  #     t.integer "adherent_photo_days", default: 0
-  #     t.integer "number_of_photo_requests", default: 1
-  #     t.datetime "requests_updated_at", default: "2021-05-25 20:15:49"
-  #     t.boolean "had_symptoms_in_past_week", default: false
-  #     t.boolean "had_severe_symptoms_in_past_week", default: false
-  #     t.index ["patient_id"], name: "index_patient_informations_on_patient_id"
-  #   end
 
   def adherence
     days = medication_adherence_denominator

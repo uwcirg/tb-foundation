@@ -27,7 +27,6 @@ class PatientSerializer < ActiveModel::Serializer
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
-    attribute :symptom_summary, if: -> { @instance_options[:include_symptom_summary].present?}
     attribute :number_missing_reports, if: -> { @instance_options[:include_missing_reports].present?}
     attribute :reporting_status, if: -> { @instance_options[:include_reporting_status].present?}
     attribute :last_symptoms, if: -> {@instance_options[:include_last_symptoms].present?}
@@ -44,10 +43,6 @@ class PatientSerializer < ActiveModel::Serializer
 
     def full_name
         return("#{object.given_name} #{object.family_name}")
-    end
-
-    def symptom_summary
-        object.daily_reports
     end
 
     def daily_notification_time
