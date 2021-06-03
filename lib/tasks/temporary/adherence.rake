@@ -14,10 +14,10 @@ namespace :adherence do
 
   desc "Ensures 5/24/2021"
   task :ensure_activation_exists => :environment do
-    patient = PatientInformation.where("datetime_patient_activated IS NULL")
+    pi = PatientInformation.where("datetime_patient_activated IS NULL")
     ActiveRecord::Base.transaction do
-      patient.each do |patient|
-        patient.patient_information.update!(datetime_patient_activated: patient.patient_information.datetime_patient_added )
+      pi.each do |p_i|
+        p_i.update!(datetime_patient_activated: p_i.datetime_patient_added )
       end
     end
 
