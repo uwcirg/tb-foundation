@@ -10,4 +10,17 @@ namespace :adherence do
 
     puts " All done now!"
   end
+
+
+  desc "Ensures 5/24/2021"
+  task :ensure_activation_exists => :environment do
+    patient = PatientInformation.where("datetime_patient_activated IS NULL")
+    ActiveRecord::Base.transaction do
+      patient.each do |patient|
+        patient.patient_information.update!(datetime_patient_activated: patient.patient_information.datetime_patient_added )
+      end
+    end
+
+    puts " All done now!"
+  end
 end
