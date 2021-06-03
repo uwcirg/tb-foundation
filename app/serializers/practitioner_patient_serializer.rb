@@ -67,7 +67,7 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
     {
         adherent_days: object.patient_information.adherent_days,
         reported_missed_days: object.patient_information.days_reported_not_taking_medication,
-        days_since_app_start: object.patient_information.days_since_app_start
+        days_since_app_start: object.patient_information.medication_adherence_denominator
     }
   end
 

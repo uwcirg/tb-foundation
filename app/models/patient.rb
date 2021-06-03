@@ -192,10 +192,6 @@ class Patient < User
     return (Date.today - self.treatment_start.to_date).to_i + 1
   end
 
-  def number_of_adherent_days
-    self.daily_reports.was_taken.where("daily_reports.date >= ?", self.patient_information.datetime_patient_activated.to_date).count
-  end
-
   def number_of_days_with_photo_report
     return self.daily_reports.has_photo.count
   end
@@ -266,8 +262,12 @@ class Patient < User
     ::PatientStatsWorker.perform_async(self.id)
   end
 
+  def number_of_adherent_days
+    self.daily_reports.was_taken.where("daily_reports.date >= ? and daily_reports.date <= ?", self.patient_information.datetime_patient_activated.to_date, self.treatment_end_date).count
+  end
+
   def number_days_reported_not_taking_medication
-    self.daily_reports.medication_was_not_taken.count
+    self.daily_reports.medication_was_not_taken.where("daily_reports.date >= ? and daily_reports.date <= ?", self.patient_information.datetime_patient_activated.to_date, self.treatment_end_date).count
   end
 
   private

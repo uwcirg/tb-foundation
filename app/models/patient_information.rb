@@ -1,6 +1,5 @@
 class PatientInformation < ApplicationRecord
   belongs_to :patient
-
   #   create_table "patient_informations", force: :cascade do |t|
   #     t.datetime "datetime_patient_added"
   #     t.datetime "datetime_patient_activated"
@@ -18,9 +17,9 @@ class PatientInformation < ApplicationRecord
   #   end
 
   def adherence
-    days = days_since_app_start 
+    days = medication_adherence_denominator
 
-    if (!self.patient.has_reported_today && days_since_app_start > 1)
+    if (!self.patient.has_reported_today && medication_adherence_denominator > 1 && !patient_completed_treatment)
       days = days - 1
     end
 
@@ -43,7 +42,7 @@ class PatientInformation < ApplicationRecord
       had_symptom_in_past_week: self.patient.had_symptom_in_past_week?,
       negative_photo_in_past_week: self.patient.negative_photo_in_past_week?,
       number_of_conclusive_photos: self.patient.number_of_conclusive_photos,
-      days_reported_not_taking_medication: self.patient.number_days_reported_not_taking_medication
+      days_reported_not_taking_medication: self.patient.number_days_reported_not_taking_medication,
     )
   end
 
@@ -62,7 +61,7 @@ class PatientInformation < ApplicationRecord
       requested: self.number_of_photo_requests,
       submitted: self.adherent_photo_days,
       conclusive: self.number_of_conclusive_photos,
-      inconclusive: self.adherent_photo_days - self.number_of_conclusive_photos
+      inconclusive: self.adherent_photo_days - self.number_of_conclusive_photos,
     }
   end
 
@@ -70,8 +69,18 @@ class PatientInformation < ApplicationRecord
     self.update!(medication_streak: DailyReport.user_streak_days(self.patient))
   end
 
+  def medication_adherence_denominator
+    end_date = patient_completed_treatment ? self.patient.treatment_end_date : LocalizedDate.now_in_ar.to_date
+    (end_date - self.datetime_patient_activated.to_date).to_i + 1
+  end
+
   def priority
     PriorityCalculator.calculate(adherence, self.had_symptom_in_past_week, self.had_severe_symptom_in_past_week, self.negative_photo_in_past_week)
   end
 
+  private
+
+  def patient_completed_treatment
+    self.patient.treatment_end_date < LocalizedDate.now_in_ar.to_date
+  end
 end
