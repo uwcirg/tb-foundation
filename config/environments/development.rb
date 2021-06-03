@@ -1,7 +1,7 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.filter_parameters += [:password, :password_check, "photo"]
+  config.filter_parameters += [:password, :password_check]
 
   #TODO - Change this to lock down
   config.hosts.clear

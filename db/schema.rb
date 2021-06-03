@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_07_134402) do
+ActiveRecord::Schema.define(version: 2021_05_24_171503) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -130,6 +130,16 @@ ActiveRecord::Schema.define(version: 2021_05_07_134402) do
     t.bigint "patient_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "adherent_days", default: 0
+    t.integer "adherent_photo_days", default: 0
+    t.integer "number_of_photo_requests", default: 1
+    t.datetime "requests_updated_at", default: "2021-06-02 15:20:46"
+    t.boolean "had_symptom_in_past_week", default: false
+    t.boolean "had_severe_symptom_in_past_week", default: false
+    t.boolean "negative_photo_in_past_week", default: false
+    t.integer "number_of_conclusive_photos", default: 0
+    t.integer "medication_streak", default: 0
+    t.integer "days_reported_not_taking_medication", default: 0
     t.index ["patient_id"], name: "index_patient_informations_on_patient_id"
   end
 

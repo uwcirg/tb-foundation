@@ -1,5 +1,4 @@
 class OrganizationSerializer < ActiveModel::Serializer
     attributes :title
-
-    has_many :patients, serializer: PatientAnonSerializer
+    has_many :patients, serializer: AdminPatientSerializer
 end

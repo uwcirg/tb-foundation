@@ -16,6 +16,9 @@ class User < ApplicationRecord
 
   after_commit :create_unread_messages_async
 
+  #@TODO: Add dynamic timezones for users, for now all are in the same timezone
+  TIME_ZONE = "America/Argentina/Buenos_Aires"
+
   def full_name
     "#{self.given_name} #{self.family_name}"
   end
@@ -74,7 +77,15 @@ class User < ApplicationRecord
     self.type == "Practitioner"
   end
 
+  def patient?
+    self.type == "Patient"
+  end
+
   private
+
+  def localized_date_today
+    LocalizedDate.new(TIME_ZONE).today
+  end
 
   def create_unread_messages_async
     ::UnreadMessageCreationWorker.perform_async(self.id)

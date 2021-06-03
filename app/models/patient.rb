@@ -1,7 +1,6 @@
 require "securerandom"
 
 class Patient < User
-
   include PhotoSchedule
   include SeedPatient
   include PatientSQL
@@ -29,7 +28,7 @@ class Patient < User
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
   validates :treatment_start, presence: true
 
-  after_create :create_private_message_channel, :create_milestone, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date
+  after_create :create_private_message_channel, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date
   after_commit :create_patient_information
 
   scope :active, -> { where(:status => ("Active")) }
@@ -37,8 +36,8 @@ class Patient < User
   scope :archived, -> { where(:status => ("Archived")) }
   scope :had_symptom_last_week, -> { where(id: DailyReport.symptoms_last_week.select(:user_id)) }
   scope :non_test, -> { where("organization_id > 0") }
-  scope :requested_test_not_submitted, -> (date) {joins(:photo_days).where(photo_days: {date: date}).where.not(id: PhotoReport.where(date: date).select(:patient_id))}
-  scope :has_not_reported_in_more_than_three_days, -> {where.not(id: DailyReport.where("created_at >= ?",DateTime.now - 3.days).select(:user_id))}
+  scope :requested_test_not_submitted, ->(date) { joins(:photo_days).where(photo_days: { date: date }).where.not(id: PhotoReport.where(date: date).select(:patient_id)) }
+  scope :has_not_reported_in_more_than_three_days, -> { where.not(id: DailyReport.where("created_at >= ?", DateTime.now - 3.days).select(:user_id)) }
 
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
@@ -46,7 +45,7 @@ class Patient < User
   end
 
   def create_private_message_channel
-    channel = self.channels.create!(title: self.full_name, is_private: true)
+    channel = self.channels.create!(title: self.full_name, is_private: true, category: "Patient")
   end
 
   def create_resolutions
@@ -78,12 +77,6 @@ class Patient < User
 
   def disable_daily_notification
     self.daily_notification.update!(active: false)
-  end
-
-  def create_milestone
-    self.milestones.create(title: "Treatment Start", datetime: self.treatment_start, all_day: true)
-    self.milestones.create(title: "One Month of Treatment", datetime: self.treatment_start + 1.month, all_day: true)
-    self.milestones.create(title: "End of Treatment", datetime: self.treatment_start + 6.month, all_day: true)
   end
 
   def symptom_summary
@@ -132,7 +125,7 @@ class Patient < User
   end
 
   def current_streak
-    streak = DailyReport.user_streak_days(self)
+    self.patient_information.medication_streak
   end
 
   def missed_days
@@ -149,18 +142,18 @@ class Patient < User
 
   def reporting_status
     hash = {}
-    today_report = self.daily_reports.find_by(date: Date.today)
-    yesterday_report = self.daily_reports.find_by(date: Date.yesterday)
+    today_report = self.daily_reports.find_by(date: localized_date_today)
+    yesterday_report = self.daily_reports.find_by(date: localized_date_today)
 
     if (today_report.nil?)
       hash["today"] = { reported: false,
-                        photo_required: self.photo_days.where(date: Date.today).exists? }
+                        photo_required: self.photo_days.where(date: localized_date_today).exists? }
     else
       hash["today"] = {
         reported: !today_report.nil?,
         medication_taken: today_report.medication_was_taken,
         photo: today_report.photo_submitted,
-        photo_required: self.photo_days.where(date: Date.today).exists?,
+        photo_required: self.photo_days.where(date: localized_date_today).exists?,
         number_symptoms: today_report.symptom_report.nil? ? 0 : today_report.symptom_report.number_symptoms,
       }
     end
@@ -199,19 +192,8 @@ class Patient < User
     return (Date.today - self.treatment_start.to_date).to_i + 1
   end
 
-  def number_of_treatments_taken
-    return self.daily_reports.was_taken.count.to_f
-  end
-
-  def adherence
-    #Is treatment start or has reported today
-    days = days_in_treatment
-
-    if (!has_reported_today && days_in_treatment > 1)
-      days = days - 1
-    end
-
-    return (number_of_treatments_taken.to_f / days.to_f).round(2)
+  def number_of_days_with_photo_report
+    return self.daily_reports.has_photo.count
   end
 
   def weeks_in_treatment
@@ -248,11 +230,51 @@ class Patient < User
     self.patient_information.update!(reminders_since_last_report: new_number)
   end
 
-  private 
+  def number_of_photo_requests
+    PhotoDay.where(patient_id: self.id).where("date < ? ", localized_date_today).count
+  end
+
+  def activate(time=Time.now)
+    self.patient_information.update!(datetime_patient_activated: time)
+  end
+
+  def had_symptom_in_past_week?
+    self.daily_reports.last_week.has_symptoms.exists?
+  end
+
+  def had_severe_symptom_in_past_week?
+    self.daily_reports.last_week.has_severe_symptoms.exists?
+  end
+
+  def negative_photo_in_past_week?
+    self.photo_days.missed_or_negative_in_past_week.exists?
+  end
+
+  def number_of_conclusive_photos
+    self.photo_reports.has_daily_report.conclusive.count
+  end
+
+  def adherence
+    self.patient_information.adherence
+  end
+
+  def update_stats_in_background
+    ::PatientStatsWorker.perform_async(self.id)
+  end
+
+  def number_of_adherent_days
+    self.daily_reports.was_taken.where("daily_reports.date >= ? and daily_reports.date <= ?", self.patient_information.datetime_patient_activated.to_date, self.treatment_end_date).count
+  end
+
+  def number_days_reported_not_taking_medication
+    self.daily_reports.medication_was_not_taken.where("daily_reports.date >= ? and daily_reports.date <= ?", self.patient_information.datetime_patient_activated.to_date, self.treatment_end_date).count
+  end
+
+  private
 
   def create_patient_information
-    if(self.patient_information.nil?)
-      PatientInformation.create!(patient_id: self.id, datetime_patient_added: DateTime.now)
+    if (self.patient_information.nil?)
+      self.create_patient_information!(patient_id: self.id, datetime_patient_added: Time.now, datetime_patient_activated: Rails.env.test? ? Time.now : nil)
     end
   end
 end

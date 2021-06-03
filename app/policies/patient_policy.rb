@@ -21,10 +21,6 @@ class PatientPolicy < ApplicationPolicy
     @patient = patient
   end
 
-  # def index?
-  #   patient_belongs_to_practitioner or user_is_current_patient
-  # end
-
   def update?
     patient_belongs_to_practitioner
   end
