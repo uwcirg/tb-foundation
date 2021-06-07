@@ -23,4 +23,17 @@ namespace :adherence do
 
     puts " All done now!"
   end
+
+  desc "Ensures 5/24/2021"
+  task :dev_fix => :environment do
+    return unless Rails.env.development?
+    pi = PatientInformation.all
+    ActiveRecord::Base.transaction do
+      pi.each do |p_i|
+        p_i.update!(datetime_patient_activated: p_i.datetime_patient_added )
+      end
+    end
+
+    puts " All done now!"
+  end
 end

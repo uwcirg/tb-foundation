@@ -259,7 +259,7 @@ class Patient < User
   end
 
   def update_stats_in_background
-    ::PatientStatsWorker.perform_async(self.id)
+    ::PatientStatsWorker.perform_async(false, self.id)
   end
 
   def number_of_adherent_days

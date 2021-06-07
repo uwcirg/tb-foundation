@@ -19,3 +19,7 @@
   misssed_reporting_reminder:
     cron: '0 * * * *'
     class: MissedReportingReminderWorker
+  patient_stats_update:
+    cron: '0 0 * * * America/Argentina/Buenos_Aires'   # Runs once per day at midnight Argentina
+    class: PatientStatsWorker
+    args: [true,0]
