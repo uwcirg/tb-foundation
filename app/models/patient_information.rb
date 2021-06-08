@@ -1,5 +1,10 @@
 class PatientInformation < ApplicationRecord
+
   belongs_to :patient
+
+  #WHO Treatment Outcomes: success, default, transferred out, deceased, lost to follow-up. Added  withdraw as a study specific outcome
+  enum treatment_outcome: { "success": 0, "default": 1, "transferred": 2, "deceased": 3,  "lost-to-follow-up": 4, "withdraw": 5 }
+
 
   def adherence
     days = medication_adherence_denominator

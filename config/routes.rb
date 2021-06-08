@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
     resources :patient, only: [:update, :show] do
         resources :contact_tracing, only: [:index, :create, :update]
+        resources :treatment_outcome, only: [:create]
     end
 
     resources :patients, only: [:index], controller: "patient"
