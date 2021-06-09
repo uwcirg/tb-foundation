@@ -25,4 +25,8 @@ class ChannelSerializer < ActiveModel::Serializer
         return object.title
     end
 
+    def is_private
+        return object.is_private  && !object.is_site_channel
+    end
+
 end

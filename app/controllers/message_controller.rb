@@ -7,7 +7,7 @@ class MessageController < UserController
         update_message_params = filter_params
         message = Message.find(update_message_params[:id])
 
-        if(message.channel.is_private)
+        if(message.channel.is_private && !message.channel.is_site_channel)
             render(json: {error: "Cannot hide messages in non public discussions"}, status: 422)
             return
         end
