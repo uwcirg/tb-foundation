@@ -270,6 +270,10 @@ class Patient < User
     self.daily_reports.medication_was_not_taken.where("daily_reports.date >= ? and daily_reports.date <= ?", self.patient_information.datetime_patient_activated.to_date, self.treatment_end_date).count
   end
 
+  def archived?
+    return self.status == "Archived"
+  end
+
   private
 
   def create_patient_information
