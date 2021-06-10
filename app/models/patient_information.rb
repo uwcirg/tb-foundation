@@ -61,7 +61,7 @@ class PatientInformation < ApplicationRecord
 
   def medication_adherence_denominator
     return 1 if self.datetime_patient_activated.nil?
-    end_date = patient_completed_treatment ? self.app_end_date : LocalizedDate.now_in_ar.to_date
+    end_date = patient_completed_treatment ? self.app_end_date || default_end_date  : LocalizedDate.now_in_ar.to_date
     (end_date - self.datetime_patient_activated.to_date).to_i + 1
   end
 
@@ -73,5 +73,9 @@ class PatientInformation < ApplicationRecord
 
   def patient_completed_treatment
     self.patient.status == "Archived"
+  end
+
+  def default_end_date
+    self.patient.treatment_start.to_date + 6.months
   end
 end
