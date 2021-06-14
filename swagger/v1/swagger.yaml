@@ -43,6 +43,16 @@ components:
         treatmentStart:
           type: string
           format: date-time
+    update_patient:
+      type: object
+      properties:
+        status:
+          type: string
+        appEndDate:
+          type: string
+          format: date
+        treatmentOutcome:
+          type: string
     patient:
       type: object
       properties:

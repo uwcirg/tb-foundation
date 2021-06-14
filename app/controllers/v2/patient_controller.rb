@@ -1,7 +1,14 @@
 class V2::PatientController < PatientDataController
   def index
     @patients = policy_scope(Patient).includes("patient_information")
-    render(json: @patients, status: :ok, each_serializer: serializer)
+
+    if (params[:archived])
+      filtered_patients = @patients.archived
+    else
+      filtered_patients = @patients.active
+    end
+
+    render(json: filtered_patients, status: :ok, each_serializer: serializer)
   end
 
   def show

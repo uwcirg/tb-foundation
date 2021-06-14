@@ -62,7 +62,7 @@ class Practitioner < User
   end
 
   def patients_missed_photo
-    missed_days = PhotoDay.since_last_missing_photo_resolution.where("photo_days.date > ?", Date.today - 1.week)
+    missed_days = PhotoDay.since_last_missing_photo_resolution.where("photo_days.date > ?", Date.today - 1.month)
       .where(patient: self.patients.active)
       .joins("LEFT JOIN daily_reports on daily_reports.date = photo_days.date AND daily_reports.user_id = photo_days.patient_id",
              "LEFT JOIN photo_reports on photo_reports.daily_report_id = daily_reports.id")
