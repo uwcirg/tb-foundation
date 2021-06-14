@@ -25,9 +25,7 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
              :priority,
              :medication_summary
 
-  # has_many :daily_reports do
-  #     @object.daily_reports.where(date: [Date.today, Date.today-1]).order("date DESC")
-  #   end
+  attribute :treatment_outcome, if: -> { object.archived?}
 
   has_one :last_report do
     @object.daily_reports.last
@@ -61,9 +59,16 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
 
   def medication_summary
     {
-        adherent_days: object.patient_information.adherent_days,
-        reported_missed_days: object.patient_information.days_reported_not_taking_medication,
-        days_since_app_start: object.patient_information.medication_adherence_denominator
+      adherent_days: object.patient_information.adherent_days,
+      reported_missed_days: object.patient_information.days_reported_not_taking_medication,
+      days_since_app_start: object.patient_information.medication_adherence_denominator,
+    }
+  end
+
+  def treatment_outcome
+    {
+      treatment_outcome: object.patient_information.treatment_outcome,
+      app_end_date: object.patient_information.app_end_date 
     }
   end
 
