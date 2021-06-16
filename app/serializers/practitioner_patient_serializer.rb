@@ -1,5 +1,6 @@
 #Serializer used for practitioner viewing a patients information
-class PractitionerPatientSerializer < ActiveModel::Serializer
+class PractitionerPatientSerializer < BasePatientSerializer
+
   attributes :given_name,
              :family_name,
              :id,
@@ -24,8 +25,6 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
              :reporting_status,
              :priority,
              :medication_summary
-
-  attribute :treatment_outcome, if: -> { object.archived?}
 
   has_one :last_report do
     @object.daily_reports.last
@@ -62,13 +61,6 @@ class PractitionerPatientSerializer < ActiveModel::Serializer
       adherent_days: object.patient_information.adherent_days,
       reported_missed_days: object.patient_information.days_reported_not_taking_medication,
       days_since_app_start: object.patient_information.medication_adherence_denominator,
-    }
-  end
-
-  def treatment_outcome
-    {
-      treatment_outcome: object.patient_information.treatment_outcome,
-      app_end_date: object.patient_information.app_end_date 
     }
   end
 

@@ -1,4 +1,4 @@
-class PatientSerializer < ActiveModel::Serializer
+class PatientSerializer < BasePatientSerializer
     
     attributes :given_name, 
     :family_name, 
