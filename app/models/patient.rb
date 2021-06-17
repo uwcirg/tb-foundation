@@ -29,7 +29,7 @@ class Patient < User
   validates :treatment_start, presence: true
 
   after_create :create_private_message_channel, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date
-  after_commit :create_patient_information
+  after_commit :create_patient_information_entry
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
@@ -268,8 +268,8 @@ class Patient < User
 
   private
 
-  def create_patient_information
-    if (self.patient_information.nil?)
+  def create_patient_information_entry
+    if (!PatientInformation.where(patient_id: self.id).exists?)
       self.create_patient_information!(patient_id: self.id, datetime_patient_added: Time.now, datetime_patient_activated: Rails.env.test? ? Time.now : nil)
     end
   end
