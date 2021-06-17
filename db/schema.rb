@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_08_155153) do
+ActiveRecord::Schema.define(version: 2021_06_17_215329) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(version: 2021_06_08_155153) do
     t.integer "treatment_outcome"
     t.datetime "datetime_patient_archived"
     t.date "app_end_date"
-    t.index ["patient_id"], name: "index_patient_informations_on_patient_id"
+    t.index ["patient_id"], name: "index_patient_informations_on_patient_id", unique: true
   end
 
   create_table "patient_notes", force: :cascade do |t|
