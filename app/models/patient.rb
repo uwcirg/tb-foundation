@@ -29,7 +29,7 @@ class Patient < User
   validates :treatment_start, presence: true
 
   after_create :create_private_message_channel, :create_resolutions, :generate_photo_schedule, :add_treatment_end_date
-  after_commit :create_patient_information_entry
+  after_commit :create_patient_information_entry, on: :create
 
   scope :active, -> { where(:status => ("Active")) }
   scope :pending, -> { where(:status => ("Pending")) }
