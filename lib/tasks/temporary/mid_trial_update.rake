@@ -6,7 +6,7 @@ namespace :mid_trial_update do
       patients.each do |patient|
         information_entries = PatientInformation.where(patient_id: patient.id)
         next unless information_entries.length > 1
-        puts("Editing entries for patient #{patient.id}")
+        puts("Deleting entries for patient #{patient.id}")
         best_entry = information_entries.where("datetime_patient_activated is not null").first
         information_entries.where.not(id: best_entry.id).destroy_all
       end
