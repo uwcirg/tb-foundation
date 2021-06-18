@@ -4,7 +4,7 @@ class Organization < ApplicationRecord
   has_many :practitioners
   has_many :patients
 
-  after_commit :create_organization_channel
+  after_commit :create_organization_channel, on: :create
 
   def add_pending_patient(params,code)
     code_digest = BCrypt::Password.create(code)
