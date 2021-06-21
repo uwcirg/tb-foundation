@@ -1,4 +1,4 @@
-class Channel::MessagesController < UserController
+class V2::MessagesController < UserController
   before_action :snake_case_params
   before_action :auth_user
 
@@ -8,8 +8,8 @@ class Channel::MessagesController < UserController
 
     messages = channel.messages.where("id > ?", params[:last_message_id] || 0).includes(:user)
     messages = messages.order("created_at")
-    if(@current_user.type === "Patient")
-        messages = messages.where(is_hidden: false)
+    if (@current_user.type === "Patient")
+      messages = messages.where(is_hidden: false)
     end
     @current_user.update_last_message_seen(channel.id, channel.messages_count)
 
@@ -28,8 +28,7 @@ class Channel::MessagesController < UserController
   end
 
   def relevant_channel
-    #Current user from before_action, inherited from UserController
-    @current_user.available_channels.find(params[:channel_id])
+    policy_scope(Channel).find(params[:channel_id])
   end
 
   #Decide whether to send hidden messages or not

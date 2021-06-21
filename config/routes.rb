@@ -35,12 +35,14 @@ Rails.application.routes.draw do
     end
 
     resources :push_notification_status, only: [:update]
+    
 
 
   end
 
+
   #Routes below were developed over time and standarization / organization is lacking
-  #Over time converting these to stable and better organized "v2" routes
+  #Over time converting these to stable and better organized "V2" routes
 
   #Notifications
   get "/push_key", to: "user#push_key"
