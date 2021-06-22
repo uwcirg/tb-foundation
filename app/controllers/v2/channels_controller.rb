@@ -17,5 +17,4 @@ class V2::ChannelsController < UserController
   def user_not_authorized
     render(json: { error: "You do not have access to that channel", code: 401 }, status: 401)
   end
-  
 end
