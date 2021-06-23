@@ -9,7 +9,8 @@ class ChannelSerializer < ActiveModel::Serializer
     :user_id,
     :last_message_time,
     :user_type,
-    :is_site_channel
+    :is_site_channel,
+    :first_message_id
 
     def unread_messages
         return(object.messages_count - MessagingNotification.where(user_id: @instance_options[:user_id],channel_id: object.id ).first.read_message_count)
@@ -19,10 +20,12 @@ class ChannelSerializer < ActiveModel::Serializer
         
         if(@instance_options[:requesting_user_type] == "Expert" &&  object.title == "tb-expert-chat")
             return object.user.full_name
-        elsif()
-
         end
         return object.title
+    end
+
+    def first_message_id
+        object.messages.count > 0 ? object.messages.first.id : nil
     end
 
     def is_private
