@@ -3,7 +3,6 @@ class V2::MessagesController < UserController
   before_action :auth_user
 
   def index
-    #TODO paginate longer conversations, combined with lazy loading
     channel = relevant_channel
 
     if(params[:first_message_id])
@@ -56,11 +55,4 @@ class V2::MessagesController < UserController
     policy_scope(Channel).find(params[:channel_id])
   end
 
-  # #Decide whether to send hidden messages or not
-  # def relevant_messages
-  #   type = @current_user.type
-  #   if (type === "Practitioner" || type === "Admin")
-  #     return channel.messages.where("id > ?", params[:last_message_id]).where(:is_hidden).order("created_at DESC")
-  #   end
-  # end
 end
