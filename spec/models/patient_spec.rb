@@ -10,69 +10,6 @@ RSpec.describe Patient, :type => :model do
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  describe ".adherence" do
-    let(:patient) { FactoryBot.create(:patient, treatment_start: DateTime.now()) }
-
-    it("inital adherence is zero") do
-      expect(patient.adherence).to eq(0)
-    end
-
-    it("adherence with one report is 1") do
-      patient.create_seed_report(Date.today, true)
-      expect(patient.adherence).to eq(1)
-    end
-
-    it("adherence on 3rd day with 1 report before reporting") do
-      patient.create_seed_report(Date.today, true)
-      travel_to((Time.current + 2.day).change(hour: 12)) do
-        expect(patient.adherence).to eq(1.0 / 2)
-        patient.create_bad_report(Date.today)
-        expect(patient.adherence).to eq((1.0 / 3).round(2))
-      end
-    end
-
-    it("adherence on 3rd day with good report") do
-      patient.create_seed_report(Date.today, true)
-      travel_to((Time.current + 2.day).change(hour: 12)) do
-        expect(patient.adherence).to eq(1.0 / 2)
-        patient.create_seed_report(Date.today, true)
-        expect(patient.adherence).to eq((2.0 / 3).round(2))
-      end
-    end
-
-    it "adherence adapts to changing records" do
-      patient = FactoryBot.create(:patient, treatment_start: Date.today - 1.week, organization: @organization)
-      expect(patient.days_in_treatment).to eq(8)
-      expect(patient.adherence).to eq(0)
-
-      patient.seed_test_reports(true)
-      patient.daily_reports.last.destroy
-      expect(patient.adherence).to eq(1)
-
-      patient.create_seed_report(Date.today, true)
-      expect(patient.days_in_treatment).to eq(8)
-      expect(patient.adherence).to eq(1)
-
-      patient.daily_reports.first.destroy
-      expect(patient.adherence).to eq((7.0 / 8.0).round(2))
-    end
-
-    it "adherence should only recalculate after a full day has passed" do
-      patient = create_fresh_patient
-      patient.create_seed_report(Date.today, true)
-
-      travel_to((Time.current + 2.day).change(hour: 12)) do
-        expect(patient.adherence).to eq(1.0 / 2)
-      end
-    end
-
-    it "adherence should reflect only days where medication was taken" do
-      patient = create_fresh_patient
-      patient.create_bad_report(Date.today)
-      expect(patient.adherence).to eq(0)
-    end
-  end
-
   describe ".has_temp_password" do
     let(:patient) { FactoryBot.create(:patient, treatment_start: DateTime.now()) }
 
@@ -132,17 +69,16 @@ RSpec.describe Patient, :type => :model do
     it "initally does not have password reset request" do
       expect(patient.has_forced_password_change).to eq(false)
     end
-    
+
     it "changes state after password reset" do
       patient.reset_password
-      expect(patient.has_forced_password_change).to eq(true) 
+      expect(patient.has_forced_password_change).to eq(true)
     end
 
     it "is not true when patient is pending" do
       patient.update!(status: "Pending")
       expect(patient.has_forced_password_change).to eq(false)
     end
-
   end
 
   describe(".requested_test_not_submitted") do
@@ -154,16 +90,91 @@ RSpec.describe Patient, :type => :model do
 
     it("does not return a patient who has submitted thier photo") do
       patient.add_photo_day
-      patient.photo_reports.create!(photo_url: "test",captured_at: DateTime.now, date: Date.today)
+      patient.photo_reports.create!(photo_url: "test", captured_at: DateTime.now, date: Date.today)
       expect(Patient.requested_test_not_submitted(Date.today).count).to eq(0)
     end
-    
+
     it("does not return a patient who has submitted a reason for skipping") do
       patient.add_photo_day
-      patient.photo_reports.create!(photo_was_skipped: true,captured_at: DateTime.now, date: Date.today, why_photo_was_skipped: "Test")
+      patient.photo_reports.create!(photo_was_skipped: true, captured_at: DateTime.now, date: Date.today, why_photo_was_skipped: "Test")
       expect(Patient.requested_test_not_submitted(Date.today).count).to eq(0)
     end
-
-
   end
+
+  describe ".adherence" do
+    it("is zero when initalized ") do
+      patient = FactoryBot.create(:patient, treatment_start: Time.now)
+      patient.activate
+      expect(patient.adherence).to eq(0)
+    end
+
+    it("after 1st report is 1") do
+      patient = FactoryBot.create(:patient, treatment_start: Time.now)
+      patient.activate
+      patient.create_seed_report(Date.today, true)
+      patient.reload
+      expect(patient.adherence).to eq(1)
+    end
+
+    it("reflects reporting on 4th day for the first time") do
+      patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
+      patient.activate(Time.now - 3.days)
+      patient.create_seed_report(Date.today, true)
+      patient.reload
+      expect(patient.adherence).to eq(1.0 / 4.0)
+    end
+
+    it("reflects 4th day not yet reported, 3 previous days reported") do
+      patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
+      patient.activate(Time.now - 3.days)
+      patient.create_seed_report(Date.today - 3.days, true)
+      patient.create_seed_report(Date.today - 2.days, true)
+      patient.create_seed_report(Date.today - 1.days, true)
+      patient.reload
+      expect(patient.adherence).to eq(1)
+    end
+
+    it("reflects reporting for first 3 days and 4th day") do
+      patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
+      patient.activate(Time.now - 3.days)
+      patient.create_seed_report(Date.today - 3.days, true)
+      patient.create_seed_report(Date.today - 2.days, true)
+      patient.create_seed_report(Date.today - 1.days, true)
+      patient.create_seed_report(Date.today, true)
+      patient.reload
+      expect(patient.adherence).to eq(1)
+    end
+
+    it "should reflect only days where medication was taken" do
+      patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
+      patient.activate(Time.now - 3.days)
+      patient.create_seed_report(Date.today - 3.days, true)
+      patient.create_seed_report(Date.today - 2.days, true)
+      patient.create_seed_report(Date.today - 1.days, true)
+      patient.create_bad_report(Date.today)
+      patient.reload
+      expect(patient.adherence).to eq(3.0 / 4.0)
+    end
+
+    it "should only recalculate after a full day has passed" do
+      patient = FactoryBot.create(:patient, treatment_start: Time.now)
+      patient.activate(Time.now)
+      patient.create_seed_report(Date.today, true)
+      travel_to((Time.current + 2.day).change(hour: 12)) do
+        patient.reload
+        expect(patient.adherence).to eq(1.0 / 2)
+      end
+    end
+
+    it "should only reflect medication reports attached to a daily_report" do
+      patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
+      patient.activate(Time.now - 3.days)
+      patient.create_seed_report(Date.today - 3.days, true)
+      patient.medication_reports.create!(date: Date.today, medication_was_taken: true)
+      patient.medication_reports.create!(date: Date.today - 1.day, medication_was_taken: true)
+      patient.reload
+      expect(patient.adherence).to eq(0.33)
+    end
+  end
+
 end

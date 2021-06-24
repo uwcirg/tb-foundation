@@ -12,6 +12,7 @@ services:
       URL_CLIENT: $URL_CLIENT
       DEFAULT_LOCALE: $DEFAULT_LOCALE
       DOCKER_TAG: $API_DOCKER_TAG
+      REDCAP_EOT_SURVEY_LINK: $REDCAP_EOT_SURVEY_LINK
   db:
     restart: always
     image: postgres:11

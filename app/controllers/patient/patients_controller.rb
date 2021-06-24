@@ -13,7 +13,7 @@ class Patient::PatientsController < UserController
     patient_hash.delete(:is_tester)
     new_patient = @current_user.organization.add_pending_patient(patient_hash, code)
 
-    #On deve instances allow seeding of data for training + testing
+    #On dev instances allow seeding of data for training + testing
     if new_patient.save
       if is_test_account && Rails.env.development?
         new_patient.update!(treatment_start: DateTime.now() - 1.month)

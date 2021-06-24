@@ -22,19 +22,33 @@ describe "Patient Update Route" do
       produces "application/json"
       consumes "application/json"
       parameter name: :id, in: :path, type: :string
-      parameter name: :update_patient, in: :body, schema: { '$ref' => '#/components/schemas/update_patient' }
+      parameter name: :update_patient, in: :body, schema: { "$ref" => "#/components/schemas/update_patient" }
 
       response "201", "patient update successful" do
         schema "$ref" => "#/components/schemas/patient"
         let!(:id) { @patients[0].id }
-        let!(:new_phone){Faker::Number.number(digits: 9).to_s}
-        let!(:update_patient){
-          {phone_number: new_phone}
+        let!(:new_phone) { Faker::Number.number(digits: 9).to_s }
+        let!(:update_patient) {
+          { phone_number: new_phone }
         }
         run_test! do |response|
           data = JSON.parse(response.body)
           expect(data["phoneNumber"]).to eq(new_phone)
         end
+      end
+    end
+  end
+
+  post "/v2/patient/{id}/status" do
+    post "Update status of patient" do
+      tags "Patient"
+      produces "application/json"
+      consumes "application/json"
+      parameter name: :id, in: :path, type: :string
+      parameter name: :update_patient, in: :body, schema: { "$ref" => "#/components/schemas/update_patient_status" }
+      response "201", "patient update successful" do
+        schema "$ref" => "#/components/schemas/patient"
+        let!(:id) { @patients[0].id }
       end
     end
   end

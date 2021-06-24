@@ -7,7 +7,7 @@ class Channel < ApplicationRecord
     validates :title, presence: true, length: {maximum: 50}
     validates :subtitle, length: {maximum: 250}
 
-    after_commit :create_unread_messages_async
+    after_commit :create_unread_messages_async, on: :create
 
     scope :active, -> { where(:status => ("Active")) }
 

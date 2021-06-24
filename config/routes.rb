@@ -3,10 +3,6 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => "/api-docs" unless Rails.env.production?
 
   # In progress, implementing a stable API
-  # Will used underscored routes,
-  # Not doing so requires extensive manual work or configuration changes
-  # Reference for updating in the future if required
-  # https://stackoverflow.com/questions/5334465/routes-with-dash-instead-of-underscore-in-ruby-on-rails
   namespace "v2" do
     resources :time_summary, only: [:index]
     resources :daily_report, only: [:index]
@@ -18,6 +14,7 @@ Rails.application.routes.draw do
 
     resources :patient, only: [:update, :show] do
         resources :contact_tracing, only: [:index, :create, :update]
+        resources :treatment_outcome, only: [:create]
     end
 
     resources :patients, only: [:index], controller: "patient"
@@ -28,6 +25,7 @@ Rails.application.routes.draw do
     resources :organizations, only: [:index]
 
     resources :channels, only: [:index, :create]
+    resources :message, only: [:update], controller: "messages"
 
     resources :channel, only: [:show], controller: "channels" do
       resources :messages, only: [:index, :create]
@@ -35,11 +33,11 @@ Rails.application.routes.draw do
 
     resources :push_notification_status, only: [:update]
 
-
   end
 
+  # --------------------------------------------------------------------------------------------------------------------------------------
   #Routes below were developed over time and standarization / organization is lacking
-  #Over time converting these to stable and better organized "v2" routes
+  #Over time converting these to stable and better organized "V2" routes
 
   #Notifications
   get "/push_key", to: "user#push_key"
@@ -76,8 +74,6 @@ Rails.application.routes.draw do
   get "/patients/photo_reports/processed", to: "practitioner#get_historical_photos"
   get "/patient/:patient_id/reports", to: "practitioner#get_patient_reports"
   patch "/photo_submission/:photo_id", to: "practitioner#audit_photo"
-  post "/patient/:patientID/milestones", to: "milestone#create"
-  get "/patient/me/milestones", to: "patient#get_milestones"
   get "/patients/severe", to: "practitioner#patients_with_symptoms"
   get "/patients/missed", to: "practitioner#patients_missed_reporting"
   get "/patients/need_support", to: "practitioner#patients_need_support"
@@ -129,6 +125,5 @@ Rails.application.routes.draw do
   resources :practitioners, only: [:index], controller: "practitioner/practitioners"
 
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
-  get "/study/patients", to: "administrator#patient_list"
   get "/health-check", to: "health_check#index"
 end

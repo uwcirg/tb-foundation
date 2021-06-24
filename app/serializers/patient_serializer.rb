@@ -1,10 +1,11 @@
-class PatientSerializer < ActiveModel::Serializer
+class PatientSerializer < BasePatientSerializer
     
     attributes :given_name, 
     :family_name, 
     :id, 
     :full_name, 
     :adherence,
+    :photo_adherence,
     :percentage_complete, 
     :days_in_treatment, 
     :treatment_start, 
@@ -21,11 +22,12 @@ class PatientSerializer < ActiveModel::Serializer
     :gender,
     :last_education_status,
     :has_forced_password_change,
-    :treatment_end_date
+    :treatment_end_date,
+    :photo_summary,
+    :app_start_time
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
-    attribute :symptom_summary, if: -> { @instance_options[:include_symptom_summary].present?}
     attribute :number_missing_reports, if: -> { @instance_options[:include_missing_reports].present?}
     attribute :reporting_status, if: -> { @instance_options[:include_reporting_status].present?}
     attribute :last_symptoms, if: -> {@instance_options[:include_last_symptoms].present?}
@@ -42,10 +44,6 @@ class PatientSerializer < ActiveModel::Serializer
 
     def full_name
         return("#{object.given_name} #{object.family_name}")
-    end
-
-    def symptom_summary
-        object.daily_reports
     end
 
     def daily_notification_time
@@ -77,6 +75,18 @@ class PatientSerializer < ActiveModel::Serializer
 
     def gender
         object.gender == "Other" ? object.gender_other || "Other" : object.gender
+    end
+
+    def photo_adherence
+        object.patient_information.photo_adherence
+    end
+
+    def photo_summary
+        object.patient_information.photo_reporting_summary
+    end
+
+    def app_start_time
+        object.patient_information.datetime_patient_activated
     end
 
 end

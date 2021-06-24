@@ -13,7 +13,7 @@ class Channel::MessagesController < UserController
     end
     @current_user.update_last_message_seen(channel.id, channel.messages_count)
 
-    render(json: messages, status: :ok)
+    render(json: messages, current_user: @current_user, status: :ok)
   end
 
   def create

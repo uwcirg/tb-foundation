@@ -1,14 +1,20 @@
 class V2::PatientController < PatientDataController
-
   def index
-    @patients = policy_scope(Patient)
-    render( json: @patients, status: :ok, each_serializer: serializer )
+    @patients = policy_scope(Patient).includes("patient_information")
+
+    if (params[:archived])
+      filtered_patients = @patients.archived
+    else
+      filtered_patients = @patients.active
+    end
+
+    render(json: filtered_patients, status: :ok, each_serializer: serializer)
   end
 
   def show
     patient = Patient.find(params[:id])
     authorize patient
-    render(json: patient, status: :ok)
+    render(json: patient, serializer: serializer, status: :ok)
   end
 
   def update
@@ -32,8 +38,8 @@ class V2::PatientController < PatientDataController
 
   def update_patient_params
     new_params = params.permit(:phone_number, :given_name, :family_name, :id, :treatment_end_date)
-    if(new_params[:phone_number])
-      new_params[:phone_number] = new_params[:phone_number].delete('^0-9')
+    if (new_params[:phone_number])
+      new_params[:phone_number] = new_params[:phone_number].delete("^0-9")
     end
     return new_params
   end
@@ -43,9 +49,8 @@ class V2::PatientController < PatientDataController
   end
 
   def serializer
-    return PatientSerializer unless @current_user.admin?
-    return PatientAnonSerializer
+    return PractitionerPatientSerializer if @current_user.practitioner?
+    return AdminPatientSerializer if @current_user.admin?
+    return PatientSerializer
   end
-
-
 end
