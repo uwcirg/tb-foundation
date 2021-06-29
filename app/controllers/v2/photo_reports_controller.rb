@@ -3,9 +3,10 @@ class V2::PhotoReportsController < UserController
   before_action :auth_patient, except: :index
 
   def index
-    @photo_reports = policy_scope(PhotoReport).limit(10)
-    render(json: @photo_reports, status: :ok)
-  end 
+    @photo_reports = policy_scope(PhotoReport).joins(:daily_report).order("daily_reports.created_at DESC")
+    limit_photo_reports
+    render(json: @photo_reports.limit(10), status: :ok)
+  end
 
   def create
     daily_report = DailyReport.create_if_not_exists(@current_user.id, params["date"])
@@ -24,6 +25,13 @@ class V2::PhotoReportsController < UserController
       params.require([:date, :photo_url])
     end
 
-    params.permit(:date, :photo_url, :captured_at,:why_photo_was_skipped, :photo_was_skipped)
+    params.permit(:date, :photo_url, :captured_at, :why_photo_was_skipped, :photo_was_skipped)
   end
+
+  def limit_photo_reports
+    if(not params[:before].nil?)
+      @photo_reports = @photo_reports.where("daily_reports.created_at < ?", params[:before])
+     end
+  end
+
 end
