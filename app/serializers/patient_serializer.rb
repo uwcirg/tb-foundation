@@ -23,8 +23,7 @@ class PatientSerializer < BasePatientSerializer
     :last_education_status,
     :has_forced_password_change,
     :treatment_end_date,
-    :photo_summary,
-    :app_start_time
+    :photo_summary
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
@@ -83,10 +82,6 @@ class PatientSerializer < BasePatientSerializer
 
     def photo_summary
         object.patient_information.photo_reporting_summary
-    end
-
-    def app_start_time
-        object.patient_information.datetime_patient_activated
     end
 
 end
