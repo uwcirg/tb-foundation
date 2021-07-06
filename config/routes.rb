@@ -13,13 +13,15 @@ Rails.application.routes.draw do
     resources :resolutions, only: [:create]
 
     resources :patient, only: [:update, :show] do
-        resources :contact_tracing, only: [:index, :create, :update]
-        resources :treatment_outcome, only: [:create]
+      resources :contact_tracing, only: [:index, :create, :update]
+      resources :treatment_outcome, only: [:create]
     end
 
     resources :patients, only: [:index], controller: "patient"
-    
-    resources :user, only: [:index]
+
+    resources :user, only: [:index] do
+      resource :push_subscription, only: [:update]
+    end
 
     resources :trial_summary, only: [:index]
     resources :organizations, only: [:index]
@@ -32,7 +34,6 @@ Rails.application.routes.draw do
     end
 
     resources :push_notification_status, only: [:update]
-
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------
