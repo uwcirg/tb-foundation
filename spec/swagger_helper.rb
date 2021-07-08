@@ -15,7 +15,7 @@ RSpec.configure do |config|
   # document below. You can override this behavior by adding a swagger_doc tag to the
   # the root example_group in your specs, e.g. describe '...', swagger_doc: 'v2/swagger.json'
   config.swagger_docs = {
-    "v1/swagger.yaml" => {
+    "v2/swagger.yaml" => {
       openapi: "3.0.1",
       components: {
         schemas: {
@@ -55,10 +55,19 @@ RSpec.configure do |config|
           push_notification_status_update: {
             type: "object",
             properties:{
-              delivered_successfully: {type: "boolean", example: true},
-              delivered_at: {type: "string", format: "date-time"}, 
+              deliveredSuccessfully: {type: "boolean", example: true},
+              deliveredAt: {type: "string", format: "date-time"}, 
               clicked: {type: "boolean", example: true},
-              clicked_at: {type: "string", format: "date-time"}
+              clickedAt: {type: "string", format: "date-time"}
+            }
+          },
+          push_subscription_update:{
+            type: "object",
+            properties:{
+              pushAuth: {type: "string", example: "fCcSIGV5vYUJVIbzG-DvZA"},
+              pushUrl: {type: "string", example: "https://www.example.com" }, 
+              pushP256dh: {type: "string", example: "BJD99f2Z04fMPPJEpL8u6oAd3BHnTMxuKfsXT_wP" }, 
+              pushClientPermission: {type: "string", example: "granted"}
             }
           }
         },
@@ -71,8 +80,8 @@ RSpec.configure do |config|
         },
       },
       info: {
-        title: "API V1",
-        version: "v1",
+        title: "API V2",
+        version: "v2",
       },
       paths: {},
       servers: [
