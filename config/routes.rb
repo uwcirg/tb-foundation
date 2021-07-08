@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   # In progress, implementing a stable API
   namespace "v2" do
+    resource :vapid_public_key, only: [:show]
     resources :time_summary, only: [:index]
     resources :daily_report, only: [:index]
     resources :medication_reports, only: [:create]
@@ -34,6 +35,7 @@ Rails.application.routes.draw do
     end
 
     resources :push_notification_status, only: [:update]
+
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------
