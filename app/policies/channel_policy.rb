@@ -4,7 +4,7 @@ class ChannelPolicy < ApplicationPolicy
 
     def resolve
       if @user.type == "Practitioner"
-        scope.where(is_private: true, user: @user.patients)
+        scope.where(is_private: true, user: @user.patients.where.not(status: "Pending"))
         .or(Channel.where(is_private: true, category: "SiteGroup", organization_id: @user.organization_id ))
         .or(Channel.where(is_private: false)).order(:organization_id, :created_at)
       elsif @user.type == "Patient"
