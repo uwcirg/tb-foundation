@@ -33,7 +33,7 @@ class ChannelSerializer < ActiveModel::Serializer
     end
 
     def creator_is_archived
-        object.user.patient? && object.user.status == "Archived"
+        !object.user.nil? && object.user.patient? && object.user.status == "Archived"
     end
 
 end
