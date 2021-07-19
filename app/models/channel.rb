@@ -46,6 +46,10 @@ class Channel < ApplicationRecord
         self.category == "SiteGroup"
     end
 
+    def public?
+        !self.is_private 
+    end
+
     private
 
     def create_unread_messages_async
