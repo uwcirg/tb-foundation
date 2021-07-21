@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   # In progress, implementing a stable API
   namespace "v2" do
+    resource :vapid_public_key, only: [:show]
     resources :time_summary, only: [:index]
     resources :daily_report, only: [:index]
     resources :medication_reports, only: [:create]
@@ -13,13 +14,15 @@ Rails.application.routes.draw do
     resources :resolutions, only: [:create]
 
     resources :patient, only: [:update, :show] do
-        resources :contact_tracing, only: [:index, :create, :update]
-        resources :treatment_outcome, only: [:create]
+      resources :contact_tracing, only: [:index, :create, :update]
+      resources :treatment_outcome, only: [:create]
     end
 
     resources :patients, only: [:index], controller: "patient"
-    
-    resources :user, only: [:index]
+
+    resources :user, only: [:index] do
+      resource :push_subscription, only: [:update]
+    end
 
     resources :trial_summary, only: [:index]
     resources :organizations, only: [:index]

@@ -1,6 +1,6 @@
 class UserController < ApplicationController
-  before_action :decode_token, :except => [:login, :generate_presigned_url]
-  around_action :switch_locale, :except => [:login, :generate_presigned_url]
+  before_action :decode_token, :except => [:login]
+  around_action :switch_locale, :except => [:login]
 
   def switch_locale(&action)
     auth_user
