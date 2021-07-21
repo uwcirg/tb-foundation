@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 cd "/srv/www/tb-api.cirg.washington.edu/tb-foundation/bin"
-sh backup.sh || { echo "Backup of prod db failed"; exit 1}
+sh backup.sh || { echo "Backup of prod db failed"; exit 1; }
 
 restore_file_name="$(ls -t /tmp | grep "tb-v2.sql" | head -n1)"
 
