@@ -48,10 +48,6 @@ class PractitionerPatientSerializer < BasePatientSerializer
     object.gender == "Other" ? object.gender_other || "Other" : object.gender
   end
 
-  def photo_adherence
-    object.patient_information.photo_adherence
-  end
-
   def photo_summary
     object.patient_information.photo_reporting_summary
   end
