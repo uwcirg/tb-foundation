@@ -6,7 +6,9 @@ class TrialSummary < ActiveModelSerializers::Model
   end
 
   def patients
+    #@TODO: use Patient.group(:status) instead of individual counts?
     {
+      total: Patient.non_test.count,
       active: Patient.non_test.active.count,
       pending: Patient.non_test.pending.count,
       archived: Patient.non_test.archived.count,
@@ -24,6 +26,10 @@ class TrialSummary < ActiveModelSerializers::Model
               number_of_submissions: PhotoReport.where(date: Date.today).count,
             },
           })
+  end
+
+  def active_notification_enrollment
+      Patient.active.group(:push_client_permission).count
   end
 
   def adherence_summary

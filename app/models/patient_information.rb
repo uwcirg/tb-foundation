@@ -78,6 +78,22 @@ class PatientInformation < ApplicationRecord
     self.datetime_patient_activated.in_time_zone("America/Argentina/Buenos_Aires").to_date
   end
 
+  #Redundant with above method, used for dashboard calculation of total 
+  def days_requested_since(calculation_start_date=nil)
+
+    if(self.datetime_patient_activated.nil?)
+      return 0
+    end
+  
+    begining_date = (!calculation_start_date.nil? && (calculation_start_date > self.datetime_patient_activated)) ? calculation_start_date : self.datetime_patient_activated
+    calculation_end_date = patient_completed_treatment ? end_date  : LocalizedDate.now_in_ar.to_date
+    days_in_treatment = (calculation_end_date - begining_date.to_date).to_i + 1
+
+    if (!self.patient.has_reported_today && days_in_treatment > 1 && !patient_completed_treatment)
+      days_in_treatment -= 1
+    end
+    return days_in_treatment
+  end
 
   private
 

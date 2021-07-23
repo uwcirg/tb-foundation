@@ -13,4 +13,9 @@ class BasePatientSerializer < ActiveModel::Serializer
     object.patient_information.datetime_patient_activated
   end
 
+  def photo_adherence
+    object.patient_information.photo_adherence
+  end
+
+
 end
