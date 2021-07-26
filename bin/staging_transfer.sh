@@ -11,7 +11,7 @@ fi
 
 cd "/srv/www/tb-api-staging.cirg.washington.edu/tb-foundation" || { echo "Staging dir not found"; exit 1; } 
 
-if [ "$pwd" != "/srv/www/tb-api-staging.cirg.washington.edu/tb-foundation" ]; then
+if [ "$PWD" != "/srv/www/tb-api-staging.cirg.washington.edu/tb-foundation" ]; then
      >&2 echo "Error: not currently in staging folder. Stoping to prevent prod db damage"
      exit 1
 fi
