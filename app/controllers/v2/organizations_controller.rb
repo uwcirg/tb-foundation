@@ -2,7 +2,7 @@ class V2::OrganizationsController < UserController
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
     def index
-        organizations = policy_scope(Organization)
+        organizations = policy_scope(Organization).where("id > 0")
         render(json: organizations, status: :ok)
     end 
 
