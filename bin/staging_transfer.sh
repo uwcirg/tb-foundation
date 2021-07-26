@@ -1,5 +1,4 @@
 #!/bin/sh -e
-
 cd "/srv/www/tb-api.cirg.washington.edu/tb-foundation/bin"
 sh backup.sh || { echo "Backup of prod db failed"; exit 1; }
 
@@ -17,12 +16,17 @@ if [ "$pwd" != "/srv/www/tb-api-staging.cirg.washington.edu/tb-foundation" ]; th
      exit 1
 fi
 
-docker stop tb-v2-staging_db_1 || { echo "Stop staging db failed"; exit 1; } 
-docker rm tb-v2-staging_db_1  || { echo "Remove staging db failed"; exit 1; } 
-docker volume rm tb-v2-staging_postgres-files || { echo "Remove db volume failed"; exit 1; } 
+echo "Stoping Services..."
+docker-compose stop web sidekiq
 
-docker-compose up -d || { echo "Error bringing up staging compose services"; exit 1; } 
-docker-compose exec db createdb --username webuser production || { echo "Error creating db"; exit 1; } 
-docker-compose exec -T db psql --dbname production --username webuser < "/tmp/$restore_file_name" || { echo "Error seeding db"; exit 1; }
+echo "Dropping current db..."
+docker-compose exec db dropdb --username webuser production
 
-docker-compose restart web sidekiq
+echo "Creating empty db..."
+docker-compose exec db createdb --username webuser production
+
+echo "Loading SQL dumpfile: ${restore_file_name}..."
+docker-compose exec -T db psql --dbname production --username webuser < "/tmp/$restore_file_name"
+
+echo "Restarting services"
+docker-compose up -d
