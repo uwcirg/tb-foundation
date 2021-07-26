@@ -41,7 +41,7 @@ class TimeSummary < ActiveModelSerializers::Model
   end
 
   def submitted_photos
-    PhotoReport.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today))
+    PhotoReport.where(daily_report_id: DailyReport.where(patient: Patient.non_test.active).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today))
   end
 
   def submitted_reports
