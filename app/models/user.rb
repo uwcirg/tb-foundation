@@ -82,11 +82,11 @@ class User < ApplicationRecord
   end
 
   def localized_date
-    Time.current.in_time_zone(self.time_zone)
+    Time.current.in_time_zone(self.time_zone).to_date
   end
 
   private
-  
+
   def create_unread_messages_async
     ::UnreadMessageCreationWorker.perform_async(self.id)
   end

@@ -40,7 +40,7 @@ class PatientInformation < ApplicationRecord
   end
 
   def days_since_app_start
-    (LocalizedDate.now_in_ar.to_date - self.datetime_patient_activated.to_date).to_i + 1
+    (localized_date - self.datetime_patient_activated.to_date).to_i + 1
   end
 
   def photo_reporting_summary
@@ -60,7 +60,7 @@ class PatientInformation < ApplicationRecord
 
     return 1 if self.datetime_patient_activated.nil?
 
-    calc_end_date = patient_completed_treatment ? end_date  : LocalizedDate.now_in_ar.to_date
+    calc_end_date = patient_completed_treatment ? end_date  : localized_date
     days_in_treatment = (calc_end_date - localized_date_activated).to_i + 1
 
     if (!self.patient.has_reported_today && days_in_treatment > 1 && !patient_completed_treatment)
@@ -86,7 +86,7 @@ class PatientInformation < ApplicationRecord
     end
   
     begining_date = (!calculation_start_date.nil? && (calculation_start_date > self.datetime_patient_activated)) ? calculation_start_date : self.datetime_patient_activated
-    calculation_end_date = patient_completed_treatment ? end_date  : LocalizedDate.now_in_ar.to_date
+    calculation_end_date = patient_completed_treatment ? end_date  : localized_date
     days_in_treatment = (calculation_end_date - begining_date.to_date).to_i + 1
 
     if (!self.patient.has_reported_today && days_in_treatment > 1 && !patient_completed_treatment)
@@ -121,6 +121,10 @@ class PatientInformation < ApplicationRecord
 
   def should_update_stats_after_commit
     app_end_date_changed? || datetime_patient_activated_changed?
+  end
+
+  def localized_date
+    self.patient.localized_date
   end
 
 
