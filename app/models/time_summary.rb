@@ -31,10 +31,6 @@ class TimeSummary < ActiveModelSerializers::Model
   def start_date
     Time.now.in_time_zone("America/Argentina/Buenos_Aires").to_date - @number_of_days
   end
-
-  def n_reports
-    Patient.active.non_test.reduce(0) { |sum, patient| sum + ((patient.days_in_treatment >= @number_of_days) ? @number_of_days : patient.days_in_treatment) }
-  end
   
   def number_of_reports_requested
     PatientInformation.where(patient: Patient.active.non_test).reduce(0) { |sum, pi| sum + pi.days_requested_since(start_date) }

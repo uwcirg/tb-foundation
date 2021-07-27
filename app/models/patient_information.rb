@@ -103,7 +103,7 @@ class PatientInformation < ApplicationRecord
 
   def number_of_adherent_days
     return 0 unless !self.datetime_patient_activated.nil?
-    self.daily_reports.was_taken.where("daily_reports.date >= ? and daily_reports.date <= ?", localized_date_activated, end_date).count
+    self.daily_reports.was_taken.where("daily_reports.date >= ? and daily_reports.date <= ?", localized_date_activated, end_date).group(:date).maximum(:updated_at).count
   end
 
   def number_days_reported_not_taking_medication

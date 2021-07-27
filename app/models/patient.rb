@@ -180,7 +180,7 @@ class Patient < User
     days = self.missed_days.first["date"] rescue nil
   end
 
-  def has_reported_today(datetime = DateTime.now)
+  def has_reported_today(datetime = localized_date_today)
     self.daily_reports.where(date: datetime.to_date).exists?
   end
 
@@ -189,7 +189,7 @@ class Patient < User
   end
 
   def days_in_treatment
-    return (Date.today - self.treatment_start.to_date).to_i + 1
+    return (localized_date_today - self.treatment_start.to_date).to_i + 1
   end
 
   def number_of_days_with_photo_report
@@ -197,14 +197,14 @@ class Patient < User
   end
 
   def weeks_in_treatment
-    (Date.today - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
+    (localized_date_today - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
   end
 
   def percentage_complete
     return (self.days_in_treatment.to_f / 180).round(2)
   end
 
-  def add_photo_day(date = Date.today)
+  def add_photo_day(date = localized_date_today)
     if (!self.photo_days.where(date: date).exists?)
       self.photo_days.create!(date: date)
     end
