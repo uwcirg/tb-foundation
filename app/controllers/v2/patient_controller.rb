@@ -8,6 +8,10 @@ class V2::PatientController < PatientDataController
       filtered_patients = @patients.active
     end
 
+    if(params[:all])
+      filtered_patients = @patients.all
+    end
+
     render(json: filtered_patients, status: :ok, each_serializer: serializer)
   end
 
