@@ -270,7 +270,7 @@ class Patient < User
 
   def create_patient_information_entry
     if (!PatientInformation.where(patient_id: self.id).exists?)
-      self.create_patient_information!(patient_id: self.id, datetime_patient_added: Time.now, datetime_patient_activated: Rails.env.test? ? Time.now : nil)
+      self.create_patient_information!(patient_id: self.id, datetime_patient_added: Time.current - 30.minutes, datetime_patient_activated: Rails.env.test? ? Time.current : nil)
     end
   end
 end

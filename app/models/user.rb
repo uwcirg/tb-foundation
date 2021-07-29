@@ -81,8 +81,12 @@ class User < ApplicationRecord
     self.type == "Patient"
   end
 
+  def localized_datetime
+    Time.current.in_time_zone(self.time_zone)
+  end
+
   def localized_date
-    Time.current.in_time_zone(self.time_zone).to_date
+    localized_datetime.to_date
   end
 
   private
