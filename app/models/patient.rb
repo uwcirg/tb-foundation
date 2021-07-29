@@ -266,6 +266,10 @@ class Patient < User
     return self.status == "Archived"
   end
 
+  def back_submission_ratio
+    return (self.daily_reports.where("date < (created_at at time zone ?)::date", self.time_zone).count.to_f / self.daily_reports.count.to_f).round(2) 
+  end
+
   private
 
   def create_patient_information_entry
