@@ -12,7 +12,7 @@ class TrialSummary < ActiveModelSerializers::Model
       active: Patient.non_test.active.count,
       pending: Patient.non_test.pending.count,
       archived: Patient.non_test.archived.count,
-      priorities: priority_summary
+      priorities: priority_summary,
     }
   end
 
@@ -29,7 +29,7 @@ class TrialSummary < ActiveModelSerializers::Model
   end
 
   def active_notification_enrollment
-      Patient.active.group(:push_client_permission).count
+    Patient.active.group(:push_client_permission).count
   end
 
   def adherence_summary
@@ -88,5 +88,4 @@ class TrialSummary < ActiveModelSerializers::Model
     end
     return hash
   end
-
 end

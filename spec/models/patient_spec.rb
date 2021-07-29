@@ -32,8 +32,8 @@ RSpec.describe Patient, :type => :model do
   # describe "daily_report creation" do
   #   it "cannot create more than one daily report per day, but will record individual report parts" do
   #     patient = create_fresh_patient
-  #     report_1 = patient.create_seed_report(Date.today, true)
-  #     report_2 = patient.create_seed_report(Date.today, false)
+  #     report_1 = patient.create_seed_report(patient.localized_date, true)
+  #     report_2 = patient.create_seed_report(patient.localized_date, false)
   #     expect(patient.daily_reports.count).to eq(1)
   #     expect(patient.medication_reports.count).to eq(2)
   #   end
@@ -85,7 +85,7 @@ RSpec.describe Patient, :type => :model do
     let(:patient) { create_fresh_patient }
     it("returns a patient who has not yet submitted thier photo") do
       patient.add_photo_day
-      expect(Patient.requested_test_not_submitted(Date.today)[0]).to eq(patient)
+      expect(Patient.requested_test_not_submitted(patient.localized_date)[0]).to eq(patient)
     end
 
     it("does not return a patient who has submitted thier photo") do
@@ -111,7 +111,7 @@ RSpec.describe Patient, :type => :model do
     it("after 1st report is 1") do
       patient = FactoryBot.create(:patient, treatment_start: Time.now)
       patient.activate
-      patient.create_seed_report(Date.today, true)
+      patient.create_seed_report(patient.localized_date, true)
       patient.reload
       expect(patient.adherence).to eq(1)
     end
@@ -119,17 +119,28 @@ RSpec.describe Patient, :type => :model do
     it("reflects reporting on 4th day for the first time") do
       patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
       patient.activate(Time.now - 3.days)
-      patient.create_seed_report(Date.today, true)
+      patient.create_seed_report(patient.localized_date, true)
       patient.reload
       expect(patient.adherence).to eq(1.0 / 4.0)
+    end
+
+    it("timezone edge case") do
+      #Testing timezone edge cases regression test for failing tests after 9pm EST
+      travel_to((Time.current + 1.day).change(hour: 1, min: 34)) do
+        patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
+        patient.activate(Time.now - 3.days)
+        patient.create_seed_report(patient.localized_date, true)
+        patient.reload
+        expect(patient.adherence).to eq(1.0 / 4.0)
+      end
     end
 
     it("reflects 4th day not yet reported, 3 previous days reported") do
       patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
       patient.activate(Time.now - 3.days)
-      patient.create_seed_report(Date.today - 3.days, true)
-      patient.create_seed_report(Date.today - 2.days, true)
-      patient.create_seed_report(Date.today - 1.days, true)
+      patient.create_seed_report(patient.localized_date - 3.days, true)
+      patient.create_seed_report(patient.localized_date - 2.days, true)
+      patient.create_seed_report(patient.localized_date - 1.days, true)
       patient.reload
       expect(patient.adherence).to eq(1)
     end
@@ -137,10 +148,10 @@ RSpec.describe Patient, :type => :model do
     it("reflects reporting for first 3 days and 4th day") do
       patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
       patient.activate(Time.now - 3.days)
-      patient.create_seed_report(Date.today - 3.days, true)
-      patient.create_seed_report(Date.today - 2.days, true)
-      patient.create_seed_report(Date.today - 1.days, true)
-      patient.create_seed_report(Date.today, true)
+      patient.create_seed_report(patient.localized_date - 3.days, true)
+      patient.create_seed_report(patient.localized_date - 2.days, true)
+      patient.create_seed_report(patient.localized_date - 1.days, true)
+      patient.create_seed_report(patient.localized_date, true)
       patient.reload
       expect(patient.adherence).to eq(1)
     end
@@ -148,33 +159,22 @@ RSpec.describe Patient, :type => :model do
     it "should reflect only days where medication was taken" do
       patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
       patient.activate(Time.now - 3.days)
-      patient.create_seed_report(Date.today - 3.days, true)
-      patient.create_seed_report(Date.today - 2.days, true)
-      patient.create_seed_report(Date.today - 1.days, true)
-      patient.create_bad_report(Date.today)
+      patient.create_seed_report(patient.localized_date - 3.days, true)
+      patient.create_seed_report(patient.localized_date - 2.days, true)
+      patient.create_seed_report(patient.localized_date - 1.days, true)
+      patient.create_bad_report(patient.localized_date)
       patient.reload
       expect(patient.adherence).to eq(3.0 / 4.0)
-    end
-
-    it "should only recalculate after a full day has passed" do
-      patient = FactoryBot.create(:patient, treatment_start: Time.now)
-      patient.activate(Time.now)
-      patient.create_seed_report(Date.today, true)
-      travel_to((Time.current + 2.day).change(hour: 12)) do
-        patient.reload
-        expect(patient.adherence).to eq(1.0 / 2)
-      end
     end
 
     it "should only reflect medication reports attached to a daily_report" do
       patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
       patient.activate(Time.now - 3.days)
-      patient.create_seed_report(Date.today - 3.days, true)
+      patient.create_seed_report(patient.localized_date - 3.days, true)
       patient.medication_reports.create!(date: Date.today, medication_was_taken: true)
       patient.medication_reports.create!(date: Date.today - 1.day, medication_was_taken: true)
       patient.reload
       expect(patient.adherence).to eq(0.33)
     end
   end
-
 end

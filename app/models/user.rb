@@ -81,11 +81,15 @@ class User < ApplicationRecord
     self.type == "Patient"
   end
 
-  private
-
-  def localized_date_today
-    LocalizedDate.new(TIME_ZONE).today
+  def localized_datetime
+    Time.current.in_time_zone(self.time_zone)
   end
+
+  def localized_date
+    localized_datetime.to_date
+  end
+
+  private
 
   def create_unread_messages_async
     ::UnreadMessageCreationWorker.perform_async(self.id)

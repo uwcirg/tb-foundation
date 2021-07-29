@@ -142,18 +142,18 @@ class Patient < User
 
   def reporting_status
     hash = {}
-    today_report = self.daily_reports.find_by(date: localized_date_today)
-    yesterday_report = self.daily_reports.find_by(date: localized_date_today)
+    today_report = self.daily_reports.find_by(date: localized_date)
+    yesterday_report = self.daily_reports.find_by(date: localized_date)
 
     if (today_report.nil?)
       hash["today"] = { reported: false,
-                        photo_required: self.photo_days.where(date: localized_date_today).exists? }
+                        photo_required: self.photo_days.where(date: localized_date).exists? }
     else
       hash["today"] = {
         reported: !today_report.nil?,
         medication_taken: today_report.medication_was_taken,
         photo: today_report.photo_submitted,
-        photo_required: self.photo_days.where(date: localized_date_today).exists?,
+        photo_required: self.photo_days.where(date: localized_date).exists?,
         number_symptoms: today_report.symptom_report.nil? ? 0 : today_report.symptom_report.number_symptoms,
       }
     end
@@ -180,7 +180,7 @@ class Patient < User
     days = self.missed_days.first["date"] rescue nil
   end
 
-  def has_reported_today(datetime = DateTime.now)
+  def has_reported_today(datetime = localized_date)
     self.daily_reports.where(date: datetime.to_date).exists?
   end
 
@@ -189,7 +189,7 @@ class Patient < User
   end
 
   def days_in_treatment
-    return (Date.today - self.treatment_start.to_date).to_i + 1
+    return (localized_date - self.treatment_start.to_date).to_i + 1
   end
 
   def number_of_days_with_photo_report
@@ -197,14 +197,14 @@ class Patient < User
   end
 
   def weeks_in_treatment
-    (Date.today - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
+    (localized_date - self.treatment_start.beginning_of_week(start_day = :monday).to_date).to_i / 7
   end
 
   def percentage_complete
     return (self.days_in_treatment.to_f / 180).round(2)
   end
 
-  def add_photo_day(date = Date.today)
+  def add_photo_day(date = localized_date)
     if (!self.photo_days.where(date: date).exists?)
       self.photo_days.create!(date: date)
     end
@@ -231,7 +231,7 @@ class Patient < User
   end
 
   def number_of_photo_requests
-    PhotoDay.where(patient_id: self.id).where("date < ? ", localized_date_today).count
+    PhotoDay.where(patient_id: self.id).where("date < ? ", localized_date).count
   end
 
   def activate(time=Time.now)
@@ -266,11 +266,15 @@ class Patient < User
     return self.status == "Archived"
   end
 
+  def back_submission_ratio
+    return (self.daily_reports.where("date < (created_at at time zone ?)::date", self.time_zone).count.to_f / self.daily_reports.count.to_f).round(2) 
+  end
+
   private
 
   def create_patient_information_entry
     if (!PatientInformation.where(patient_id: self.id).exists?)
-      self.create_patient_information!(patient_id: self.id, datetime_patient_added: Time.now, datetime_patient_activated: Rails.env.test? ? Time.now : nil)
+      self.create_patient_information!(patient_id: self.id, datetime_patient_added: Time.current - 30.minutes, datetime_patient_activated: Rails.env.test? ? Time.current : nil)
     end
   end
 end
