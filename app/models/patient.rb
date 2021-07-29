@@ -267,7 +267,9 @@ class Patient < User
   end
 
   def back_submission_ratio
-    return (self.daily_reports.where("date < (created_at at time zone ?)::date", self.time_zone).count.to_f / self.daily_reports.count.to_f).round(2) 
+    total_number_of_reports = self.daily_reports.count.to_f
+    return 0 unless total_number_of_reports > 0 #Prevent NaN result from zero division
+    return (self.daily_reports.where("date < (created_at at time zone ?)::date", self.time_zone).count.to_f / total_number_of_reports ).round(2) 
   end
 
   private
