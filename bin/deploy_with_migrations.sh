@@ -1,7 +1,9 @@
 #!/bin/sh -e
+bin_path="$(cd "$(dirname "$0")" && pwd)"
+repo_path="${bin_path}/.."
 
 #docker-compose commands must be run in the same directory as docker-compose.yaml
-cd "../"
+cd "${repo_path}"
 
 echo "📦 Updating images..."
 docker-compose pull web client;
