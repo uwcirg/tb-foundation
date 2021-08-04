@@ -7,6 +7,8 @@ class PatientRecordPolicy < ApplicationPolicy
     def resolve
       if  @user.admin?
         scope.all
+      elsif @user.patient?
+        scope.where(patient_id: @user.id)
       else
         raise Pundit::NotAuthorizedError, 'not allowed to view this action'
       end
@@ -18,6 +20,7 @@ class PatientRecordPolicy < ApplicationPolicy
   def initialize(user, record)
     @user = user
     @record = record
+    @patient = record.patient
   end
 
   def create?
