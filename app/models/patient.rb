@@ -67,16 +67,16 @@ class Patient < User
   #Requires an ISO time ( Not DateTime )
   def update_daily_notification(time)
     if (self.daily_notification.nil?)
-      new_notification = DailyNotification.create!(time: time, active: true, user: self)
-      self.daily_notification = new_notification
+      self.daily_notification.create!(time: time, active: true, user: self)
     else
       self.daily_notification.update!(time: time)
     end
+    
     return self.daily_notification
   end
 
   def disable_daily_notification
-    self.daily_notification.update!(active: false)
+    self.daily_notification.update!(active: false) unless self.daily_notification.nil?
   end
 
   def symptom_summary

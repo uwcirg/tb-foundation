@@ -29,6 +29,10 @@ class PatientPolicy < ApplicationPolicy
     patient_belongs_to_practitioner or user_is_current_patient
   end
 
+  def activate?
+    user_is_current_patient
+  end
+
   def update_treatment_status?
     patient_belongs_to_practitioner
   end

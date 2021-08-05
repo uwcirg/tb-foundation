@@ -25,6 +25,7 @@ class PatientController < UserController
     end
   end
 
+  #@TODO delete this method - moved to v2/activation_controller.rb
   def activate_patient
     if (params[:enableNotifications] == true)
       @current_user.update_daily_notification(params[:notificationTime])
