@@ -282,10 +282,14 @@ class Patient < User
 
     return {
       days_since_request: request.nil? ? 0 : (self.localized_date - request.date).to_i, 
-      was_requested: !request.nil?,
-      report_submitted: !submitted.nil?,
+      #was_requested: !request.nil?,
+      # report_submitted: !submitted.nil?,
       photo_was_submitted: !submitted.nil? && submitted.has_photo?
     }
+  end
+
+  def contact_tracing_survey_count
+    self.contact_tracing_surveys.count
   end
 
   private

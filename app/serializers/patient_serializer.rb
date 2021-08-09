@@ -23,7 +23,9 @@ class PatientSerializer < BasePatientSerializer
     :last_education_status,
     :has_forced_password_change,
     :treatment_end_date,
-    :photo_summary
+    :photo_summary,
+    :last_photo_request_status,
+    :contact_tracing_survey_count
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
@@ -55,33 +57,36 @@ class PatientSerializer < BasePatientSerializer
         object.channels.where(is_private: true).first.id
     end
 
-    def last_contacted
-        object.channels.where(is_private: true).first.last_message_time
-    end
-
     def education_status
         object.education_message_statuses.pluck(:treatment_day)
     end
-
+    
     def last_education_status
         day = object.education_message_statuses.order("treatment_day DESC").first
         if(day.nil?) 
             return 0
         end
-
+        
         return day.treatment_day
     end
-
-    def gender
-        object.gender == "Other" ? object.gender_other || "Other" : object.gender
+    
+    
+    #Stuff that was used for practitioner response but not needed for patient side
+    
+    def last_contacted
+        object.channels.where(is_private: true).first.last_message_time
     end
-
+    
     def photo_adherence
         object.patient_information.photo_adherence
     end
-
+    
     def photo_summary
         object.patient_information.photo_reporting_summary
     end
-
+    
+    def gender
+        object.gender == "Other" ? object.gender_other || "Other" : object.gender
+    end
+    
 end
