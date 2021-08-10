@@ -288,10 +288,6 @@ class Patient < User
     }
   end
 
-  def contact_tracing_survey_count
-    self.contact_tracing_surveys.count
-  end
-
   private
 
   def create_patient_information_entry

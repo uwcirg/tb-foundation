@@ -24,8 +24,7 @@ class PatientSerializer < BasePatientSerializer
     :has_forced_password_change,
     :treatment_end_date,
     :photo_summary,
-    :last_photo_request_status,
-    :contact_tracing_survey_count
+    :last_photo_request_status
 
     attribute :daily_reports,  if: -> {@instance_options[:all_details].present? || @instance_options[:include_daily_reports].present? }
     attribute :feeling_healthy_days,  if: -> {@instance_options[:all_details].present?}
@@ -41,6 +40,10 @@ class PatientSerializer < BasePatientSerializer
 
     has_one :last_report do
         @object.daily_reports.last
+    end
+
+    has_one :last_contact_tracing_survey do
+        @object.contact_tracing_surveys.last
     end
 
     def full_name
