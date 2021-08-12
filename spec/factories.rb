@@ -1,4 +1,10 @@
 FactoryBot.define do
+  factory :contact_tracing_survey do
+    number_of_contacts { 1 }
+    number_of_contacts_tested { 1 }
+    patient { nil }
+  end
+
 
   # factory :patient_information do
   #   datetime_patient_activated {Time.now}

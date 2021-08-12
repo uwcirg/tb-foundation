@@ -41,6 +41,10 @@ class PhotoReport < ApplicationRecord
           }
     end
 
+    def has_photo?
+        return !self.photo_url.nil?
+    end
+
     private
 
     def update_patient_stats

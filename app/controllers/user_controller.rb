@@ -56,9 +56,9 @@ class UserController < ApplicationController
   def login
     snake_case_params
 
-    if(!params[:phone_number].nil?)
+    if (!params[:phone_number].nil?)
       #delete(^0-9) allows users to format their phone numbers as they please
-      @user = Patient.find_by(phone_number: params[:phone_number].delete('^0-9') )
+      @user = Patient.find_by(phone_number: params[:phone_number].delete("^0-9"))
     else
       #Must exclude patients from this search - or any patient with nil email will be selected
       @user = User.where.not(type: "Patient").find_by(email: params[:email])
@@ -172,14 +172,11 @@ class UserController < ApplicationController
 
   def bearer_token
     pattern = /^Bearer /
-    header  = request.headers['Authorization']
-    header.gsub(pattern, '') if header && header.match(pattern)
+    header = request.headers["Authorization"]
+    header.gsub(pattern, "") if header && header.match(pattern)
   end
 
-  private
-  
   def is_localhost
     ENV["URL_API"].include? "http://localhost"
   end
-
 end

@@ -12,14 +12,14 @@ class Patient < User
   has_many :photo_reports, :foreign_key => :user_id
   has_many :medication_reports, :foreign_key => :user_id
   has_many :symptom_reports, :foreign_key => :user_id
-  has_many :resolutions
   has_many :patient_notes
   has_many :education_message_statuses
+  has_many :contact_tracing_surveys
   has_many :photo_days
   has_many :reminders
+  has_many :resolutions
 
   has_one :daily_notification, :foreign_key => :user_id
-  has_one :contact_tracing
   has_one :patient_information
 
   #validates :user_type, value:
@@ -67,16 +67,16 @@ class Patient < User
   #Requires an ISO time ( Not DateTime )
   def update_daily_notification(time)
     if (self.daily_notification.nil?)
-      new_notification = DailyNotification.create!(time: time, active: true, user: self)
-      self.daily_notification = new_notification
+      self.create_daily_notification!(time: time, active: true, user: self)
     else
       self.daily_notification.update!(time: time)
     end
+
     return self.daily_notification
   end
 
   def disable_daily_notification
-    self.daily_notification.update!(active: false)
+    self.daily_notification.update!(active: false) unless self.daily_notification.nil?
   end
 
   def symptom_summary
@@ -234,7 +234,7 @@ class Patient < User
     PhotoDay.where(patient_id: self.id).where("date < ? ", localized_date).count
   end
 
-  def activate(time=Time.now)
+  def activate(time = Time.now)
     self.patient_information.update!(datetime_patient_activated: time)
   end
 
@@ -269,7 +269,23 @@ class Patient < User
   def back_submission_ratio
     total_number_of_reports = self.daily_reports.count.to_f
     return 0 unless total_number_of_reports > 0 #Prevent NaN result from zero division
-    return (self.daily_reports.where("date < (created_at at time zone ?)::date", self.time_zone).count.to_f / total_number_of_reports ).round(2) 
+    return (self.daily_reports.where("date < (created_at at time zone ?)::date", self.time_zone).count.to_f / total_number_of_reports).round(2)
+  end
+
+  def last_photo_request_status
+    # Be sure to test in case of new patient where they do not have any previous requests
+    request = self.photo_days.where("date < ?", self.localized_date).order("date DESC").first
+    submitted = nil
+    if (!request.nil?)
+      submitted = self.photo_reports.find_by(date: request.date)
+    end
+
+    return {
+      days_since_request: request.nil? ? 0 : (self.localized_date - request.date).to_i, 
+      #was_requested: !request.nil?,
+      # report_submitted: !submitted.nil?,
+      photo_was_submitted: !submitted.nil? && submitted.has_photo?
+    }
   end
 
   private

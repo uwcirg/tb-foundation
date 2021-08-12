@@ -1,6 +1,30 @@
 class TrialSummary < ActiveModelSerializers::Model
   include OrganizationSQL
 
+  def self.generate_heatmap_data
+    hash = {}
+    Patient.where.not(status: "Pending").joins(:patient_information).order("patient_informations.datetime_patient_activated").each do |patient|
+      date_hash = {}
+      days = []
+      patient.daily_reports.joins(:medication_report).pluck("medication_reports.medication_was_taken", :date).map { |p| date_hash["#{p[1]}"] = p[0] }
+      activation_date = patient.patient_information.datetime_patient_activated
+      i = 0
+      days_in_treatment = patient.patient_information.days_since_app_start
+
+      (activation_date.to_date..activation_date.to_date + 180.days).each do |day|
+        i+=1
+        if (i > days_in_treatment )
+          days.push("futureDate")
+        else
+          days.push( date_hash["#{day}"] == true ? "taken" : "notTaken")
+        end
+      end
+
+      hash["#{patient.id}"] = days
+    end
+    return hash
+  end
+
   def initialize
     @priorities = exec_query(PATIENT_RANK).as_json
   end
