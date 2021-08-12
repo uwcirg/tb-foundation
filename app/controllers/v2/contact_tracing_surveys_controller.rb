@@ -7,7 +7,7 @@ class V2::ContactTracingSurveysController < PatientDataController
     render json: @contact_tracing_surveys
   end
 
-  # POST /contact_tracing_surveys
+  # POST /patient/:id/contact_tracing_surveys
   def create
 
     @contact_tracing_survey = @current_user.contact_tracing_surveys.new(contact_tracing_survey_params)
@@ -37,4 +37,5 @@ class V2::ContactTracingSurveysController < PatientDataController
     def contact_tracing_survey_params
       params.require(:contact_tracing_survey).permit(:number_of_contacts, :number_of_contacts_tested, :patient_id)
     end
+
 end
