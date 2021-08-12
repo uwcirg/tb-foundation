@@ -3,7 +3,7 @@ class TrialSummary < ActiveModelSerializers::Model
 
   def self.generate_heatmap_data
     hash = {}
-    Patient.where.not(status: "Pending").joins(:patient_information).order("patient_informations.datetime_patient_activated").each do |patient|
+    Patient.non_test.where.not(status: "Pending").joins(:patient_information).order("patient_informations.datetime_patient_activated").each do |patient|
       date_hash = {}
       days = []
       patient.daily_reports.joins(:medication_report).pluck("medication_reports.medication_was_taken", :date).map { |p| date_hash["#{p[1]}"] = p[0] }
