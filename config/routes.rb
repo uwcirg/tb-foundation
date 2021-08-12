@@ -36,7 +36,7 @@ Rails.application.routes.draw do
     end
 
     resources :push_notification_status, only: [:update]
-
+    get "/heatmap", to: "trial_summary#get_heatmap"
   end
 
   # --------------------------------------------------------------------------------------------------------------------------------------
@@ -130,4 +130,5 @@ Rails.application.routes.draw do
 
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
   get "/health-check", to: "health_check#index"
+
 end
