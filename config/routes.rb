@@ -36,6 +36,8 @@ Rails.application.routes.draw do
     end
 
     resources :push_notification_status, only: [:update]
+    resources :photo_upload_urls, only: [:create]
+
     get "/heatmap", to: "trial_summary#get_heatmap"
   end
 

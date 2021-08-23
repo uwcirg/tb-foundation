@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_04_154235) do
+ActiveRecord::Schema.define(version: 2021_08_18_164327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -176,7 +176,6 @@ ActiveRecord::Schema.define(version: 2021_08_04_154235) do
 
   create_table "photo_reports", force: :cascade do |t|
     t.bigint "daily_report_id"
-    t.datetime "captured_at"
     t.string "photo_url"
     t.boolean "approved"
     t.datetime "approval_timestamp"
@@ -185,6 +184,9 @@ ActiveRecord::Schema.define(version: 2021_08_04_154235) do
     t.date "date"
     t.boolean "photo_was_skipped", default: false
     t.text "why_photo_was_skipped"
+    t.datetime "created_at", precision: 6
+    t.datetime "updated_at", precision: 6
+    t.boolean "back_submission", default: false
     t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
     t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
   end
