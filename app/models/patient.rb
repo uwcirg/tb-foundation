@@ -277,13 +277,11 @@ class Patient < User
     request = self.photo_days.where("date < ?", self.localized_date).order("date DESC").first
     submitted = nil
     if (!request.nil?)
-      submitted = self.photo_reports.find_by(date: request.date)
+      submitted = self.photo_reports.where("daily_report_id is not null").find_by(date: request.date)
     end
 
     return {
-      days_since_request: request.nil? ? 0 : (self.localized_date - request.date).to_i, 
-      #was_requested: !request.nil?,
-      # report_submitted: !submitted.nil?,
+      date_of_request: request.nil? ? 0 : request.date,
       photo_was_submitted: !submitted.nil? && submitted.has_photo?
     }
   end

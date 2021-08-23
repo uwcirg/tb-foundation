@@ -90,13 +90,13 @@ RSpec.describe Patient, :type => :model do
 
     it("does not return a patient who has submitted thier photo") do
       patient.add_photo_day
-      patient.photo_reports.create!(photo_url: "test", captured_at: DateTime.now, date: Date.today)
+      patient.photo_reports.create!(photo_url: "test", date: Date.today)
       expect(Patient.requested_test_not_submitted(Date.today).count).to eq(0)
     end
 
     it("does not return a patient who has submitted a reason for skipping") do
       patient.add_photo_day
-      patient.photo_reports.create!(photo_was_skipped: true, captured_at: DateTime.now, date: Date.today, why_photo_was_skipped: "Test")
+      patient.photo_reports.create!(photo_was_skipped: true, date: Date.today, why_photo_was_skipped: "Test")
       expect(Patient.requested_test_not_submitted(Date.today).count).to eq(0)
     end
   end
