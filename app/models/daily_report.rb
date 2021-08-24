@@ -91,9 +91,8 @@ class DailyReport < ApplicationRecord
   end
 
   #Determine if report was created afer the day it was requested on ( reports are requested daily )
-  def is_back_submission
-    #"date < (created_at at time zone ?)::date", self.time_zone
-    self.date < self.created_at.in_time_zone(self.patient.time_zone).to_date
+  def number_of_days_after_request
+    (self.created_at.in_time_zone(self.patient.time_zone).to_date - self.date).to_i
   end
 
   private
