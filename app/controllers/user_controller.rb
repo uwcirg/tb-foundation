@@ -157,12 +157,12 @@ class UserController < ApplicationController
     #Check if the user has the correct password
     if @user && BCrypt::Password.new(@user.password_digest) == params[:password]
       token = JsonWebToken.encode(user_id: @user.id)
-      time = Time.now + 7.days.to_i
 
+      #Get around samesite differences on localhost
       if is_localhost
-        cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week }
+        cookies.signed[:jwt] = { value: token, httponly: true, expires: @user.session_length}
       else
-        cookies.signed[:jwt] = { value: token, httponly: true, expires: Time.now + 1.week, secure: true, same_site: "None" }
+        cookies.signed[:jwt] = { value: token, httponly: true, expires: @user.session_length, secure: true, same_site: "None" }
       end
       render json: { user_id: @user.id, user_type: @user.type, token: token }, status: :ok
     else
@@ -179,4 +179,5 @@ class UserController < ApplicationController
   def is_localhost
     ENV["URL_API"].include? "http://localhost"
   end
+
 end
