@@ -90,8 +90,7 @@ class User < ApplicationRecord
   end
 
   def session_length
-    #patient? ? (Time.now + 6.months + 2.weeks) : (Time.now + 1.week);
-    patient? ? (Time.now + 10.seconds) : (Time.now + 1.week);
+    patient? ? (Time.now + 6.months + 2.weeks) : (Time.now + 1.week);
   end
 
   private
