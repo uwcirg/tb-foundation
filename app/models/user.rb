@@ -89,6 +89,11 @@ class User < ApplicationRecord
     localized_datetime.to_date
   end
 
+  def session_length
+    #patient? ? (Time.now + 6.months + 2.weeks) : (Time.now + 1.week);
+    patient? ? (Time.now + 10.seconds) : (Time.now + 1.week);
+  end
+
   private
 
   def create_unread_messages_async
