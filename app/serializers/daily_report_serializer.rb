@@ -25,7 +25,11 @@ class DailyReportSerializer < ActiveModel::Serializer
   end
 
   def photo_details
-    return ({ file_name: object.photo_report.photo_url, approval_status: object.photo_report.approved })
+    return ({ file_name: object.photo_report.photo_url, 
+      approval_status: object.photo_report.approved,
+      created_at: object.photo_report.created_at,
+      back_submission: object.photo_report.back_submission
+      })
   end
 
   def symptoms
