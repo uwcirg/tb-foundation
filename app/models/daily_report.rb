@@ -90,6 +90,11 @@ class DailyReport < ApplicationRecord
     return !photo_report.nil?
   end
 
+  #Determine if report was created afer the day it was requested on ( reports are requested daily )
+  def number_of_days_after_request
+    (self.created_at.in_time_zone(self.patient.time_zone).to_date - self.date).to_i
+  end
+
   private
 
   def update_reminders_since_last_report

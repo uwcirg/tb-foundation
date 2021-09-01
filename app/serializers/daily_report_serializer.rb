@@ -1,7 +1,8 @@
 class DailyReportSerializer < ActiveModel::Serializer
   attributes :id, :date, :user_id, :photo_url, :medication_was_taken, 
   :symptoms, :taken_at, :updated_at, :doing_okay, :photo_was_required, 
-  :created_offline, :status, :photo_was_skipped, :why_photo_was_skipped
+  :created_offline, :status, :photo_was_skipped, :why_photo_was_skipped,
+  :number_of_days_after_request, :created_at
 
   attribute :nausea_rating, if: -> { !object.symptom_report.nil? && !object.symptom_report.nausea_rating.nil? }
   attribute :photo_details, if: -> { !object.photo_report.nil? }
@@ -18,7 +19,6 @@ class DailyReportSerializer < ActiveModel::Serializer
   def why_photo_was_skipped
     object.photo_report.nil? ? nil : object.photo_report.why_photo_was_skipped
   end
-
 
   def photo_url
     object.get_photo
