@@ -49,7 +49,7 @@ class Practitioner < User
     reports_per_patient = DailyReport.since_last_missing_resolution.where(patient: self.patients).group(:user_id).count()
 
     latest_resolutions.each do |resolution|
-      days_since = (DateTime.now.to_date - resolution.last_resolution.to_date).to_i
+      days_since = (self.localized_date - resolution.last_resolution.to_date).to_i
 
       #If there are no reports found for that patient, then default to zero instead of skipping them
       total_reports = reports_per_patient[resolution.patient_id] || 0
