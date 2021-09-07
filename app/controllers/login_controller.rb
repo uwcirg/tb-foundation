@@ -36,7 +36,7 @@ class LoginController < ApplicationController
     Participant.order(:created_at).each do |patient|
       date_hash = {}
       days = []
-      patient.medication_reports.where(took_medication: true).map { |p| date_hash["#{p[1]}"] = p[0] }
+      patient.medication_reports.where(took_medication: true).map { |p| date_hash["#{p.timestamp.to_date}"] = true }
       activation_date = patient.created_at
       i = 0
 
