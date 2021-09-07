@@ -54,7 +54,7 @@ class LoginController < ApplicationController
 
       hash["#{patient.id}"] = days
     end
-    return hash
+    render json: hash }, status: :ok
   end
 
   private
