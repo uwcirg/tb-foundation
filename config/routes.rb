@@ -29,6 +29,6 @@ Rails.application.routes.draw do
   post '/strip_report/:userID/status', to: 'coordinator#set_photo_status'
   get '/strip_zip_file', to: 'temp#generate_zip'
 
-  get '/heatmap', to: 'login_controller#get_heatmap'
+  get '/heatmap', to: 'login#get_heatmap'
 
 end
