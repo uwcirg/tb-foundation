@@ -31,6 +31,32 @@ class LoginController < ApplicationController
     authenticate()
   end
 
+  def get_heatmap 
+    hash = {}
+    Participant.order(:created_at).each do |patient|
+      date_hash = {}
+      days = []
+      patient.medication_reports.where(took_medication: true).map { |p| date_hash["#{p[1]}"] = p[0] }
+      activation_date = patient.created_at
+      i = 0
+
+      #Didn't track end dates so this might be weird - could check date of last report instead to be better?
+      days_in_treatment = 1000
+
+      (activation_date.to_date..activation_date.to_date + 180.days).each do |day|
+        i+=1
+        if (i > days_in_treatment )
+          days.push("futureDate")
+        else
+          days.push( date_hash["#{day}"] == true ? "taken" : "notTaken")
+        end
+      end
+
+      hash["#{patient.id}"] = days
+    end
+    return hash
+  end
+
   private
 
   def authenticate
