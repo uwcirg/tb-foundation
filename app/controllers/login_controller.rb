@@ -78,7 +78,7 @@ class LoginController < ApplicationController
         end
       end
 
-      hash["#{CAP_HASH[patient.id]}"] = days
+      hash["#{CAP_HASH[patient.uuid]}"] = days
     end
     render(json: hash , status: :ok)
   end
