@@ -19,6 +19,9 @@ class PhotoReportSerializer < ActiveModel::Serializer
     end
 
     def created_at
+        if(object.created_at)
+            return object.created_at
+        end
         object.daily_report ? object.daily_report.created_at : nil
     end
 
