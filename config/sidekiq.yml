@@ -5,9 +5,6 @@
   reminders:
     cron: '0 12 * * * America/Argentina/Buenos_Aires'   # Runs once per day at noon art
     class: ReminderWorker
-  user_testing_reports:
-    cron: '0 12 * * * America/Los_Angeles'
-    class: TestReportsWorker
   first_test_reminder:
     cron: '0 9 * * * America/Argentina/Buenos_Aires'   # Runs once per day at 9am ART, first reminder for completing test
     class: PhotoReminderWorker
