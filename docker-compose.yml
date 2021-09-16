@@ -35,7 +35,7 @@ services:
         target: /files
         type: volume
     entrypoint: sh
-    command: -c 'mkdir -p /files/patient-test-photos && /usr/bin/minio server /files'
+    command: -c 'mkdir -p /files/patient-test-photos && minio server /files'
     ports: 
        - $PORT_MINIO:9000
 
