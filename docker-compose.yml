@@ -1,10 +1,35 @@
-version: "2.1"
-
+version: '3.3'
 services:
   web:
-    image: assemble/foundation
-    build: .
-    volumes:
-      - .:/foundation
-    ports:
-      - 8000:3000
+      image: uwcirg/tb-foundation:$API_DOCKER_TAG
+      build: ./
+      volumes:
+        - source: ./
+          target: /foundation/
+          type: bind
+          read_only: false
+      environment:
+        - DATA=postgres://webuser:$POSTGRES_PASSWORD@db
+        - PASSWORD
+        - PORT=3000
+        - RAILS_ENV=development
+        - URL_API=$URL_API
+      ports:
+        - $PORT_API:3000
+      depends_on:
+        - db
+      restart: always
+  db:
+      restart: always
+      image: postgres:11
+      volumes:
+        - source: postgres-files
+          target: /var/lib/postgresql/data
+          type: volume
+      environment:
+        - POSTGRES_USER=webuser
+        - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+        - RAILS_DB_NAME=development
+
+volumes:
+    postgres-files: {}

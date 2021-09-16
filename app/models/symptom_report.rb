@@ -14,6 +14,9 @@ class SymptomReport < ApplicationRecord
     }
   end
 
+  def symptom_count
+  end
+
   def reported_symptoms
     %w[
       redness
