@@ -4,7 +4,7 @@ services:
   client:
     restart: on-failure
     ports:
-      - $PORT_CLIENT:80
+      - 127.0.0.1:$PORT_CLIENT:80
     image: 'uwcirg/tb-mobile-app:$API_DOCKER_TAG'
     environment:
       NODE_ENV: development
@@ -37,7 +37,7 @@ services:
     entrypoint: sh
     command: -c 'mkdir -p /files/patient-test-photos && minio server /files'
     ports: 
-       - $PORT_MINIO:9000
+       - 127.0.0.1:$PORT_MINIO:9000
 
   web:
     image: uwcirg/tb-foundation:$API_DOCKER_TAG
@@ -57,7 +57,7 @@ services:
       - VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
       - VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
     ports:
-      - $PORT_API:3000
+      - 127.0.0.1:$PORT_API:3000
     depends_on:
       - redis
       - db
