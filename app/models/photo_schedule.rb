@@ -1,13 +1,12 @@
 module PhotoSchedule
   def generate_schedule(patient, random = true)
 
-    #Reset Scheudle
-    patient.photo_days.destroy_all
+    patient.photo_days.destroy_all #Reset Scheudle
 
-    #Monday-Friday
-    weekdays_array = (1..5).to_a
+    weekdays_array = (1..5).to_a #Monday-Friday
 
-    date = patient.treatment_start
+    date = patient.treatment_start + 1.week #Start on week one, the patient will submit a photo at the site on thier first day
+    
     i = 0
     while i < (28)
       if (!random)
