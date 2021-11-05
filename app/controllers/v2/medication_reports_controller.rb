@@ -11,7 +11,7 @@ class V2::MedicationReportsController < UserController
   private
 
   def medication_report_params
-    params.require([:date,:datetime_taken,:medication_was_taken])
+    params.require([:date,:medication_was_taken])
     params.permit(:date,:datetime_taken,:medication_was_taken,:why_medication_not_taken)
   end
   
