@@ -27,8 +27,8 @@ class User < ApplicationRecord
     self.update(push_p256dh: nil, push_auth: nil, push_url: nil)
   end
 
-  def send_push_to_user(title, body, app_url = "/", type = 0)
-    PushNotificationSender.new(self, title, body, app_url, type).send_notification
+  def send_push_to_user(title, body, app_url = "/", type = 0,actions=nil)
+    PushNotificationSender.new(self, title, body, app_url, type,actions).send_notification
   end
 
   def update_last_message_seen(channel_id, number)

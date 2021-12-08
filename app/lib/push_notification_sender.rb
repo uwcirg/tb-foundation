@@ -1,12 +1,13 @@
 require "webpush"
 
 class PushNotificationSender
-  def initialize(user, title, body, app_url, type)
+  def initialize(user, title, body, app_url, type, actions=nil)
     @user = user
     @title = title
     @body = body
     @app_url = app_url
     @type = type
+    @actions = actions
     @status = PushNotificationStatus.create!(user: @user, notification_type: type)
   end
 
@@ -34,7 +35,8 @@ class PushNotificationSender
              title: "#{@title}",
              body: "#{@body}",
              url: "#{ENV["URL_CLIENT"]}",
-             data: { url: @app_url, id: @status.id, type: @status.notification_type }
+             data: { url: @app_url, id: @status.id, type: @status.notification_type },
+             actions: @actions
            )
   end
 
