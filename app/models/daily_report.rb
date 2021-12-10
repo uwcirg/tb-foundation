@@ -21,10 +21,10 @@ class DailyReport < ApplicationRecord
   scope :unresolved_symptoms, -> { active_patient.joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, "resolutions.id": Resolution.last_symptom_from_user).where("daily_reports.updated_at > resolutions.resolved_at") }
   scope :since_last_missing_resolution, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_medication_from_user).where("daily_reports.date > resolutions.resolved_at") }
   scope :has_symptoms, -> { active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.has_symptom) }
-  scope :has_severe_symptoms, -> { active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.high_alert)}
+  scope :has_severe_symptoms, -> { active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.high_alert) }
   scope :has_photo, -> { joins(:photo_report).where("photo_reports.photo_url IS NOT NULL") }
   scope :unresolved_support_request, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_support_request, "daily_reports.doing_okay": false).where("daily_reports.created_at > resolutions.resolved_at") }
-  scope :photo_missing, -> {joins(:photo_report).where("photo_reports.id = ?", nil)}
+  scope :photo_missing, -> { joins(:photo_report).where("photo_reports.id = ?", nil) }
   scope :medication_was_not_taken, -> { joins(:medication_report).where(medication_reports: { medication_was_taken: false }).distinct }
 
   def limit_one_report_per_day
@@ -33,14 +33,13 @@ class DailyReport < ApplicationRecord
     end
   end
 
-  def self.create_if_not_exists(patient_id,date)
-    report = DailyReport.where(user_id: patient_id,date: date)
+  def self.create_if_not_exists(patient_id, date)
+    report = DailyReport.where(user_id: patient_id, date: date)
     if report.exists?
       return report.first
     end
 
-    return DailyReport.create!(user_id: patient_id,date: date)
-
+    return DailyReport.create!(user_id: patient_id, date: date, was_one_step: true)
   end
 
   def self.user_missed_days(user_id)
@@ -79,10 +78,10 @@ class DailyReport < ApplicationRecord
   end
 
   def medication_was_taken
-    if(medication_report.nil?)
+    if (medication_report.nil?)
       return false
     end
-    
+
     return medication_report.medication_was_taken
   end
 
@@ -104,5 +103,4 @@ class DailyReport < ApplicationRecord
   def update_patient_stats
     self.patient.update_stats_in_background
   end
-
 end

@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 2021_12_10_151609) do
     t.boolean "doing_okay"
     t.text "doing_okay_reason"
     t.boolean "created_offline", default: false
-    t.boolean "one_step_completion"
+    t.boolean "was_one_step"
     t.index ["user_id", "date"], name: "index_daily_reports_on_user_id_and_date", unique: true
     t.index ["user_id"], name: "index_daily_reports_on_user_id"
   end
