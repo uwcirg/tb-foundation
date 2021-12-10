@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       resources :activation, only: [:create]
       resources :contact_tracing_surveys, only: [:index, :create]
       resources :treatment_outcome, only: [:create]
+      resource :test_medication_reminder, only: [:create] , controller: "test_medication_reminder"
     end
 
     resources :patients, only: [:index], controller: "patient"
