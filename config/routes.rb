@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   namespace "v2" do
     resource :vapid_public_key, only: [:show]
     resources :time_summary, only: [:index]
-    resources :daily_report, only: [:index]
+    resources :daily_report, only: [:index, :create]
     resources :medication_reports, only: [:create]
     resources :symptom_reports, only: [:create]
     resources :photo_reports, only: [:create, :index]
@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       resources :activation, only: [:create]
       resources :contact_tracing_surveys, only: [:index, :create]
       resources :treatment_outcome, only: [:create]
+      resource :test_medication_reminder, only: [:create] , controller: "test_medication_reminder"
     end
 
     resources :patients, only: [:index], controller: "patient"
