@@ -1,8 +1,10 @@
 es-AR:
   welcome: "Bienvenidos"
   new_messages: "Nuevas Mensajes"
-  medication_reminder: "Por favor toma tu medicina"
-  medication_reminder_body: "toca aquí para informarlo en la aplicación"
+  medication_reminder: "Recuerde de reportar cada dia"
+  medication_reminder_body: "Hoy tome mis medicamentos, no tengo nada para reportar y estoy bien. Seleccione su repuesta"
+  yes: "Sí"
+  no : "No"
   user_settings:
     password_mismatch: "Nuevas contraseñas no coinciden"
     current_password_incorrect: "Contraseña Actual Incorrecta"

@@ -4,15 +4,27 @@ class V2::DailyReportController < UserController
 
   def index
     todays_report = @current_user.daily_reports.find_by(find_daily_report_params)
-    if(todays_report.nil?)
-      render(json: {error: "No report found for #{params[:date]}"}, status: :not_found)
+    if (todays_report.nil?)
+      render(json: { error: "No report found for #{params[:date]}" }, status: :not_found)
     else
-      render(json: todays_report, status: :ok )
+      render(json: todays_report, status: :ok)
     end
   end
 
   def create
-    
+    if (create_params[:no_issues] == "true")
+      daily_report = nil
+      ActiveRecord::Base.transaction do
+        daily_report = DailyReport.create_if_not_exists(@current_user.id, create_params["date"])
+        medication_report = @current_user.medication_reports.create!(date: create_params["date"], medication_was_taken: true)
+        symptom_report = @current_user.symptom_reports.create!(date: create_params["date"])
+        daily_report.update!(was_one_step: true, doing_okay: true, medication_report: medication_report, symptom_report: symptom_report)
+      end
+
+      render(json: daily_report, status: :created)
+    else
+      render(json: { error: "This route only supports reports with no_issues=true, to report issues use individual routes ie. /v2/medication_reports", code: 400 }, status: 400)
+    end
   end
 
   private
@@ -22,17 +34,9 @@ class V2::DailyReportController < UserController
     params.permit(:date)
   end
 
-  def create_daily_report_params
+  def create_params
     params.require(:date)
-    params.permit( :date,
-    :nausea,:nausea_rating,:redness,
-    :hives, :fever, :appetite_loss,
-    :blurred_vision, :sore_belly,
-    :yellow_coloration, :difficulty_breathing,
-    :facial_swelling, :dizziness, :headache,
-    :other, :photo_url, :captured_at, :doing_okay, :doing_okay_reason,
-    :datetime_taken,:medication_was_taken,:why_medication_not_taken )
-
+    params.require(:no_issues)
+    params.permit(:date, :no_issues)
   end
-
 end

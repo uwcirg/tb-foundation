@@ -1,5 +1,5 @@
 class DailyReportSerializer < ActiveModel::Serializer
-  attributes :id, :date, :user_id, :photo_url, :medication_was_taken, 
+  attributes :id, :date, :user_id, :was_one_step, :photo_url, :medication_was_taken, 
   :symptoms, :taken_at, :updated_at, :doing_okay, :photo_was_required, 
   :created_offline, :status, :photo_was_skipped, :why_photo_was_skipped,
   :number_of_days_after_request, :created_at

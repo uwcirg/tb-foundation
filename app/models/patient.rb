@@ -281,9 +281,24 @@ class Patient < User
     end
 
     return {
-      date_of_request: request.nil? ? 0 : request.date,
-      photo_was_submitted: !submitted.nil? && submitted.has_photo?
-    }
+             date_of_request: request.nil? ? 0 : request.date,
+             photo_was_submitted: !submitted.nil? && submitted.has_photo?,
+           }
+  end
+
+  def send_medication_reminder
+    I18n.with_locale(self.locale) do
+      self.send_push_to_user(I18n.t("medication_reminder"), I18n.t("medication_reminder_body"), "/home", "MedicationReminder", [
+        {
+          action: "good",
+          title: "👍 Si",
+        },
+        {
+          action: "issue",
+          title: "💬 No",
+        },
+      ])
+    end
   end
 
   private
