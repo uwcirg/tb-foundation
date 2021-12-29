@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
     resources :trial_summary, only: [:index]
     resources :organizations, only: [:index]
+    resources :organizations_summary, only: [:index]
 
     resources :channels, only: [:index, :create]
     resources :message, only: [:update], controller: "messages"
