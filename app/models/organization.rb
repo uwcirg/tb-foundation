@@ -70,7 +70,7 @@ class Organization < ApplicationRecord
   end
 
   def practitioner_messages_per_patient
-    Message.where(user: self.practitioners).count / self.patients.count
+    (Message.where(user: self.practitioners).count.to_f / self.patients.count.to_f).round(2)
   end
 
   private
