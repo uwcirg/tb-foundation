@@ -301,6 +301,10 @@ class Patient < User
     end
   end
 
+  def number_of_messages_from_assistant
+    self.channels.first.messages.where(user_id: Practitioner.where(organization_id: self.organization_id)).count
+  end
+
   private
 
   def create_patient_information_entry
