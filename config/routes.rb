@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :resolutions, only: [:create]
 
     resources :patient, only: [:update, :show] do
+      resources :photo_reports, only: [:index]
       resources :activation, only: [:create]
       resources :contact_tracing_surveys, only: [:index, :create]
       resources :treatment_outcome, only: [:create]

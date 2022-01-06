@@ -3,7 +3,12 @@ class V2::PhotoReportsController < UserController
   before_action :auth_patient, except: :index
 
   def index
-    @photo_reports = policy_scope(PhotoReport).order("id DESC")
+    @photo_reports = policy_scope(PhotoReport).order("id DESC").includes(:daily_report,:patient)
+
+    if(params.has_key?(:patient_id))
+      @photo_reports = @photo_reports.where(user_id: params[:patient_id])
+    end
+
     limit_photo_reports
     render(json: @photo_reports.limit(10), status: :ok)
   end
