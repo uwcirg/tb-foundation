@@ -127,7 +127,6 @@ Rails.application.routes.draw do
   end
 
   resources :patients, only: [:create, :index], controller: "patient/patients"
-  resources :practitioners, only: [:index], controller: "practitioner/practitioners"
 
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
   get "/health-check", to: "health_check#index"
