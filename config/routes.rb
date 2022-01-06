@@ -113,13 +113,10 @@ Rails.application.routes.draw do
 
   resources :message, only: [:update]
 
-  resources :photo_reports, only: [:index], controller: "photo_report"
-
   get "/unread_messages", to: "channel/unread_messages#index"
 
   get "/patient/:patient_id/json_reports", to: "practitioner#transfer_patient_data"
 
-  #Start of better routing organization, implementation improving over time
   resources :patient, only: [] do
     scope module: :patient do
       resources :notes, only: [:index, :create, :update]
