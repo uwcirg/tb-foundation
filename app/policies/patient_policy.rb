@@ -26,7 +26,7 @@ class PatientPolicy < ApplicationPolicy
   end
 
   def show?
-    patient_belongs_to_practitioner or user_is_current_patient
+    patient_belongs_to_practitioner or user_is_current_patient or @user.admin?
   end
 
   def activate?
