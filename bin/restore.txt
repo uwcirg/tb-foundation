@@ -1,9 +1,0 @@
-How to restore DB from backup - TODO: formalize as bash script
-docker volume ls
-
-#If bumping postgres versions - you might have to do something like this
-docker volume rm -f tb-v2-staging_postgres-files (not really sure what its called)
-
-#If you are in the production env this will look different
-docker-compose exec db createdb --username webuser development
-docker-compose exec -T db psql --dbname production --username webuser < /tmp/backup-name.sql

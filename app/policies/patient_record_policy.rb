@@ -2,13 +2,14 @@ include PolicyHelper
 
 class PatientRecordPolicy < ApplicationPolicy
 
-
   class Scope < Scope
     def resolve
       if  @user.admin?
         scope.all
+      elsif @user.practitioner?
+        scope.where(patient: Patient.where(organization_id: @user.organization_id ))
       elsif @user.patient?
-        scope.where(patient_id: @user.id)
+        scope.where(patient: @user)
       else
         raise Pundit::NotAuthorizedError, 'not allowed to view this action'
       end

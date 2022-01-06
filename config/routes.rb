@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :resolutions, only: [:create]
 
     resources :patient, only: [:update, :show] do
+      resources :photo_reports, only: [:index]
       resources :activation, only: [:create]
       resources :contact_tracing_surveys, only: [:index, :create]
       resources :treatment_outcome, only: [:create]
@@ -112,13 +113,10 @@ Rails.application.routes.draw do
 
   resources :message, only: [:update]
 
-  resources :photo_reports, only: [:index], controller: "photo_report"
-
   get "/unread_messages", to: "channel/unread_messages#index"
 
   get "/patient/:patient_id/json_reports", to: "practitioner#transfer_patient_data"
 
-  #Start of better routing organization, implementation improving over time
   resources :patient, only: [] do
     scope module: :patient do
       resources :notes, only: [:index, :create, :update]
@@ -129,7 +127,6 @@ Rails.application.routes.draw do
   end
 
   resources :patients, only: [:create, :index], controller: "patient/patients"
-  resources :practitioners, only: [:index], controller: "practitioner/practitioners"
 
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
   get "/health-check", to: "health_check#index"
