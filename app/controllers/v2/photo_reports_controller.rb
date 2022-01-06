@@ -6,6 +6,7 @@ class V2::PhotoReportsController < UserController
     @photo_reports = policy_scope(PhotoReport).order("id DESC").includes(:daily_report,:patient)
 
     if(params.has_key?(:patient_id))
+      authorize Patient.find(params[:patient_id]), :show?, policy_class: PatientPolicy
       @photo_reports = @photo_reports.where(user_id: params[:patient_id])
     end
 
