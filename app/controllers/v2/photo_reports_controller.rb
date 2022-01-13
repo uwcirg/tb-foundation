@@ -3,14 +3,17 @@ class V2::PhotoReportsController < UserController
   before_action :auth_patient, except: :index
 
   def index
-    @photo_reports = policy_scope(PhotoReport).order("id DESC").includes(:daily_report,:patient)
+    @photo_reports = policy_scope(PhotoReport).order("id DESC").includes(:daily_report,:patient).has_daily_report
 
     if(params.has_key?(:patient_id))
       authorize Patient.find(params[:patient_id]), :show?, policy_class: PatientPolicy
       @photo_reports = @photo_reports.where(user_id: params[:patient_id])
     end
 
-    limit_photo_reports
+    if(params.has_key?(:offset))
+      @photo_reports = @photo_reports.offset(params[:offset])
+    end
+
     render(json: @photo_reports.limit(10), status: :ok)
   end
 
@@ -33,14 +36,4 @@ class V2::PhotoReportsController < UserController
     params.permit(:date, :back_submission, :photo_url, :captured_at, :why_photo_was_skipped, :photo_was_skipped)
   end
 
-  def limit_photo_reports
-    if (not params[:before_id].nil?)
-      @photo_reports = @photo_reports.where("id < ?", params[:before_id])
-      return
-    end
-
-    if (not params[:before].nil?)
-      @photo_reports = @photo_reports.joins(:daily_report).where("daily_reports.created_at < ?", params[:before])
-    end
-  end
 end
