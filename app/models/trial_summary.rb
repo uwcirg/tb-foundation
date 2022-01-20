@@ -2,7 +2,7 @@ class TrialSummary < ActiveModelSerializers::Model
   include OrganizationSQL
 
   def self.generate_heatmap_data
-    hash = {}
+    orgHash = {}
     Patient.non_test.where.not(status: "Pending").joins(:patient_information).order("patient_informations.datetime_patient_activated").each do |patient|
       date_hash = {}
       days = []
@@ -20,9 +20,14 @@ class TrialSummary < ActiveModelSerializers::Model
         end
       end
 
-      hash["#{patient.id}"] = days
+      if(orgHash["#{patient.organization_id}"].nil?)
+        orgHash["#{patient.organization_id}"] = {}
+      end
+
+      orgHash["#{patient.organization_id}"]["#{patient.id}"] = days
+
     end
-    return hash
+    return orgHash
   end
 
   def initialize

@@ -7,7 +7,7 @@ class PhotoReport < ApplicationRecord
   scope :conclusive, -> { where(approved: true) }
 
   def self.policy_class
-    PatientRecordPolicy
+    PhotoReportPolicy
   end
 
   def assigned_practitioner

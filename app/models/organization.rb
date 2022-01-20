@@ -58,7 +58,7 @@ class Organization < ApplicationRecord
 
   def symptom_summary
     hash = {}
-    results = exec_query(SYMPTOM_SUMMARY)[0]
+    results = exec_query(FULL_SYMPTOM_SUMMARY)[0]
     results.keys.each do |value|
       hash[value] = results[value]
     end
@@ -67,6 +67,10 @@ class Organization < ApplicationRecord
 
   def create_organization_channel
     Channel.create!(title: self.title, organization_id: self.id, is_private: true, category: "SiteGroup")
+  end
+
+  def practitioner_messages_per_patient
+    (Message.where(user: self.practitioners, channel: Channel.where(is_private: true)).count.to_f / self.patients.count.to_f).round(2)
   end
 
   private
