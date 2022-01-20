@@ -6,8 +6,12 @@ class V2::PhotoReportsController < UserController
     @photo_reports = policy_scope(PhotoReport).order("id DESC").includes(:daily_report,:patient).has_daily_report
 
     if(params.has_key?(:patient_id))
-      authorize Patient.find(params[:patient_id]), :show?, policy_class: PatientPolicy
+      # authorize Patient.find(params[:patient_id]), :show?, policy_class: PatientPolicy
       @photo_reports = @photo_reports.where(user_id: params[:patient_id])
+    end
+
+    if(params["include_skipped"] == "false")
+      @photo_reports = @photo_reports.where("photo_url is not null")
     end
 
     if(params.has_key?(:offset))
