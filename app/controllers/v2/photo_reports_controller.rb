@@ -10,6 +10,10 @@ class V2::PhotoReportsController < UserController
       @photo_reports = @photo_reports.where(user_id: params[:patient_id])
     end
 
+    if(params["include_skipped"] == "false")
+      @photo_reports = @photo_reports.where("photo_url is not null")
+    end
+
     if(params.has_key?(:offset))
       @photo_reports = @photo_reports.offset(params[:offset])
     end
