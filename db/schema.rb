@@ -30,15 +30,15 @@ ActiveRecord::Schema.define(version: 2022_01_21_011337) do
 
   create_table "code_applications", force: :cascade do |t|
     t.bigint "bio_engineer_id"
-    t.bigint "photo_review_code_id"
+    t.bigint "photo_code_id"
     t.bigint "photo_report_id"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["bio_engineer_id"], name: "index_code_applications_on_bio_engineer_id"
+    t.index ["photo_code_id", "photo_report_id"], name: "photo_coding_index", unique: true
+    t.index ["photo_code_id"], name: "index_code_applications_on_photo_code_id"
     t.index ["photo_report_id"], name: "index_code_applications_on_photo_report_id"
-    t.index ["photo_review_code_id", "photo_report_id"], name: "photo_coding_index", unique: true
-    t.index ["photo_review_code_id"], name: "index_code_applications_on_photo_review_code_id"
   end
 
   create_table "contact_tracing_surveys", force: :cascade do |t|
