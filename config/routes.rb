@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     resources :daily_report, only: [:index, :create]
     resources :medication_reports, only: [:create]
     resources :symptom_reports, only: [:create]
-    resources :photo_reports, only: [:create, :index]
+    resources :photo_reports, only: [:create, :index,:update]
     resources :mood_reports, only: [:create]
     resources :resolutions, only: [:create]
 
@@ -40,7 +40,7 @@ Rails.application.routes.draw do
     resources :push_notification_status, only: [:update]
     resources :photo_upload_urls, only: [:create]
 
-    resources :photo_codes
+    resources :photo_codes, only:[:create,:index]
 
     get "/heatmap", to: "trial_summary#get_heatmap"
   end

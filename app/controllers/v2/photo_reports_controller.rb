@@ -1,20 +1,20 @@
 class V2::PhotoReportsController < UserController
   before_action :snake_case_params
-  before_action :auth_patient, except: :index
+  # before_action :auth_patient, except: :index
 
   def index
-    @photo_reports = policy_scope(PhotoReport).order("id DESC").includes(:daily_report,:patient).has_daily_report
+    @photo_reports = policy_scope(PhotoReport).order("id DESC").includes(:daily_report, :patient).has_daily_report
 
-    if(params.has_key?(:patient_id))
+    if (params.has_key?(:patient_id))
       # authorize Patient.find(params[:patient_id]), :show?, policy_class: PatientPolicy
       @photo_reports = @photo_reports.where(user_id: params[:patient_id])
     end
 
-    if(params["include_skipped"] == "false")
+    if (params["include_skipped"] == "false")
       @photo_reports = @photo_reports.where("photo_url is not null")
     end
 
-    if(params.has_key?(:offset))
+    if (params.has_key?(:offset))
       @photo_reports = @photo_reports.offset(params[:offset])
     end
 
@@ -25,6 +25,14 @@ class V2::PhotoReportsController < UserController
     daily_report = DailyReport.create_if_not_exists(@current_user.id, params["date"])
     daily_report.update!(photo_report: @current_user.photo_reports.create!(photo_report_params))
     render(json: daily_report, status: :created)
+  end
+
+  def update
+    photo_report = PhotoReport.find(params[:id])
+
+    photo_report.update!(update_params)
+
+    render(json: photo_report, status: :ok)
   end
 
   private
@@ -40,4 +48,7 @@ class V2::PhotoReportsController < UserController
     params.permit(:date, :back_submission, :photo_url, :captured_at, :why_photo_was_skipped, :photo_was_skipped)
   end
 
+  def update_params
+    params.require(:photo_report).permit(code_applications_attributes: [:bio_engineer_id, :photo_code_id])
+  end
 end
