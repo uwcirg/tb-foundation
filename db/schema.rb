@@ -182,7 +182,7 @@ ActiveRecord::Schema.define(version: 2022_01_21_011337) do
   end
 
   create_table "photo_codes", force: :cascade do |t|
-    t.integer "code"
+    t.decimal "code"
     t.string "title"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false

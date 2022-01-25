@@ -1,7 +1,7 @@
 class AddCodingForPhotoReports < ActiveRecord::Migration[6.0]
   def change
     create_table :photo_codes do |t|
-      t.integer :code
+      t.decimal :code
       t.string :title
       t.text :description
       t.timestamps
