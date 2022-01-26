@@ -1,6 +1,6 @@
 class V2::PhotoCodesController < UserController
   def index
-    render(json: PhotoCode.all, status: :ok)
+    render(json: CodeBook.new, status: :ok)
   end
 
   def create
