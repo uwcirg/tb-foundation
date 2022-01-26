@@ -9,8 +9,16 @@ class PhotoCode < ApplicationRecord
     "#{self.photo_code_group.group_code}.#{self.sub_group_code}"
   end
 
-  def group
+  def group_title
     self.photo_code_group.group
   end
-  
+
+  def group_id
+    self.photo_code_group_id
+  end
+
+  def group_code
+    self.photo_code_group.group_code
+  end
+
 end
