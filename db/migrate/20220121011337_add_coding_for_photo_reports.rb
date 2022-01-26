@@ -1,12 +1,23 @@
 class AddCodingForPhotoReports < ActiveRecord::Migration[6.0]
   def change
 
+    create_table :photo_code_groups do |t|
+      t.integer :group_code
+      t.string :group
+      t.timestamps
+    end
+
+    add_index :photo_code_groups, :group_code, unique: true
+
     create_table :photo_codes do |t|
-      t.decimal :code
+      t.belongs_to :photo_code_group
+      t.integer :sub_group_code
       t.string :title
       t.text :description
       t.timestamps
     end
+
+    add_index :photo_codes, [:photo_code_group_id, :sub_group_code], unique: true, name: :photo_coding_definitions_index
 
     create_table :photo_review_colors do |t|
       t.string :name
@@ -45,7 +56,6 @@ class AddCodingForPhotoReports < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    add_index :photo_codes, :code, unique: true
     add_index :test_strip_versions, :version, unique: true
 
     add_index :code_applications, [:photo_code_id, :photo_review_id], unique: true, name: :photo_coding_index

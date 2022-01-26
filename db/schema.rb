@@ -179,13 +179,23 @@ ActiveRecord::Schema.define(version: 2022_01_21_011337) do
     t.index ["practitioner_id"], name: "index_patient_notes_on_practitioner_id"
   end
 
+  create_table "photo_code_groups", force: :cascade do |t|
+    t.integer "group_code"
+    t.string "group"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["group_code"], name: "index_photo_code_groups_on_group_code", unique: true
+  end
+
   create_table "photo_codes", force: :cascade do |t|
-    t.decimal "code"
+    t.bigint "photo_code_group_id"
+    t.integer "sub_group_code"
     t.string "title"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["code"], name: "index_photo_codes_on_code", unique: true
+    t.index ["photo_code_group_id", "sub_group_code"], name: "photo_coding_definitions_index", unique: true
+    t.index ["photo_code_group_id"], name: "index_photo_codes_on_photo_code_group_id"
   end
 
   create_table "photo_days", force: :cascade do |t|

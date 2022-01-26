@@ -3,6 +3,8 @@ class PhotoReport < ApplicationRecord
   belongs_to :patient, :foreign_key => :user_id
   after_commit :update_patient_stats
 
+  has_many :photo_reviews
+
   scope :has_daily_report, -> { where("daily_report_id IS NOT NULL") }
   scope :conclusive, -> { where(approved: true) }
 
