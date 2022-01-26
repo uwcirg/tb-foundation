@@ -5,6 +5,8 @@ class PhotoCode < ApplicationRecord
   validates :title, presence: true
   validates :description, presence: true
 
+  accepts_nested_attributes_for :photo_code_group
+
   def full_code
     "#{self.photo_code_group.group_code}.#{self.sub_group_code}"
   end

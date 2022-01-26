@@ -48,7 +48,4 @@ class V2::PhotoReportsController < UserController
     params.permit(:date, :back_submission, :photo_url, :captured_at, :why_photo_was_skipped, :photo_was_skipped)
   end
 
-  def update_params
-    params.require(:photo_report).permit(code_applications_attributes: [:id, :bio_engineer_id, :photo_code_id])
-  end
 end
