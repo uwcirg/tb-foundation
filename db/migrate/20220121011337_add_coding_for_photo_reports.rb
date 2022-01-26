@@ -8,28 +8,48 @@ class AddCodingForPhotoReports < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    create_table :photo_colors do |t|
+    create_table :photo_review_colors do |t|
       t.string :name
       t.timestamps
     end
 
+    create_table :test_strip_versions do |t|
+      t.integer :version
+      t.text :description
+      t.text :id_range_description
+      t.date  :shipment_date
+      t.timestamps
+    end
+
+    create_table :photo_reviews do |t|
+      t.belongs_to :bio_engineer, foreign_key: { to_table: :users }
+      t.belongs_to :photo_report
+      t.belongs_to :test_strip_version, null: true
+
+      t.integer :test_line_review, default: 0
+      t.integer :control_line_review, default: 0
+
+      t.references :control_line_color, null: true
+      t.references :test_line_color, null: true
+
+      t.timestamps
+    end
+
+    add_foreign_key :photo_reviews, :photo_review_colors, column: :control_line_color_id, primary_key: :id
+    add_foreign_key :photo_reviews, :photo_review_colors, column: :test_line_color_id, primary_key: :id
 
     create_table :code_applications do |t|
-      t.belongs_to :bio_engineer, foreign_key: { to_table: :users }
       t.references :photo_code
-      t.references :photo_report
+      t.references :photo_review
       t.text :description
       t.timestamps
     end
 
     add_index :photo_codes, :code, unique: true
-    add_index :code_applications, [:photo_code_id, :photo_report_id], unique: true, name: :photo_coding_index
+    add_index :test_strip_versions, :version, unique: true
 
-    add_column :photo_reports, :test_line_review, :integer, default: 0
-    add_column :photo_reports, :control_line_review, :integer, default: 0
-    add_column :photo_reports, :review_complete, :boolean, default: false
-    add_reference :photo_reports, :photo_colors, index: true, null: true
-    add_reference :photo_reports, :reviewer, null: true, foreign_key: {to_table: :users}
+    add_index :code_applications, [:photo_code_id, :photo_review_id], unique: true, name: :photo_coding_index
+
 
   end
 end

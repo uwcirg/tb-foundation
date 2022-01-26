@@ -29,16 +29,14 @@ ActiveRecord::Schema.define(version: 2022_01_21_011337) do
   end
 
   create_table "code_applications", force: :cascade do |t|
-    t.bigint "bio_engineer_id"
     t.bigint "photo_code_id"
-    t.bigint "photo_report_id"
+    t.bigint "photo_review_id"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["bio_engineer_id"], name: "index_code_applications_on_bio_engineer_id"
-    t.index ["photo_code_id", "photo_report_id"], name: "photo_coding_index", unique: true
+    t.index ["photo_code_id", "photo_review_id"], name: "photo_coding_index", unique: true
     t.index ["photo_code_id"], name: "index_code_applications_on_photo_code_id"
-    t.index ["photo_report_id"], name: "index_code_applications_on_photo_report_id"
+    t.index ["photo_review_id"], name: "index_code_applications_on_photo_review_id"
   end
 
   create_table "contact_tracing_surveys", force: :cascade do |t|
@@ -190,12 +188,6 @@ ActiveRecord::Schema.define(version: 2022_01_21_011337) do
     t.index ["code"], name: "index_photo_codes_on_code", unique: true
   end
 
-  create_table "photo_colors", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "photo_days", force: :cascade do |t|
     t.date "date", null: false
     t.bigint "patient_id"
@@ -216,15 +208,31 @@ ActiveRecord::Schema.define(version: 2022_01_21_011337) do
     t.datetime "created_at", precision: 6
     t.datetime "updated_at", precision: 6
     t.boolean "back_submission", default: false
+    t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
+    t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
+  end
+
+  create_table "photo_review_colors", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "photo_reviews", force: :cascade do |t|
+    t.bigint "bio_engineer_id"
+    t.bigint "photo_report_id"
+    t.bigint "test_strip_version_id"
     t.integer "test_line_review", default: 0
     t.integer "control_line_review", default: 0
-    t.boolean "review_complete", default: false
-    t.bigint "photo_colors_id"
-    t.bigint "reviewer_id"
-    t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
-    t.index ["photo_colors_id"], name: "index_photo_reports_on_photo_colors_id"
-    t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
-    t.index ["reviewer_id"], name: "index_photo_reports_on_reviewer_id"
+    t.bigint "control_line_color_id"
+    t.bigint "test_line_color_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["bio_engineer_id"], name: "index_photo_reviews_on_bio_engineer_id"
+    t.index ["control_line_color_id"], name: "index_photo_reviews_on_control_line_color_id"
+    t.index ["photo_report_id"], name: "index_photo_reviews_on_photo_report_id"
+    t.index ["test_line_color_id"], name: "index_photo_reviews_on_test_line_color_id"
+    t.index ["test_strip_version_id"], name: "index_photo_reviews_on_test_strip_version_id"
   end
 
   create_table "push_notification_statuses", force: :cascade do |t|
@@ -298,6 +306,16 @@ ActiveRecord::Schema.define(version: 2022_01_21_011337) do
     t.boolean "activated", default: false
   end
 
+  create_table "test_strip_versions", force: :cascade do |t|
+    t.integer "version"
+    t.text "description"
+    t.text "id_range_description"
+    t.date "shipment_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["version"], name: "index_test_strip_versions_on_version", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "password_digest", null: false
     t.boolean "active", default: true, null: false
@@ -329,7 +347,6 @@ ActiveRecord::Schema.define(version: 2022_01_21_011337) do
 
   add_foreign_key "channels", "organizations"
   add_foreign_key "channels", "users"
-  add_foreign_key "code_applications", "users", column: "bio_engineer_id"
   add_foreign_key "contact_tracing_surveys", "users", column: "patient_id"
   add_foreign_key "education_message_statuses", "users", column: "patient_id"
   add_foreign_key "messages", "channels"
@@ -341,7 +358,9 @@ ActiveRecord::Schema.define(version: 2022_01_21_011337) do
   add_foreign_key "patient_notes", "users", column: "practitioner_id"
   add_foreign_key "photo_days", "users", column: "patient_id"
   add_foreign_key "photo_reports", "users", column: "practitioner_id"
-  add_foreign_key "photo_reports", "users", column: "reviewer_id"
+  add_foreign_key "photo_reviews", "photo_review_colors", column: "control_line_color_id"
+  add_foreign_key "photo_reviews", "photo_review_colors", column: "test_line_color_id"
+  add_foreign_key "photo_reviews", "users", column: "bio_engineer_id"
   add_foreign_key "reminders", "users", column: "patient_id"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"

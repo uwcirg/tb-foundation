@@ -3,27 +3,8 @@ class PhotoReport < ApplicationRecord
   belongs_to :patient, :foreign_key => :user_id
   after_commit :update_patient_stats
 
-  has_many :code_applications
-  has_many :photo_codes , :through => :code_applications
-
   scope :has_daily_report, -> { where("daily_report_id IS NOT NULL") }
   scope :conclusive, -> { where(approved: true) }
-
-  enum test_line_review: {
-    pending: 0,
-    positive: 1,
-    negative: 2,
-    unclear: 3
-  }, _prefix: true
-
-  enum control_line_review: {
-    pending: 0,
-    positive: 1,
-    negative: 2,
-    unclear: 3
-  }, _prefix: true
-  
-  accepts_nested_attributes_for :code_applications
 
   def self.policy_class
     PhotoReportPolicy

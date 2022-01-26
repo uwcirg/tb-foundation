@@ -1,8 +1,12 @@
 class PhotoReportSerializer < ActiveModel::Serializer
     
-    attributes :photo_id, :approved, :url, :patient_id, :date, :created_at, :site, :photo_was_skipped, :why_photo_was_skipped, :back_submission
+    attributes :photo_id, :approved, :url, :patient_id, :date, :created_at, :site, :photo_was_skipped, :why_photo_was_skipped, :back_submission, :requester_id
 
     has_many :photo_codes
+
+    def requester_id
+        @instance_options[:current_user].full_name || "Unknown"
+    end
 
     def url
         object.get_url
@@ -30,8 +34,5 @@ class PhotoReportSerializer < ActiveModel::Serializer
     def site
         object.patient.organization.title
     end
-
-
-
 
 end

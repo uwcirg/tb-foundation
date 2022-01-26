@@ -18,7 +18,7 @@ class V2::PhotoReportsController < UserController
       @photo_reports = @photo_reports.offset(params[:offset])
     end
 
-    render(json: @photo_reports.limit(10), status: :ok)
+    render(json: @photo_reports.limit(10), current_user: @current_user, status: :ok)
   end
 
   def create
@@ -49,6 +49,6 @@ class V2::PhotoReportsController < UserController
   end
 
   def update_params
-    params.require(:photo_report).permit(code_applications_attributes: [:bio_engineer_id, :photo_code_id])
+    params.require(:photo_report).permit(code_applications_attributes: [:id, :bio_engineer_id, :photo_code_id])
   end
 end
