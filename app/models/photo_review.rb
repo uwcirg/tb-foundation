@@ -5,6 +5,8 @@ class PhotoReview < ApplicationRecord
   
     has_many :code_applications
     has_many :photo_codes , :through => :code_applications
+
+    accepts_nested_attributes_for :code_applications
   
     enum test_line_review: {
       pending: 0,
@@ -19,8 +21,6 @@ class PhotoReview < ApplicationRecord
       negative: 2,
       unclear: 3
     }, _prefix: true
-    
-    accepts_nested_attributes_for :code_applications
   
   end
   
