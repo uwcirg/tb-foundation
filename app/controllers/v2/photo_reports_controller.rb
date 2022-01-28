@@ -3,7 +3,11 @@ class V2::PhotoReportsController < UserController
   # before_action :auth_patient, except: :index
 
   def index
-    @photo_reports = policy_scope(PhotoReport).order("id DESC").includes(:daily_report, :patient).has_daily_report
+    @photo_reports = policy_scope(PhotoReport).order("photo_reports.id DESC").includes(:daily_report, :patient).has_daily_report
+
+    if (params["include_reviewed"] == "false")
+      @photo_reports = @photo_reports.left_outer_joins(:photo_reviews).where("photo_reviews.id IS NULL OR photo_reviews.bio_engineer_id != ?",@current_user.id)
+    end
 
     if (params.has_key?(:patient_id))
       # authorize Patient.find(params[:patient_id]), :show?, policy_class: PatientPolicy
@@ -47,5 +51,4 @@ class V2::PhotoReportsController < UserController
 
     params.permit(:date, :back_submission, :photo_url, :captured_at, :why_photo_was_skipped, :photo_was_skipped)
   end
-
 end
