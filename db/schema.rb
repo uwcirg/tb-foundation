@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_21_011337) do
+ActiveRecord::Schema.define(version: 2022_02_01_184931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -238,6 +238,8 @@ ActiveRecord::Schema.define(version: 2022_01_21_011337) do
     t.bigint "test_line_color_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "testColorValue"
+    t.string "controlColorValue"
     t.index ["bio_engineer_id"], name: "index_photo_reviews_on_bio_engineer_id"
     t.index ["control_line_color_id"], name: "index_photo_reviews_on_control_line_color_id"
     t.index ["photo_report_id"], name: "index_photo_reviews_on_photo_report_id"
