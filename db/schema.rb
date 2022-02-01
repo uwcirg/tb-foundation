@@ -234,16 +234,16 @@ ActiveRecord::Schema.define(version: 2022_02_01_184931) do
     t.bigint "test_strip_version_id"
     t.integer "test_line_review", default: 0
     t.integer "control_line_review", default: 0
-    t.bigint "control_line_color_id"
-    t.bigint "test_line_color_id"
+    t.bigint "control_color_id"
+    t.bigint "test_color_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "testColorValue"
-    t.string "controlColorValue"
+    t.string "test_color_value"
+    t.string "control_color_value"
     t.index ["bio_engineer_id"], name: "index_photo_reviews_on_bio_engineer_id"
-    t.index ["control_line_color_id"], name: "index_photo_reviews_on_control_line_color_id"
+    t.index ["control_color_id"], name: "index_photo_reviews_on_control_color_id"
     t.index ["photo_report_id"], name: "index_photo_reviews_on_photo_report_id"
-    t.index ["test_line_color_id"], name: "index_photo_reviews_on_test_line_color_id"
+    t.index ["test_color_id"], name: "index_photo_reviews_on_test_color_id"
     t.index ["test_strip_version_id"], name: "index_photo_reviews_on_test_strip_version_id"
   end
 
@@ -370,8 +370,8 @@ ActiveRecord::Schema.define(version: 2022_02_01_184931) do
   add_foreign_key "patient_notes", "users", column: "practitioner_id"
   add_foreign_key "photo_days", "users", column: "patient_id"
   add_foreign_key "photo_reports", "users", column: "practitioner_id"
-  add_foreign_key "photo_reviews", "photo_review_colors", column: "control_line_color_id"
-  add_foreign_key "photo_reviews", "photo_review_colors", column: "test_line_color_id"
+  add_foreign_key "photo_reviews", "photo_review_colors", column: "control_color_id"
+  add_foreign_key "photo_reviews", "photo_review_colors", column: "test_color_id"
   add_foreign_key "photo_reviews", "users", column: "bio_engineer_id"
   add_foreign_key "reminders", "users", column: "patient_id"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"

@@ -40,14 +40,14 @@ class AddCodingForPhotoReports < ActiveRecord::Migration[6.0]
       t.integer :test_line_review, default: 0
       t.integer :control_line_review, default: 0
 
-      t.references :control_line_color, null: true
-      t.references :test_line_color, null: true
+      t.references :control_color, null: true
+      t.references :test_color, null: true
 
       t.timestamps
     end
 
-    add_foreign_key :photo_reviews, :photo_review_colors, column: :control_line_color_id, primary_key: :id
-    add_foreign_key :photo_reviews, :photo_review_colors, column: :test_line_color_id, primary_key: :id
+    add_foreign_key :photo_reviews, :photo_review_colors, column: :control_color_id, primary_key: :id
+    add_foreign_key :photo_reviews, :photo_review_colors, column: :test_color_id, primary_key: :id
 
     create_table :code_applications do |t|
       t.references :photo_code

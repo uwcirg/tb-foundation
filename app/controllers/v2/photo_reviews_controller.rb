@@ -10,8 +10,8 @@ class V2::PhotoReviewsController < UserController
 
   def create_params
     params.require(:photo_review).permit(:photo_report_id, :test_line_review, 
-      :control_line_review, :control_line_color, :test_line_color,
-      code_applications_attributes: [:photo_code_id]
+      :control_line_review, :control_color_id, :test_color_id,
+      :control_color_value, :test_color_value, code_applications_attributes: [:photo_code_id]
     )
   end
 end
