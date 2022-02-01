@@ -1,6 +1,11 @@
 namespace :photo_review do
   desc "Seed coding categories"
   task :seed_categories => :environment do
+
+    #Read in JSON of test strip versions
+    file = File.read("#{Rails.root}/app/assets/test-strip-versions.json")
+    versions_list = JSON.parse(file)
+
     ActiveRecord::Base.transaction do
       if (Rails.env == "development")
         #Reset test data
@@ -12,6 +17,8 @@ namespace :photo_review do
         PhotoReviewColor.destroy_all
       end
 
+      ["Image Quality", "Test Quality", "User Actions"]
+
       group_one = PhotoCodeGroup.create!(group: "Photo Quality", group_code: 1)
       PhotoCode.create!(photo_code_group: group_one, sub_group_code: 1, title: "Far Away photo", description: "Photo taken from long distance")
 
@@ -20,9 +27,12 @@ namespace :photo_review do
         PhotoReviewColor.create!(name: color)
       }
 
-      TestStripVersion.create!(version: 1, description: "Original One Line", id_range_description: "First 100 cartridges", shipment_date: (Time.now - 20.months).to_date)
+      versions_list.reverse.each {|v|
+        TestStripVersion.create!(version: TestStripVersion.count + 1, description: v["description"], id_range_description: v["range"], shipment_date: v["shipment"])
+      }
+
     end
 
-    puts " All done now!"
+    puts "All done now!"
   end
 end

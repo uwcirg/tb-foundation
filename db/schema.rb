@@ -322,7 +322,7 @@ ActiveRecord::Schema.define(version: 2022_02_01_184931) do
     t.integer "version"
     t.text "description"
     t.text "id_range_description"
-    t.date "shipment_date"
+    t.string "shipment_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["version"], name: "index_test_strip_versions_on_version", unique: true

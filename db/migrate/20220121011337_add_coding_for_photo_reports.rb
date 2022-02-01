@@ -28,7 +28,7 @@ class AddCodingForPhotoReports < ActiveRecord::Migration[6.0]
       t.integer :version
       t.text :description
       t.text :id_range_description
-      t.date  :shipment_date
+      t.string  :shipment_date
       t.timestamps
     end
 
