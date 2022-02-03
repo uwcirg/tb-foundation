@@ -17,20 +17,31 @@ namespace :photo_review do
         PhotoReviewColor.destroy_all
       end
 
-      ["Image Quality", "Test Quality", "User Actions"]
+      group_one = PhotoCodeGroup.create!(group: "Photo Qualities", group_code: 1)
+      group_two = PhotoCodeGroup.create!(group: "Test Qualities", group_code: 2)
+      group_three = PhotoCodeGroup.create!(group: "Missing Features", group_code: 3)
 
-      group_one = PhotoCodeGroup.create!(group: "Photo Quality", group_code: 1)
-      PhotoCode.create!(photo_code_group: group_one, sub_group_code: 1, title: "Far Away photo", description: "Photo taken from long distance")
+      ["Blurry", "Far away", "Bad angle", "Photographed in bag", "Flash reflection", "Lighting/shadow"].each_with_index{
+        |title, index| PhotoCode.create!(photo_code_group:group_one, sub_group_code: index + 1, title: title )
+      }
 
+      ["Flooded","Sticker damaged","Sticker removed","Appears unused"].each_with_index{
+        |title, index| PhotoCode.create!(photo_code_group:group_two, sub_group_code: index + 1, title: title )
+      }
+
+      ["Whole test not visible","Viewing window/results not visible","Barcode/number not visible"].each_with_index{
+        |title, index| PhotoCode.create!(photo_code_group:group_three, sub_group_code: index + 1, title: title )
+      }
+
+    
       ["White", "Yellow", "Orange", "Pink", "Grey", "Light Blue", "Blue", "Dark Blue", "Light Purple", "Purple", "Dark Purple", "Purple Blue", "Teal"].each {
         |color|
         PhotoReviewColor.create!(name: color)
       }
 
-      versions_list.reverse.each {|v|
+      versions_list.reverse.each { |v|
         TestStripVersion.create!(version: TestStripVersion.count + 1, description: v["description"], id_range_description: v["range"], shipment_date: v["shipment"])
       }
-
     end
 
     puts "All done now!"

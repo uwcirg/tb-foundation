@@ -3,7 +3,7 @@ class V2::PhotoReportsController < UserController
   # before_action :auth_patient, except: :index
 
   def index
-    @photo_reports = policy_scope(PhotoReport).order("photo_reports.id DESC").includes(:daily_report, :patient).has_daily_report
+    @photo_reports = policy_scope(PhotoReport).order("photo_reports.id DESC").includes(:daily_report, :patient, :organization).has_daily_report
 
     if (params["include_reviewed"] == "false")
       @photo_reports = @photo_reports.left_outer_joins(:photo_reviews).where("photo_reviews.id IS NULL OR photo_reviews.bio_engineer_id != ?",@current_user.id)
@@ -23,6 +23,12 @@ class V2::PhotoReportsController < UserController
     end
 
     render(json: @photo_reports.limit(10), current_user: @current_user, status: :ok)
+  end
+
+  def show
+    @photo_report = PhotoReport.find(params[:id])
+    authorize @photo_report
+    render(json: @photo_report, status: :ok)
   end
 
   def create

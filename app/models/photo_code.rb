@@ -2,8 +2,8 @@ class PhotoCode < ApplicationRecord
   belongs_to :photo_code_group
 
   validates :sub_group_code, presence: true, uniqueness: { scope: :photo_code_group_id }
-  validates :title, presence: true
-  validates :description, presence: true
+  validates :title, presence: true, uniqueness: true
+  # validates :description, presence: true
 
   accepts_nested_attributes_for :photo_code_group
 

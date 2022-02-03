@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     resources :daily_report, only: [:index, :create]
     resources :medication_reports, only: [:create]
     resources :symptom_reports, only: [:create]
-    resources :photo_reports, only: [:create, :index,:update]
+    resources :photo_reports, only: [:create, :index, :update, :show]
     resources :mood_reports, only: [:create]
     resources :resolutions, only: [:create]
 
@@ -18,7 +18,7 @@ Rails.application.routes.draw do
       resources :activation, only: [:create]
       resources :contact_tracing_surveys, only: [:index, :create]
       resources :treatment_outcome, only: [:create]
-      resource :test_medication_reminder, only: [:create] , controller: "test_medication_reminder"
+      resource :test_medication_reminder, only: [:create], controller: "test_medication_reminder"
     end
 
     resources :patients, only: [:index], controller: "patient"
@@ -40,8 +40,8 @@ Rails.application.routes.draw do
     resources :push_notification_status, only: [:update]
     resources :photo_upload_urls, only: [:create]
 
-    resources :photo_codes, only:[:create,:index]
-    resources :photo_reviews, only:[:create]
+    resources :photo_codes, only: [:create, :index]
+    resources :photo_reviews, only: [:create]
 
     get "/heatmap", to: "trial_summary#get_heatmap"
   end
@@ -133,5 +133,4 @@ Rails.application.routes.draw do
 
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
   get "/health-check", to: "health_check#index"
-
 end

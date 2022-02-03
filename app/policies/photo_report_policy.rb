@@ -28,15 +28,11 @@ class PhotoReportPolicy < ApplicationPolicy
   end
 
   def index?
-    patient_belongs_to_practitioner or user_is_current_patient
+    patient_belongs_to_practitioner or user_is_current_patient or @user.bio_engineer?
   end
 
   def show?
-    patient_belongs_to_practitioner or user_is_current_patient
-  end
-
-  def update?
-    @user.bio_engineer?
+    patient_belongs_to_practitioner or user_is_current_patient or @user.bio_engineer?
   end
   
 end

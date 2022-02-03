@@ -1,6 +1,8 @@
 class PhotoReportSerializer < ActiveModel::Serializer
     
-    attributes :photo_id, :approved, :url, :patient_id, :date, :created_at, :site, :photo_was_skipped, :why_photo_was_skipped, :back_submission
+    attributes :photo_id, :approved, :url, :patient_id, :date, 
+    :created_at, :site, :photo_was_skipped, :why_photo_was_skipped, 
+    :back_submission
 
     def url
         object.get_url
