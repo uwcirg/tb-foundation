@@ -1,6 +1,12 @@
 class V2::PhotoReviewsController < UserController
   before_action :snake_case_params
 
+  # def index
+  #   authorize PhotoReview
+  #   @photo_reviews = policy_scope(PhotoReview).order("photo_reviews.id DESC")
+  #   render(json: @photo_reviews, status: :created)
+  # end
+
   def create
     authorize PhotoReview
     new_review = @current_user.photo_reviews.create!(create_params)
