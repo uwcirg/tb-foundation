@@ -240,6 +240,7 @@ ActiveRecord::Schema.define(version: 2022_02_01_184931) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "test_color_value"
     t.string "control_color_value"
+    t.string "test_strip_id"
     t.index ["bio_engineer_id"], name: "index_photo_reviews_on_bio_engineer_id"
     t.index ["control_color_id"], name: "index_photo_reviews_on_control_color_id"
     t.index ["photo_report_id"], name: "index_photo_reviews_on_photo_report_id"
