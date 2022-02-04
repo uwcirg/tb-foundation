@@ -3,7 +3,6 @@ class PhotoCode < ApplicationRecord
 
   validates :sub_group_code, presence: true, uniqueness: { scope: :photo_code_group_id }
   validates :title, presence: true, uniqueness: true
-  # validates :description, presence: true
 
   accepts_nested_attributes_for :photo_code_group
 

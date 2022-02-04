@@ -31,7 +31,6 @@ ActiveRecord::Schema.define(version: 2022_02_01_184931) do
   create_table "code_applications", force: :cascade do |t|
     t.bigint "photo_code_id"
     t.bigint "photo_review_id"
-    t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["photo_code_id", "photo_review_id"], name: "photo_coding_index", unique: true
@@ -191,7 +190,6 @@ ActiveRecord::Schema.define(version: 2022_02_01_184931) do
     t.bigint "photo_code_group_id"
     t.integer "sub_group_code"
     t.string "title"
-    t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["photo_code_group_id", "sub_group_code"], name: "photo_coding_definitions_index", unique: true

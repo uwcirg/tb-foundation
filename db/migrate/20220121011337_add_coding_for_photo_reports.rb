@@ -13,7 +13,6 @@ class AddCodingForPhotoReports < ActiveRecord::Migration[6.0]
       t.belongs_to :photo_code_group
       t.integer :sub_group_code
       t.string :title
-      t.text :description
       t.timestamps
     end
 
@@ -52,7 +51,6 @@ class AddCodingForPhotoReports < ActiveRecord::Migration[6.0]
     create_table :code_applications do |t|
       t.references :photo_code
       t.references :photo_review
-      t.text :description
       t.timestamps
     end
 

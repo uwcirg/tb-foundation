@@ -11,7 +11,7 @@ class V2::PhotoReportsController < UserController
     end
 
     if (params.has_key?(:patient_id))
-      # authorize Patient.find(params[:patient_id]), :show?, policy_class: PatientPolicy
+      authorize Patient.find(params[:patient_id]), :show?, policy_class: PatientPolicy
       @photo_reports = @photo_reports.where(user_id: params[:patient_id])
     end
 
@@ -39,14 +39,6 @@ class V2::PhotoReportsController < UserController
     daily_report = DailyReport.create_if_not_exists(@current_user.id, params["date"])
     daily_report.update!(photo_report: @current_user.photo_reports.create!(photo_report_params))
     render(json: daily_report, status: :created)
-  end
-
-  def update
-    photo_report = PhotoReport.find(params[:id])
-
-    photo_report.update!(update_params)
-
-    render(json: photo_report, status: :ok)
   end
 
   private

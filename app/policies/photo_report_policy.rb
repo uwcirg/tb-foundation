@@ -4,7 +4,7 @@ class PhotoReportPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       if @user.admin? or @user.bio_engineer?
-        scope.all
+        scope.all.where(patient: Patient.non_test)
       elsif @user.practitioner?
         scope.where(patient: Patient.where(organization_id: @user.organization_id))
       elsif @user.patient?
