@@ -4,7 +4,7 @@ class PhotoReportPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       if @user.admin? or @user.bio_engineer?
-        scope.all
+        scope.all.where(patient: Patient.non_test)
       elsif @user.practitioner?
         scope.where(patient: Patient.where(organization_id: @user.organization_id))
       elsif @user.patient?
@@ -21,22 +21,15 @@ class PhotoReportPolicy < ApplicationPolicy
     @user = user
     @record = record
     @patient = record.patient
+
   end
 
   def create?
     user_is_current_patient
   end
 
-  def index?
-    patient_belongs_to_practitioner or user_is_current_patient
-  end
-
   def show?
-    patient_belongs_to_practitioner or user_is_current_patient
-  end
-
-  def update?
-    @user.bio_engineer?
+    patient_belongs_to_practitioner or user_is_current_patient or @user.bio_engineer? or @user.admin?
   end
   
 end
