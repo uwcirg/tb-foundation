@@ -1,7 +1,9 @@
 class PhotoReport < ApplicationRecord
   belongs_to :daily_report, optional: true
   belongs_to :patient, :foreign_key => :user_id
-  after_commit :update_patient_stats
+  has_one :organization, :through => :patient
+
+  has_many :photo_reviews
 
   scope :has_daily_report, -> { where("daily_report_id IS NOT NULL") }
   scope :conclusive, -> { where(approved: true) }
@@ -26,13 +28,14 @@ class PhotoReport < ApplicationRecord
 
   def get_url
     if (self.photo_url.nil?)
-      tempURL = nil
+      temp_url = nil
     else
       signer = Aws::S3::Presigner.new
-      tempURL = signer.presigned_url(:get_object, bucket: "patient-test-photos", key: photo_url)
+      #Temp url will default to 15 minute expiry time
+      temp_url = signer.presigned_url(:get_object, bucket: "patient-test-photos", key: photo_url)
     end
 
-    return tempURL
+    return temp_url
   end
 
   def pretty_json

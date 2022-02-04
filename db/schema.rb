@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_10_151609) do
+ActiveRecord::Schema.define(version: 2022_02_01_184931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,16 @@ ActiveRecord::Schema.define(version: 2021_12_10_151609) do
     t.integer "category", default: 0
     t.bigint "organization_id"
     t.index ["organization_id"], name: "index_channels_on_organization_id"
+  end
+
+  create_table "code_applications", force: :cascade do |t|
+    t.bigint "photo_code_id"
+    t.bigint "photo_review_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["photo_code_id", "photo_review_id"], name: "photo_coding_index", unique: true
+    t.index ["photo_code_id"], name: "index_code_applications_on_photo_code_id"
+    t.index ["photo_review_id"], name: "index_code_applications_on_photo_review_id"
   end
 
   create_table "contact_tracing_surveys", force: :cascade do |t|
@@ -168,6 +178,24 @@ ActiveRecord::Schema.define(version: 2021_12_10_151609) do
     t.index ["practitioner_id"], name: "index_patient_notes_on_practitioner_id"
   end
 
+  create_table "photo_code_groups", force: :cascade do |t|
+    t.integer "group_code"
+    t.string "group"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["group_code"], name: "index_photo_code_groups_on_group_code", unique: true
+  end
+
+  create_table "photo_codes", force: :cascade do |t|
+    t.bigint "photo_code_group_id"
+    t.integer "sub_group_code"
+    t.string "title"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["photo_code_group_id", "sub_group_code"], name: "photo_coding_definitions_index", unique: true
+    t.index ["photo_code_group_id"], name: "index_photo_codes_on_photo_code_group_id"
+  end
+
   create_table "photo_days", force: :cascade do |t|
     t.date "date", null: false
     t.bigint "patient_id"
@@ -190,6 +218,32 @@ ActiveRecord::Schema.define(version: 2021_12_10_151609) do
     t.boolean "back_submission", default: false
     t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
     t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
+  end
+
+  create_table "photo_review_colors", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "photo_reviews", force: :cascade do |t|
+    t.bigint "bio_engineer_id"
+    t.bigint "photo_report_id"
+    t.bigint "test_strip_version_id"
+    t.integer "test_line_review", default: 0
+    t.integer "control_line_review", default: 0
+    t.bigint "control_color_id"
+    t.bigint "test_color_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "test_color_value"
+    t.string "control_color_value"
+    t.string "test_strip_id"
+    t.index ["bio_engineer_id"], name: "index_photo_reviews_on_bio_engineer_id"
+    t.index ["control_color_id"], name: "index_photo_reviews_on_control_color_id"
+    t.index ["photo_report_id"], name: "index_photo_reviews_on_photo_report_id"
+    t.index ["test_color_id"], name: "index_photo_reviews_on_test_color_id"
+    t.index ["test_strip_version_id"], name: "index_photo_reviews_on_test_strip_version_id"
   end
 
   create_table "push_notification_statuses", force: :cascade do |t|
@@ -263,6 +317,16 @@ ActiveRecord::Schema.define(version: 2021_12_10_151609) do
     t.boolean "activated", default: false
   end
 
+  create_table "test_strip_versions", force: :cascade do |t|
+    t.integer "version"
+    t.text "description"
+    t.text "id_range_description"
+    t.string "shipment_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["version"], name: "index_test_strip_versions_on_version", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "password_digest", null: false
     t.boolean "active", default: true, null: false
@@ -305,6 +369,9 @@ ActiveRecord::Schema.define(version: 2021_12_10_151609) do
   add_foreign_key "patient_notes", "users", column: "practitioner_id"
   add_foreign_key "photo_days", "users", column: "patient_id"
   add_foreign_key "photo_reports", "users", column: "practitioner_id"
+  add_foreign_key "photo_reviews", "photo_review_colors", column: "control_color_id"
+  add_foreign_key "photo_reviews", "photo_review_colors", column: "test_color_id"
+  add_foreign_key "photo_reviews", "users", column: "bio_engineer_id"
   add_foreign_key "reminders", "users", column: "patient_id"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"
