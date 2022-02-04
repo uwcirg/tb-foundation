@@ -3,6 +3,7 @@ class V2::PhotoReportsController < UserController
   # before_action :auth_patient, except: :index
 
   def index
+
     @photo_reports = policy_scope(PhotoReport).order("photo_reports.id DESC").includes(:daily_report, :patient, :organization).has_daily_report
 
     if (params["include_reviewed"] == "false")
