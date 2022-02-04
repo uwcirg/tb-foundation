@@ -4,6 +4,8 @@ class PhotoReportSerializer < ActiveModel::Serializer
     :created_at, :site, :photo_was_skipped, :why_photo_was_skipped, 
     :back_submission
 
+    attribute :is_first_report_for_patient, if: -> { !@instance_options[:first_report_ids].nil? }
+
     def url
         object.get_url
     end
@@ -29,6 +31,10 @@ class PhotoReportSerializer < ActiveModel::Serializer
 
     def site
         object.patient.organization.title
+    end
+
+    def is_first_report_for_patient
+        @instance_options[:first_report_ids].include?(object.id)
     end
 
 end

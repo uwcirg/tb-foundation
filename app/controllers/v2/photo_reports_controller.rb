@@ -22,7 +22,10 @@ class V2::PhotoReportsController < UserController
       @photo_reports = @photo_reports.offset(params[:offset])
     end
 
-    render(json: @photo_reports.limit(10), current_user: @current_user, status: :ok)
+    first_report_ids = PhotoReport.has_daily_report.all.group(:user_id).minimum(:id).values
+
+    render(json: @photo_reports.limit(10), current_user: @current_user, first_report_ids: first_report_ids, status: :ok)
+
   end
 
   def show
