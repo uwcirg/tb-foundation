@@ -1,6 +1,6 @@
 require "csv"
 
-class SymptomQueries
+class PaperQueries
   GOOD_SYMPTOM_REPORTS = <<-SQL
     SELECT * FROM symptom_reports JOIN participants 
     ON participants.uuid = symptom_reports.participant_id
@@ -172,6 +172,11 @@ SQL
     end
   end
 
+  def self.count_dedup
+    SymptomReport.where(id: self.deduped_ids).uniq.count
+  end
+
+
   def self.time_map
     hash = {}
     reports = SymptomReport.includes("participant").where(id: self.deduped_ids)#.where.not(participant_id: "f9ce51fa-3f24-4670-a83d-61bdb9ee1fe9")
@@ -187,6 +192,19 @@ SQL
     hash.keys.map{|key| {week: key, number_of_reports: hash["#{key}"]} }.to_json
 
   end
+
+  def self.not_taking_meds_report
+    file = "#{Rails.root}/tmp/not_taking.csv"
+    table = MedicationReport.where(participant_id: Participant.non_test, took_medication: false)
+    CSV.open(file, "w") do |writer|
+      writer << table.first.attributes.map { |a, v| a }
+      table.each do |s|
+        writer << s.attributes.map { |a, v| v }
+      end
+    end
+  end
+
+
 end
 
 

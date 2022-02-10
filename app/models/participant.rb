@@ -9,6 +9,8 @@ class Participant < ApplicationRecord
   validates :treatment_start, presence: true
   validates :password_digest, presence: true
 
+  scope :non_test, -> { where(uuid: redcap_map.keys) }
+
   def self.redcap_map
     {
       "9c6639d0-215a-4017-bbec-48be749c3301": 102,
