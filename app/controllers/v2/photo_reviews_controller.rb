@@ -2,7 +2,7 @@ class V2::PhotoReviewsController < UserController
   before_action :snake_case_params
 
   def index
-    @photo_reviews = policy_scope(PhotoReview).order("photo_reviews.id DESC")
+    @photo_reviews = policy_scope(PhotoReview).order("photo_reviews.id DESC").includes(:photo_report)
     render(json: @photo_reviews, status: :ok)
   end
 
