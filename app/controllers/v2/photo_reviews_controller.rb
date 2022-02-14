@@ -2,7 +2,12 @@ class V2::PhotoReviewsController < UserController
   before_action :snake_case_params
 
   def index
-    @photo_reviews = policy_scope(PhotoReview).order("photo_reviews.id DESC").includes(:photo_report)
+    @photo_reviews = policy_scope(PhotoReview).order("photo_reviews.id DESC").includes(:photo_report, :code_applications, :photo_codes)
+
+    if (params.has_key?(:offset))
+      @photo_reviews =  @photo_reviews.offset(params[:offset])
+    end
+
     render(json: @photo_reviews, status: :ok)
   end
 
