@@ -41,7 +41,7 @@ Rails.application.routes.draw do
     resources :photo_upload_urls, only: [:create]
 
     resources :photo_codes, only: [:create, :index]
-    resources :photo_reviews, only: [:create]
+    resources :photo_reviews, only: [:create, :index]
 
     get "/heatmap", to: "trial_summary#get_heatmap"
   end
