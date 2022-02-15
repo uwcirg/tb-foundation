@@ -4,7 +4,7 @@ class PhotoReview < ApplicationRecord
     belongs_to :photo_color, optional: true
   
     has_many :code_applications, dependent: :destroy
-    has_many :photo_codes , :through => :code_applications
+    has_many :photo_codes , :through => :code_applications, allow_destroy: true
 
     accepts_nested_attributes_for :code_applications
   
