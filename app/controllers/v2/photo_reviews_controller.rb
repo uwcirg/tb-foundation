@@ -8,7 +8,7 @@ class V2::PhotoReviewsController < UserController
       @photo_reviews =  @photo_reviews.offset(params[:offset])
     end
 
-    render(json: @photo_reviews, status: :ok)
+    render(json: @photo_reviews.limit(10), status: :ok)
   end
 
   def create
