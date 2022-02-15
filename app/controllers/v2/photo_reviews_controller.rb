@@ -11,6 +11,13 @@ class V2::PhotoReviewsController < UserController
     render(json: @photo_reviews.limit(10), status: :ok)
   end
 
+  def update
+    @photo_review = PhotoReview.find(params[:id])
+    authorize @photo_review
+    @photo_review.update(create_params)
+    render(json: @photo_review, status: :ok)
+  end
+
   def create
     authorize PhotoReview
     new_review = @current_user.photo_reviews.create!(create_params)
@@ -24,6 +31,6 @@ class V2::PhotoReviewsController < UserController
       :control_line_review, :control_color_id, :test_color_id,
       :test_strip_id,:control_color_value, :test_color_value,
       :test_strip_version_id, 
-      code_applications_attributes: [:photo_code_id])
+      code_applications_attributes: [:photo_code_id, :id])
   end
 end

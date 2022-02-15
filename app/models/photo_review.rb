@@ -3,7 +3,7 @@ class PhotoReview < ApplicationRecord
     belongs_to :bio_engineer
     belongs_to :photo_color, optional: true
   
-    has_many :code_applications
+    has_many :code_applications, dependent: :destroy
     has_many :photo_codes , :through => :code_applications
 
     accepts_nested_attributes_for :code_applications
