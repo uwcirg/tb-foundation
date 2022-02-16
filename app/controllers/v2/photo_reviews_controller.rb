@@ -31,6 +31,6 @@ class V2::PhotoReviewsController < UserController
       :control_line_review, :control_color_id, :test_color_id,
       :test_strip_id,:control_color_value, :test_color_value,
       :test_strip_version_id, 
-      code_applications_attributes: [:photo_code_id, :id])
+      code_applications_attributes: [:photo_code_id, :id,:_destroy])
   end
 end
