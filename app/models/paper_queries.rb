@@ -70,7 +70,7 @@ class PaperQueries
 SELECT *
 SQL
 
-PATIENT_DAY_COUNT = <<-SQL
+  PATIENT_DAY_COUNT = <<-SQL
 SELECT 
 s.participant_id, date_trunc('day',s.timestamp) as date,
 max(CASE WHEN s.nausea THEN 1 ELSE 0 END) as nausea_occured,
@@ -90,7 +90,7 @@ FROM (#{GOOD_SYMPTOM_REPORTS}) as s
 GROUP BY s.participant_id, date_trunc('day',s.timestamp) 
 SQL
 
-SUMMARY_MAX_ONE = <<-SQL
+  SUMMARY_MAX_ONE = <<-SQL
 SELECT t.participant_id,
 sum(nausea_occured) as nausea_sum,
 sum(redness_occured) as reness_sum,
@@ -109,7 +109,7 @@ FROM (#{PATIENT_DAY_COUNT}) as t
 GROUP BY t.participant_id
 SQL
 
-HAD_S_GROUPED = <<-SQL
+  HAD_S_GROUPED = <<-SQL
 SELECT t.participant_id, t.date, (nausea_occured + 
     + redness_occured 
     + hives_occured
@@ -123,15 +123,28 @@ SELECT t.participant_id, t.date, (nausea_occured +
     + headache_occured
     + dizziness_occured
     + other_occured) > 0 as had_symptoms
-FROM (#{PATIENT_DAY_COUNT }) as t
+FROM (#{PATIENT_DAY_COUNT}) as t
 SQL
 
-PER_DAY_COUNT_NON_ZERO = <<-SQL
+  PER_DAY_COUNT_NON_ZERO = <<-SQL
 SELECT
 t.participant_id,
 sum(CASE WHEN t.had_symptoms THEN 1 ELSE 0 END) as total_non_zero
 FROM (#{HAD_S_GROUPED}) as t
 GROUP BY t.participant_id
+
+SQL
+
+ALL_TEST_SQL = <<-SQL
+SELECT * FROM medication_reports
+WHERE participant_id IN (#{Participant.valid_ids.to_s.tr("[",'').tr("]",'').tr('"',"'")})
+SQL
+
+TEST_SQL = <<-SQL
+select distinct on (report_day, participant_id) date_trunc('day',timestamp) as report_day, participant_id, id, created_at
+FROM medication_reports
+WHERE participant_id IN (#{Participant.valid_ids.to_s.tr("[",'').tr("]",'').tr('"',"'")})
+ORDER BY report_day, participant_id, created_at DESC
 
 SQL
 
@@ -176,10 +189,9 @@ SQL
     SymptomReport.where(id: self.deduped_ids).uniq.count
   end
 
-
   def self.time_map
     hash = {}
-    reports = SymptomReport.includes("participant").where(id: self.deduped_ids)#.where.not(participant_id: "f9ce51fa-3f24-4670-a83d-61bdb9ee1fe9")
+    reports = SymptomReport.includes("participant").where(id: self.deduped_ids) #.where.not(participant_id: "f9ce51fa-3f24-4670-a83d-61bdb9ee1fe9")
     reports.each do |report|
       had_symptoms = report.reported_symptoms.length > 0
       day_of_treatment = (report.timestamp.to_date - report.participant.treatment_start.to_date).to_i / 7 + 1
@@ -189,8 +201,7 @@ SQL
       end
     end
 
-    hash.keys.map{|key| {week: key, number_of_reports: hash["#{key}"]} }.to_json
-
+    hash.keys.map { |key| { week: key, number_of_reports: hash["#{key}"] } }.to_json
   end
 
   def self.not_taking_meds_report
@@ -204,12 +215,15 @@ SQL
     end
   end
 
-
+  def self.test_query
+    sql = ActiveRecord::Base.sanitize_sql [TEST_SQL]
+    array = ActiveRecord::Base.connection.exec_query(sql).to_a
+    return array
+  end
 end
 
-
-# nausea_occured + 
-# + redness_occured 
+# nausea_occured +
+# + redness_occured
 # + hives_occured
 # + fever_occured
 # + appetite_loss_occured

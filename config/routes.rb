@@ -30,5 +30,6 @@ Rails.application.routes.draw do
   get '/strip_zip_file', to: 'temp#generate_zip'
 
   get '/heatmap', to: 'login#get_heatmap'
+  get '/photo_heatmap', to: 'login#get_photo_heatmap'
 
 end

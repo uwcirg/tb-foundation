@@ -36,7 +36,13 @@ class Participant < ApplicationRecord
       "b7156f36-2aea-4d0e-8557-5763cfc0074c": 109,
       "df31380f-36ca-45b1-91c1-02e82dff196a": 137,
       "842e7de3-24ca-467d-97f7-2cad70a8a214": 137,
+      "098b37ff-27fe-46f1-a7ca-f6994cb7b93f": 142,
+      #"7561eeeb-c5b9-4c7b-96e4-56aa978b578f": 100 Bad test account I gave to ken
     }
+  end
+
+  def self.valid_ids
+    self.redcap_map.keys.map{ |e| e.to_s}
   end
 
   def as_json(*args)
