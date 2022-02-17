@@ -1,13 +1,13 @@
 class V2::PhotoReportsController < UserController
   before_action :snake_case_params
-  # before_action :auth_patient, except: :index
 
   def index
 
     @photo_reports = policy_scope(PhotoReport).order("photo_reports.id DESC").includes(:daily_report, :patient, :organization).has_daily_report
 
     if (params["include_reviewed"] == "false")
-      @photo_reports = @photo_reports.left_outer_joins(:photo_reviews).where("photo_reviews.id IS NULL OR photo_reviews.bio_engineer_id != ?",@current_user.id)
+      sanitized_join = ActiveRecord::Base.sanitize_sql_array(["LEFT JOIN photo_reviews on photo_reviews.photo_report_id = photo_reports.id AND photo_reviews.bio_engineer_id = ?", @current_user.id])
+      @photo_reports = @photo_reports.joins(sanitized_join).where("photo_reviews.id IS NULL")
     end
 
     if (params.has_key?(:patient_id))

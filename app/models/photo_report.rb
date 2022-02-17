@@ -6,6 +6,7 @@ class PhotoReport < ApplicationRecord
   has_many :photo_reviews
 
   scope :has_daily_report, -> { where("daily_report_id IS NOT NULL") }
+  scope :reviewable, -> {where(patient: Patient.non_test).has_daily_report}
   scope :conclusive, -> { where(approved: true) }
 
   def self.policy_class

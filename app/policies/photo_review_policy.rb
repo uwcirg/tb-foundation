@@ -5,7 +5,7 @@ class PhotoReviewPolicy < ApplicationPolicy
     def resolve
       if @user.admin?
         scope.all
-      elsif @user.practitioner?
+      elsif @user.bio_engineer?
         scope.where(bio_engineer: @user)
       else
         raise Pundit::NotAuthorizedError, "not allowed to view this action"
@@ -17,7 +17,9 @@ class PhotoReviewPolicy < ApplicationPolicy
 
   def initialize(user, review)
     @user = user
-    @record = record
+    if(!review.nil?)
+      @review = review
+    end
   end
 
   def create?
