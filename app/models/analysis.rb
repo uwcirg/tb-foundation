@@ -22,4 +22,13 @@ class Analysis
     puts("Mean #{mean}")
     puts("Standard Deviation #{standard_deviation}")
   end
+
+  def self.calc_mean_and_sd(a)
+    mean = a.sum(0.0) / a.size
+    sum = a.sum(0.0) { |element| (element - mean) ** 2 }
+    variance = sum / (a.size - 1)
+    standard_deviation = Math.sqrt(variance)
+    puts("Mean #{mean}")
+    puts("Standard Deviation #{standard_deviation}")
+  end
 end

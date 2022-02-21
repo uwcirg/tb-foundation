@@ -34,10 +34,11 @@ namespace :data_export do
     end
 
     CSV.open("tmp/fixed_csv/participants.csv", "wb") do |csv|
-      columns = %w(created_at uuid treatment_start)
+      columns = %w(redcap_id created_at uuid treatment_start)
       csv << columns
       Participant.where(uuid: filtered_patients.pluck(:uuid)).each do |report|
-      values = report.attributes.slice(*columns).values
+      rc_id = Participant.redcap_map[report.uuid.to_sym]
+      values = [rc_id, *report.attributes.slice(*columns).values]
         csv << values
       end
     end
@@ -52,6 +53,45 @@ namespace :data_export do
     end
 
 
+
+  end
+
+  desc "Grouped symptom summary export"
+  task calc_symptom_data: :environment do
+    reports_per_participant = {} 
+    had_symptoms_per_participant = {}
+    
+    Participant.redcap_map.values.uniq.map{|v| 
+      reports_per_participant[v] = 0
+      had_symptoms_per_participant[v] = 0
+
+    }
+
+    
+    SymptomReport.where(id: SymptomReport.non_test.group(:participant_id,:timestamp).maximum(:id).values ).group(:participant_id).count.map{|e| 
+      rc_id = Participant.redcap_map[e[0].to_sym]
+      reports_per_participant[rc_id] += e[1]
+    }
+
+    SymptomReport.has_symptoms.where(id: SymptomReport.non_test.group(:participant_id,:timestamp).maximum(:id).values ).group(:participant_id).count.map{|ee|
+      rc_id = Participant.redcap_map[ee[0].to_sym]
+      had_symptoms_per_participant[rc_id] += ee[1]
+    }
+
+
+
+    print reports_per_participant.values
+    puts ""
+    print had_symptoms_per_participant.values
+
+    puts ""
+
+
+    puts("Reports")
+    Analysis.calc_mean_and_sd(reports_per_participant.values)
+
+    puts("Reports with symptoms")
+    Analysis.calc_mean_and_sd(had_symptoms_per_participant.values)
 
   end
 

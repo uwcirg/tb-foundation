@@ -2,6 +2,13 @@ class SymptomReport < ApplicationRecord
   belongs_to :participant
   belongs_to :resolution, optional: true
 
+  scope :non_test, -> {where(participant: Participant.non_test)}
+
+  scope :has_symptoms, -> { where("nausea=true OR redness=true OR hives=true OR fever=true 
+    OR appetite_loss=true OR blurred_vision=true OR sore_belly=true 
+    OR yellow_coloration=true OR difficulty_breathing=true OR facial_swelling=true 
+    OR other != ''") }
+
   def as_json(*args)
     {
       id: id,
@@ -31,4 +38,6 @@ class SymptomReport < ApplicationRecord
       nausea
     ].select { |symptom| self.send(symptom) }
   end
+
+
 end
