@@ -1,0 +1,121 @@
+[
+    {
+      "old_versions": "1, 2, 3",
+      "version": 1,
+      "range": "Handwritten 1-8/1-12",
+      "description": "One strip linear.",
+      "shipment_date": "August (68), october (408), december (444) 2020"
+    },
+    {
+      "old_versions": 4,
+      "version": 2,
+      "range": "Handwritten 1-8",
+      "description": "Two strip wide. Strip 2",
+      "shipment_date": "January 2021 (296)"
+    },
+    {
+      "old_versions": 5,
+      "version": 3,
+      "range": "1-480",
+      "description": "Two strip wide shelled. Green control line. Strip 2",
+      "shipment_date": "March 2021 (480)"
+    },
+    {
+      "old_versions": 5,
+      "version": 4,
+      "range": "1321-1392",
+      "description": "Two strip wide shelled. Green control line. Strip 3 (1,3 DMBA)",
+      "shipment_date": "March 2021 (72)"
+    },
+    {
+      "old_versions": 6,
+      "version": 5,
+      "range": "481-960, 978-999, 1033-1440",
+      "description": "Two strip wide added draft. Strip 2",
+      "shipment_date": "June 2021 (432)"
+    },
+    {
+      "old_versions": 8,
+      "version": 6,
+      "range": "961-977, 1000-1032",
+      "description": "Two strip wide added draft. Strip 3 (1,3 DMBA)",
+      "shipment_date": "June 2021 (48)"
+    },
+    {
+      "old_versions": 9,
+      "version": 7,
+      "range": "1467-1480, 1489-1512, 1531-1536, 1989-2004, 2033-2364",
+      "description": "Two strip wide DV window/upper inlets closed. Strip 4. Extra fiber insert.",
+      "shipment_date": "September 2021 (400)"
+    },
+    {
+      "old_versions": "10, 11",
+      "version": 8,
+      "range": "2365-2444",
+      "description": "Two strip wide DV window/upper inlets closed. Strip 4. Extra fiber insert. Matte sticker",
+      "shipment_date": "September 2021 (80)"
+    },
+    {
+      "old_versions": 7,
+      "version": 9,
+      "range": "?",
+      "description": "Two strip wide parafilm on upper inlets. Strip 4.",
+      "shipment_date": "September 2021 (?)"
+    },
+    {
+      "old_versions": 13,
+      "version": 10,
+      "range": "2491-2952",
+      "description": "Two strip wide DV window/upper inlets closed. Strip 4.",
+      "shipment_date": "October 2021 (441)"
+    },
+    {
+      "old_versions": 12,
+      "version": 11,
+      "range": "2953-2986",
+      "description": "Two strip wide DV window/upper inlets closed. Strip 4. INA+antioxidant control",
+      "shipment_date": "October 2021"
+    },
+    {
+      "old_versions": 14,
+      "version": 12,
+      "range": "2883-2922",
+      "description": "Two strip wide DV window/upper inlets closed. Strip 4. Extra fiber insert.",
+      "shipment_date": "October 2021 (39)"
+    },
+    {
+      "old_versions": 18,
+      "version": 13,
+      "range": "2978-3116",
+      "description": "Two strip wide DV window/upper inlets closed. Strip 4.",
+      "shipment_date": "December 2021 (128)"
+    },
+    {
+      "old_versions": "15,17",
+      "version": 14,
+      "range": "3117-3282, 3754-3996",
+      "description": "Two strip wide DV window/upper inlets closed. Strip 5.",
+      "shipment_date": "December 2021 (384)"
+    },
+    {
+      "old_versions": 16,
+      "version": 15,
+      "range": "3293-3753",
+      "description": "Two strip wide DV window/upper inlets closed. Strip 5. Hydrophobic coat.",
+      "shipment_date": "December 2021 (448)"
+    },
+    {
+      "old_versions": 19,
+      "version": 16,
+      "range": "3988-4477",
+      "description": "Two strip wide DV window/upper inlets closed. Strip 5.",
+      "shipment_date": "January 2022 (480)"
+    },
+    {
+      "old_versions": "",
+      "version": 17,
+      "range": "4478-4757",
+      "description": "Two strip wide DV window/upper inlets closed. Strip 5. INDONESIA",
+      "shipment_date": "February 2022 (280)"
+    }
+  ]
