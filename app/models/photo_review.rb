@@ -2,6 +2,7 @@ class PhotoReview < ApplicationRecord
     belongs_to :photo_report
     belongs_to :bio_engineer
     belongs_to :photo_color, optional: true
+    belongs_to :test_strip_version, optional: true
   
     has_many :code_applications, dependent: :destroy
     has_many :photo_codes , :through => :code_applications
