@@ -1,4 +1,8 @@
 class PhotoReport < ApplicationRecord
+  
+  has_one :redo_new_report , class_name: 'PhotoReport', :foreign_key => :redo_for_report_id
+  belongs_to :redo_original_report, class_name: 'PhotoReport', :foreign_key => :redo_for_report_id, optional: true
+  
   belongs_to :daily_report, optional: true
   belongs_to :patient, :foreign_key => :user_id
   has_one :organization, :through => :patient

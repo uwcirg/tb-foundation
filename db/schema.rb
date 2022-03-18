@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_01_184931) do
+ActiveRecord::Schema.define(version: 2022_03_17_193603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -216,8 +216,12 @@ ActiveRecord::Schema.define(version: 2022_02_01_184931) do
     t.datetime "created_at", precision: 6
     t.datetime "updated_at", precision: 6
     t.boolean "back_submission", default: false
+    t.boolean "redo_flag", default: false, null: false
+    t.text "redo_reason"
+    t.bigint "redo_for_report_id"
     t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
     t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
+    t.index ["redo_for_report_id"], name: "index_photo_reports_on_redo_for_report_id"
   end
 
   create_table "photo_review_colors", force: :cascade do |t|
@@ -368,6 +372,7 @@ ActiveRecord::Schema.define(version: 2022_02_01_184931) do
   add_foreign_key "patient_notes", "users", column: "patient_id"
   add_foreign_key "patient_notes", "users", column: "practitioner_id"
   add_foreign_key "photo_days", "users", column: "patient_id"
+  add_foreign_key "photo_reports", "photo_reports", column: "redo_for_report_id"
   add_foreign_key "photo_reports", "users", column: "practitioner_id"
   add_foreign_key "photo_reviews", "photo_review_colors", column: "control_color_id"
   add_foreign_key "photo_reviews", "photo_review_colors", column: "test_color_id"
