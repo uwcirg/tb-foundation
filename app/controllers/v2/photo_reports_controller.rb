@@ -41,7 +41,15 @@ class V2::PhotoReportsController < UserController
     render(json: daily_report, status: :created)
   end
 
+  def update
+    
+  end
+
   private
+
+  def update_params
+    params.require(:photo_report).params.permit(:approved, :redo_flag, :redo_reason, :redo_for_report_id)
+  end
 
   def photo_report_params
     #Modify to allow for no photo submission if opt out options are given
