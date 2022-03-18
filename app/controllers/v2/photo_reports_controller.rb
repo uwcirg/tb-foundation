@@ -42,13 +42,18 @@ class V2::PhotoReportsController < UserController
   end
 
   def update
-    
+    @photo_report = PhotoReport.find(params[:id])
+    authorize @photo_report
+    @photo_report.update(update_params)
+    @photo_report.update(approval_timestamp: Time.current, practitioner_id: @current_user.id)
+    @photo_report.save!
+    render(json: @photo_report, status: :ok)
   end
 
   private
 
   def update_params
-    params.require(:photo_report).params.permit(:approved, :redo_flag, :redo_reason, :redo_for_report_id)
+    params.permit(:approved, :redo_flag, :redo_reason, :redo_for_report_id)
   end
 
   def photo_report_params
