@@ -19,4 +19,4 @@ en:
     tomorrow: "tomorrow"
   redo_photo:
     title: "Issue with last photo submission"
-    subtitle: "Please review feedback from your assistant and complete another test"
+    body: "Please review feedback from your assistant and complete another test"
