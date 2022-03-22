@@ -45,19 +45,11 @@ class PhotoReport < ApplicationRecord
     return temp_url
   end
 
-  def pretty_json
-    return {
-             url: get_url,
-           }
-  end
-
   def has_photo?
     return !self.photo_url.nil?
   end
 
   def send_redo_notification
-    puts("send_redo")
-    puts(flagged_for_redo?)
       self.patient.send_redo_notification
   end
 
