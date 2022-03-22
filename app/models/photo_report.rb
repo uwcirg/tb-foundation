@@ -56,7 +56,8 @@ class PhotoReport < ApplicationRecord
   private
 
   def flagged_for_redo?
-    self.redo_flag
+    # !self.daily_report_id.nil? Prevents notificaiton from being sent when old report is unlinked from daily report for today
+    self.redo_flag && !self.daily_report_id.nil?
   end
 
   def update_patient_stats
