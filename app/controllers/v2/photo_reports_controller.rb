@@ -2,7 +2,6 @@ class V2::PhotoReportsController < UserController
   before_action :snake_case_params
 
   def index
-
     @photo_reports = policy_scope(PhotoReport).order("photo_reports.id DESC").includes(:daily_report, :patient, :organization).has_daily_report
 
     if (params["include_reviewed"] == "false")
@@ -26,7 +25,6 @@ class V2::PhotoReportsController < UserController
     first_report_ids = PhotoReport.has_daily_report.all.group(:user_id).minimum(:id).values
 
     render(json: @photo_reports.limit(10), current_user: @current_user, first_report_ids: first_report_ids, status: :ok)
-
   end
 
   def show
@@ -45,10 +43,17 @@ class V2::PhotoReportsController < UserController
     @photo_report = PhotoReport.find(params[:id])
     authorize @photo_report
     @photo_report.update!(update_params)
+    send_redo_notification_if_needed
     render(json: @photo_report, status: :ok)
   end
 
   private
+
+  def send_redo_notification_if_needed
+    if (params[:redo_flag])
+      @photo_report.send_redo_notification
+    end
+  end
 
   def update_params
     params.permit(:approved, :redo_flag, :redo_reason).merge(approval_timestamp: Time.current, practitioner_id: @current_user.id)

@@ -1,6 +1,4 @@
 class PhotoReport < ApplicationRecord
-
-  after_update_commit :send_redo_notification, if: :flagged_for_redo?
   
   has_one :redo_new_report , class_name: 'PhotoReport', :foreign_key => :redo_for_report_id
   belongs_to :redo_original_report, class_name: 'PhotoReport', :foreign_key => :redo_for_report_id, optional: true
@@ -54,11 +52,6 @@ class PhotoReport < ApplicationRecord
   end
 
   private
-
-  def flagged_for_redo?
-    # !self.daily_report_id.nil? Prevents notificaiton from being sent when old report is unlinked from daily report for today
-    self.redo_flag && !self.daily_report_id.nil?
-  end
 
   def update_patient_stats
     self.patient.update_stats_in_background
