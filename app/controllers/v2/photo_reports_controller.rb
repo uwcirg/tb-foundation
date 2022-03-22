@@ -44,16 +44,14 @@ class V2::PhotoReportsController < UserController
   def update
     @photo_report = PhotoReport.find(params[:id])
     authorize @photo_report
-    @photo_report.update(update_params)
-    @photo_report.update(approval_timestamp: Time.current, practitioner_id: @current_user.id)
-    @photo_report.save!
+    @photo_report.update!(update_params)
     render(json: @photo_report, status: :ok)
   end
 
   private
 
   def update_params
-    params.permit(:approved, :redo_flag, :redo_reason)
+    params.permit(:approved, :redo_flag, :redo_reason).merge(approval_timestamp: Time.current, practitioner_id: @current_user.id)
   end
 
   def photo_report_params

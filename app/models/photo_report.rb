@@ -1,4 +1,6 @@
 class PhotoReport < ApplicationRecord
+
+  after_update_commit :send_redo_notification, if: :flagged_for_redo?
   
   has_one :redo_new_report , class_name: 'PhotoReport', :foreign_key => :redo_for_report_id
   belongs_to :redo_original_report, class_name: 'PhotoReport', :foreign_key => :redo_for_report_id, optional: true
@@ -53,7 +55,17 @@ class PhotoReport < ApplicationRecord
     return !self.photo_url.nil?
   end
 
+  def send_redo_notification
+    puts("send_redo")
+    puts(flagged_for_redo?)
+      self.patient.send_redo_notification
+  end
+
   private
+
+  def flagged_for_redo?
+    self.redo_flag
+  end
 
   def update_patient_stats
     self.patient.update_stats_in_background

@@ -9,3 +9,6 @@ es-AR:
     password_mismatch: "Nuevas contraseñas no coinciden"
     current_password_incorrect: "Contraseña Actual Incorrecta"
     update_success: "Contraseña actualiza"
+  redo_photo:
+    title: "Problema con el envío de la última foto"
+    subtitle: "Revise los comentarios de su asistente y complete otra tira reactiva"
