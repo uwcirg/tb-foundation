@@ -53,7 +53,7 @@ class V2::PhotoReportsController < UserController
   private
 
   def update_params
-    params.permit(:approved, :redo_flag, :redo_reason, :redo_for_report_id)
+    params.permit(:approved, :redo_flag, :redo_reason)
   end
 
   def photo_report_params
@@ -64,6 +64,6 @@ class V2::PhotoReportsController < UserController
       params.require([:date, :photo_url])
     end
 
-    params.permit(:date, :back_submission, :photo_url, :captured_at, :why_photo_was_skipped, :photo_was_skipped)
+    params.permit(:date, :back_submission, :photo_url, :captured_at, :why_photo_was_skipped, :photo_was_skipped, :redo_for_report_id)
   end
 end
