@@ -316,6 +316,10 @@ class Patient < User
     self.photo_reports.first.id
   end
 
+  def latest_photo_submission
+      PhotoReport.where(user_id: self.id).order("created_at DESC").first
+  end
+
   private
 
   def create_patient_information_entry
