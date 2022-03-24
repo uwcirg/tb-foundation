@@ -53,7 +53,8 @@ class PhotoReport < ApplicationRecord
   end
 
   def is_latest_submission_for_patient?
-    self.id == self.patient.latest_photo_submission.id
+    latest = self.patient.latest_photo_submission
+    !latest.nil? && self.id == self.patient.latest_photo_submission.id
   end
 
   private

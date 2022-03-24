@@ -317,7 +317,7 @@ class Patient < User
   end
 
   def latest_photo_submission
-      PhotoReport.where(user_id: self.id).order("created_at DESC").first
+      PhotoReport.where(user_id: self.id).where("created_at IS NOT NULL").order("created_at DESC").first
   end
 
   private
