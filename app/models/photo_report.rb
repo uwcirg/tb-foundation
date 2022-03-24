@@ -53,7 +53,7 @@ class PhotoReport < ApplicationRecord
   end
 
   def is_latest_submission_for_patient?
-    self.id == PhotoReport.where(user_id: self.patient.id).order(:date).last.id
+    self.id == PhotoReport.where(user_id: self.patient.id).order(:date, :created_at).last.id
   end
 
   private
