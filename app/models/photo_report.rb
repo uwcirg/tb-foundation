@@ -1,8 +1,7 @@
 class PhotoReport < ApplicationRecord
-  
-  has_one :redo_new_report , class_name: 'PhotoReport', :foreign_key => :redo_for_report_id
-  belongs_to :redo_original_report, class_name: 'PhotoReport', :foreign_key => :redo_for_report_id, optional: true
-  
+  has_one :redo_new_report, class_name: "PhotoReport", :foreign_key => :redo_for_report_id
+  belongs_to :redo_original_report, class_name: "PhotoReport", :foreign_key => :redo_for_report_id, optional: true
+
   belongs_to :daily_report, optional: true
   belongs_to :patient, :foreign_key => :user_id
   has_one :organization, :through => :patient
@@ -10,7 +9,7 @@ class PhotoReport < ApplicationRecord
   has_many :photo_reviews
 
   scope :has_daily_report, -> { where("daily_report_id IS NOT NULL") }
-  scope :reviewable, -> {where(patient: Patient.non_test).has_daily_report}
+  scope :reviewable, -> { where(patient: Patient.non_test).has_daily_report }
   scope :conclusive, -> { where(approved: true) }
 
   def self.policy_class
@@ -48,7 +47,13 @@ class PhotoReport < ApplicationRecord
   end
 
   def send_redo_notification
+    if (is_latest_submission_for_patient?)
       self.patient.send_redo_notification
+    end
+  end
+
+  def is_latest_submission_for_patient?
+    self.id == PhotoReport.where(user_id: self.patient.id).order(:date).last.id
   end
 
   private
@@ -56,4 +61,5 @@ class PhotoReport < ApplicationRecord
   def update_patient_stats
     self.patient.update_stats_in_background
   end
+
 end
