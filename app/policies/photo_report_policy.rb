@@ -31,5 +31,9 @@ class PhotoReportPolicy < ApplicationPolicy
   def show?
     patient_belongs_to_practitioner or user_is_current_patient or @user.bio_engineer? or @user.admin?
   end
+
+  def update?
+    patient_belongs_to_practitioner
+  end
   
 end
