@@ -5,6 +5,20 @@
 
 This is the backend API for a project intended to improve tuberculosis treatment outcomes. It allows users to report their medication use and check in with providers throughout their treatment. 
 
+## Getting started with development ( work in progress )
+
+
+1. **Create .env file**
+This will provide the dockerized services with the environment variables needed to get started. Some sensible defaults are provided in .sample.env
+
+2. **Edit /etc/hosts** If using a local development environment modify /etc/hosts to include a redirect for bucket to localhost. This is required to file urls consistant internally and externally on docker. <br />```127.0.0.1 bucket```
+	
+3. **Spin up dockerized services**
+<br />```docker-compose up -d```
+
+4. **Setup and seed database for rails application**
+<br />```docker-compose exec web bash -c 'bundle exec rake db:setup ```
+
 
 ## Run Rspec tests (example file provided)
 docker-compose run --rm -e "RAILS_ENV=test" web rspec spec/requests/get_patients_spec.rb
