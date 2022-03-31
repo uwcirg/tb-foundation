@@ -17,7 +17,6 @@ when "development"
     #Organizations
     org_one = Organization.create!(title: "University of Washington")
     Organization.create!(title: "Hospital One")
-    puts(Organization.all.pluck(:id))
 
     #Test Practitioner
     practitioner = Practitioner.create!(
@@ -48,7 +47,6 @@ when "development"
         phone_number: "123456789",
         treatment_start: Date.today - 2.months,
         type: "Patient"
-        
     )
 
 
@@ -76,15 +74,15 @@ when "development"
         
     )
 
+    patient.patient_information.update!(datetime_patient_activated: Time.current - 2.months )
     patient.seed_test_reports(true)
     patient.photo_day_override
+    patient.patient_information.update_patient_stats
+
     newPatient.seed_test_reports
     newPatient.photo_day_override
     patient2.seed_test_reports
     patient2.photo_day_override
-
- ["Santiago","Mateo","Juan","Matias","Nicolas","Benjamin","Pedro","Tomas","Thiago","Santino"]
- ["Gonzalez","Rodriguez","Fernandez","Lopez","Gomez","Martinez","Garcia","Diaz","Perez","Sanchez"]
 
     #Test Admin
     admin = Administrator.create!(
@@ -112,10 +110,6 @@ when "development"
 
         admin.send_message_no_push("Hola a todos, soy Admin y estoy probando esta función. Saludos a todos",sc.id)
         patient.send_message_no_push("Probando dos",gc.id)
-        # patient.messages.create!(body: "Patient test 1 two",channel_id: gc.id)
-        # patient.messages.create!(body: " Patient one, This is a very long message. It is supposed to take up mulitple lines. Hopefully thi swill work. I hope that this takes up multiple lines so that I can see what that might look like. I wonder if I should be using some other type of storage for this instead of just a string. What is a good db field for multiline input?",channel_id: gc.id)
-        # admin.messages.create!(body: "This is a very long message. It is supposed to take up mulitple lines. Hopefully thi swill work. I hope that this takes up multiple lines so that I can see what that might look like. I wonder if I should be using some other type of storage for this instead of just a string. What is a good db field for multiline input?",channel_id: sc.id)
-        # patient.messages.create!(body: "Patient test 2",channel_id: sc.id)
 
         if(i > 5)
             break
@@ -124,36 +118,31 @@ when "development"
 
     practitioner.send_message_no_push("Latest Test message for 1",gc.id)
 
-    patient3 = Patient.create!(
-        password_digest: password_hash,
-        family_name: "Patient 3",
-        given_name: "Test",
-        organization_id: org_one.id,
-        phone_number: "123456780",
-        treatment_start: Date.today,
-        type: "Patient"
-        
-    )
-
     i = 0
     first_names.each do |name|
+        rand_weeks = rand(1..24).weeks
         new_patient = Patient.create!(
             password_digest: password_hash,
             family_name: last_names[i],
             given_name: name,
             organization_id: org_one.id ,
             phone_number: "12312312#{i}",
-            treatment_start: Date.today - rand(1..24).weeks,
+            treatment_start: Date.today - rand_weeks,
             type: "Patient"
             
         )
+        new_patient.patient_information.update!(datetime_patient_activated: Time.current - rand_weeks )
         new_patient.seed_test_reports(true)
+        new_patient.patient_information.update_patient_stats
         i += 1
     end
 
+    Patient.all.each do | patient |
+        patient.update_stats_in_background
+    end
 
-
-    
+    PhotoReport.all.update_all(approved: true)
+    PhotoReport.last(3).update_all(approved: false)
 
 when "production"
 end    
