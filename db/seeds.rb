@@ -142,7 +142,9 @@ when "development"
     end
 
     PhotoReport.all.update_all(approved: true)
-    PhotoReport.last(3).update_all(approved: false)
+    PhotoReport.last(3).each do | report |
+        report.update!(approved: nil)
+    end
 
 when "production"
 end    
