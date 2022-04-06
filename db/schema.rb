@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_17_193603) do
+ActiveRecord::Schema.define(version: 2022_04_06_031315) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(version: 2022_03_17_193603) do
     t.boolean "redo_flag", default: false, null: false
     t.text "redo_reason"
     t.bigint "redo_for_report_id"
+    t.integer "auto_detected_barcode"
     t.index ["daily_report_id"], name: "index_photo_reports_on_daily_report_id"
     t.index ["practitioner_id"], name: "index_photo_reports_on_practitioner_id"
     t.index ["redo_for_report_id"], name: "index_photo_reports_on_redo_for_report_id"
