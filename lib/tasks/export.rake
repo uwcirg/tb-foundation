@@ -1,7 +1,7 @@
 require "csv"
 
 namespace :export do
-  desc "Create channels for all practitioners to chat with expert"
+  desc "Export photo submission data to CSV"
   task :photo_report_csv => :environment do
 
     #Available attributes 
