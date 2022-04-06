@@ -17,3 +17,6 @@ en:
     medication_pickup: "Medication Pickup"
     other: "Other"
     tomorrow: "tomorrow"
+  redo_photo:
+    title: "Issue with last photo submission"
+    body: "Please review feedback from your assistant and complete another test"

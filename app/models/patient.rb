@@ -22,7 +22,6 @@ class Patient < User
   has_one :daily_notification, :foreign_key => :user_id
   has_one :patient_information
 
-  #validates :user_type, value:
   validates :family_name, presence: true
   validates :given_name, presence: true
   validates :phone_number, presence: true, uniqueness: true, format: { with: /\A\d{9,15}\z/, message: "Only allows a string representation of a digit (9-15 char long)" }
@@ -286,6 +285,12 @@ class Patient < User
            }
   end
 
+  def send_redo_notification
+    I18n.with_locale(self.locale) do
+      self.send_push_to_user(I18n.t("redo_photo.title"), I18n.t("redo_photo.body"), "/redo-photo", "RedoPhoto")
+    end
+  end
+  
   def send_medication_reminder
     I18n.with_locale(self.locale) do
       self.send_push_to_user(I18n.t("medication_reminder"), I18n.t("medication_reminder_body"), "/home", "MedicationReminder", [
@@ -307,6 +312,10 @@ class Patient < User
 
   def first_photo_id
     self.photo_reports.first.id
+  end
+
+  def latest_photo_submission
+      PhotoReport.where(user_id: self.id).where("created_at IS NOT NULL").order("created_at DESC").first
   end
 
   private
