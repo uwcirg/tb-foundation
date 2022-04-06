@@ -2,7 +2,7 @@ class PhotoReportSerializer < ActiveModel::Serializer
     
     attributes :photo_id, :approved, :url, :patient_id, :date, 
     :created_at, :site, :photo_was_skipped, :why_photo_was_skipped, 
-    :back_submission, :redo_flag, :redo_reason, :redo_original_details, :is_redo
+    :back_submission, :redo_flag, :redo_reason, :redo_original_details, :is_redo, :auto_detected_barcode
 
     attribute :is_first_report_for_patient, if: -> { !@instance_options[:first_report_ids].nil? }
 
