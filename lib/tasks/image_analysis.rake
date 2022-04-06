@@ -6,7 +6,7 @@ namespace :image_analysis do
     grouped_barcodes = parsed_barcodes.index_by { |item| item[:id] }
 
     ActiveRecord::Base.transaction do
-      PhotoReport.update(grouped_barcodes.keys, grouped_barcodes).values)
+      PhotoReport.update(grouped_barcodes.keys, grouped_barcodes.values)
     end
   end
 end
