@@ -5,7 +5,7 @@ class PatientInformation < ApplicationRecord
   after_commit :update_patient_stats, if: :should_update_stats_after_commit
 
   #WHO Treatment Outcomes: success, default, transferred out, deceased, lost to follow-up. Added  withdraw as a study specific outcome
-  enum treatment_outcome: { "success": 0, "default": 1, "transferred": 2, "deceased": 3,  "lost-to-follow-up": 4, "withdraw": 5 }
+  enum treatment_outcome: { "success": 0, "default": 1, "transferred": 2, "deceased": 3,  "lost-to-follow-up": 4, "withdraw": 5, "refuse-to-use-app": 6 }
 
 
   def adherence
