@@ -12,6 +12,12 @@ class PhotoReport < ApplicationRecord
   scope :reviewable, -> { where(patient: Patient.non_test).has_daily_report }
   scope :conclusive, -> { where(approved: true) }
 
+  scope :unreviewed, -> { joins("LEFT JOIN photo_reviews on photo_reviews.photo_report_id = photo_reports.id").where("photo_reviews.id IS NULL")}
+  scope :unreviewed_by, -> user_id {
+    sanitized = ActiveRecord::Base.sanitize_sql_array(["LEFT JOIN photo_reviews on photo_reviews.photo_report_id = photo_reports.id AND photo_reviews.bio_engineer_id = ?", user_id])
+    joins(sanitized).where("photo_reviews.id IS NULL")
+  }
+
   def self.policy_class
     PhotoReportPolicy
   end
