@@ -2,6 +2,7 @@ class V2::PhotoReportsController < UserController
   attr_reader :current_user
   before_action :snake_case_params
 
+  has_scope :patient_id
   has_scope :unreviewed, type: :boolean
   has_scope :unreviewed_by_me, type: :boolean do |controller, scope|
     scope.unreviewed_by(controller.current_user.id)
@@ -11,10 +12,9 @@ class V2::PhotoReportsController < UserController
     @photo_reports = policy_scope(PhotoReport).order("photo_reports.id DESC").includes(:daily_report, :patient, :organization).has_daily_report
     @photo_reports = apply_scopes(@photo_reports)
 
-    if (params.has_key?(:patient_id))
-      authorize Patient.find(params[:patient_id]), :show?, policy_class: PatientPolicy
-      @photo_reports = @photo_reports.where(user_id: params[:patient_id])
-    end
+    # if (params.has_key?(:patient_id))
+    #   @photo_reports = @photo_reports.where(user_id: params[:patient_id])
+    # end
 
     if (params["include_skipped"] == "false")
       @photo_reports = @photo_reports.where("photo_url is not null")
