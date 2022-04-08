@@ -1,4 +1,7 @@
 class PhotoReport < ApplicationRecord
+
+  include Paginatable::Model
+
   has_one :redo_new_report, class_name: "PhotoReport", :foreign_key => :redo_for_report_id
   belongs_to :redo_original_report, class_name: "PhotoReport", :foreign_key => :redo_for_report_id, optional: true
 
@@ -22,7 +25,6 @@ class PhotoReport < ApplicationRecord
     joins(sanitized).where("photo_reviews.id IS NULL")
   }
 
-  scope :offset_by_n, -> n { offset(n)}
   scope :not_skipped, -> {where("photo_url is not null")}
 
   def self.policy_class

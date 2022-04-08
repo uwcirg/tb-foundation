@@ -1,4 +1,5 @@
 class V2::PhotoReportsController < UserController
+  include Paginatable::Controller
   attr_reader :current_user
   before_action :snake_case_params
 
@@ -9,10 +10,6 @@ class V2::PhotoReportsController < UserController
   has_scope :unreviewed_by_me, type: :boolean do |controller, scope|
     scope.unreviewed_by(controller.current_user.id)
   end
-
-  has_scope :offset do |controller, scope, value|
-    scope.offset_by_n(value)
-   end
 
   def index
     @photo_reports = policy_scope(PhotoReport).order("photo_reports.id DESC").includes(:daily_report, :patient, :organization).has_daily_report
