@@ -15,7 +15,7 @@ class V2::PhotoReportsController < UserController
     @photo_reports = policy_scope(PhotoReport).order("photo_reports.id DESC").includes(:daily_report, :patient, :organization).has_daily_report
     @photo_reports = apply_scopes(@photo_reports).all
     first_report_ids = PhotoReport.first_report_per_user.values
-    render(json: @photo_reports.limit(10), current_user: @current_user, first_report_ids: first_report_ids, status: :ok)
+    render(json: @photo_reports.limit(10), first_report_ids: first_report_ids, status: :ok)
   end
 
   def show
