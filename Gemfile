@@ -22,6 +22,7 @@ gem "active_model_serializers"
 gem "rest-client"
 gem "pundit"
 gem "rswag"
+gem "has_scope"
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console

@@ -1,30 +1,21 @@
 class V2::PhotoReportsController < UserController
+  include Paginatable::Controller
+  attr_reader :current_user
   before_action :snake_case_params
+
+  has_scope :not_skipped, type: :boolean
+  has_scope :patient_id
+  has_scope :unreviewed, type: :boolean
+
+  has_scope :unreviewed_by_me, type: :boolean do |controller, scope|
+    scope.unreviewed_by(controller.current_user.id)
+  end
 
   def index
     @photo_reports = policy_scope(PhotoReport).order("photo_reports.id DESC").includes(:daily_report, :patient, :organization).has_daily_report
-
-    if (params["include_reviewed"] == "false")
-      sanitized_join = ActiveRecord::Base.sanitize_sql_array(["LEFT JOIN photo_reviews on photo_reviews.photo_report_id = photo_reports.id AND photo_reviews.bio_engineer_id = ?", @current_user.id])
-      @photo_reports = @photo_reports.joins(sanitized_join).where("photo_reviews.id IS NULL")
-    end
-
-    if (params.has_key?(:patient_id))
-      authorize Patient.find(params[:patient_id]), :show?, policy_class: PatientPolicy
-      @photo_reports = @photo_reports.where(user_id: params[:patient_id])
-    end
-
-    if (params["include_skipped"] == "false")
-      @photo_reports = @photo_reports.where("photo_url is not null")
-    end
-
-    if (params.has_key?(:offset))
-      @photo_reports = @photo_reports.offset(params[:offset])
-    end
-
-    first_report_ids = PhotoReport.has_daily_report.all.group(:user_id).minimum(:id).values
-
-    render(json: @photo_reports.limit(10), current_user: @current_user, first_report_ids: first_report_ids, status: :ok)
+    @photo_reports = apply_scopes(@photo_reports).all
+    first_report_ids = PhotoReport.first_report_per_user.values
+    render(json: @photo_reports.limit(10), first_report_ids: first_report_ids, status: :ok)
   end
 
   def show
