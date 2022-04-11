@@ -1,4 +1,7 @@
 class PhotoReport < ApplicationRecord
+
+  include Paginatable::Model
+
   has_one :redo_new_report, class_name: "PhotoReport", :foreign_key => :redo_for_report_id
   belongs_to :redo_original_report, class_name: "PhotoReport", :foreign_key => :redo_for_report_id, optional: true
 
@@ -8,9 +11,21 @@ class PhotoReport < ApplicationRecord
 
   has_many :photo_reviews
 
+  scope :first_report_per_user, -> {has_daily_report.group(:user_id).minimum(:id)}
+
   scope :has_daily_report, -> { where("daily_report_id IS NOT NULL") }
   scope :reviewable, -> { where(patient: Patient.non_test).has_daily_report }
   scope :conclusive, -> { where(approved: true) }
+
+  scope :patient_id, -> p_id { where(user_id: p_id )}
+
+  scope :unreviewed, -> { joins("LEFT JOIN photo_reviews on photo_reviews.photo_report_id = photo_reports.id").where("photo_reviews.id IS NULL")}
+  scope :unreviewed_by, -> user_id {
+    sanitized = ActiveRecord::Base.sanitize_sql_array(["LEFT JOIN photo_reviews on photo_reviews.photo_report_id = photo_reports.id AND photo_reviews.bio_engineer_id = ?", user_id])
+    joins(sanitized).where("photo_reviews.id IS NULL")
+  }
+
+  scope :not_skipped, -> {where("photo_url is not null")}
 
   def self.policy_class
     PhotoReportPolicy

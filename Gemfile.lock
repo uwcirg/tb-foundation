@@ -111,6 +111,9 @@ GEM
       raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
+    has_scope (0.8.0)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
     hkdf (0.3.0)
     http-accept (1.7.0)
     http-cookie (1.0.4)
@@ -268,6 +271,7 @@ DEPENDENCIES
   database_cleaner-active_record
   factory_bot_rails
   faker
+  has_scope
   jwt
   pg (~> 0.18)
   pry
@@ -289,4 +293,4 @@ RUBY VERSION
    ruby 2.5.3p105
 
 BUNDLED WITH
-   2.3.3
+   2.3.11
