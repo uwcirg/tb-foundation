@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     end
 
     resources :patients, only: [:index], controller: "patient"
+    resources :patient_issues, only: [:index]
 
     resources :user, only: [:index] do
       resource :push_subscription, only: [:update]
