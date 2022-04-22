@@ -48,7 +48,7 @@ class Patient < User
   end
 
   def create_resolutions
-    kinds = ["MissedMedication", "Symptom", "MissedPhoto", "NeedSupport"]
+    kinds = ["MissedMedication", "Symptom", "MissedPhoto", "NeedSupport","General"]
     kinds.each do |kind|
       resolution = self.resolutions.create!(practitioner: self.organization.practitioners.first, kind: kind, resolved_at: self.treatment_start)
     end
