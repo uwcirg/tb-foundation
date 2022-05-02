@@ -28,7 +28,7 @@ namespace :export do
 
   desc "CSV Export of BioE team coded test strip submissions"
   task :v2_photo_report_csv => :environment do
-    column_names = %{photo_request_date created_at photo_report_id user_id photo_file_name engineer_review_test_coding engineer_review_control_coding test_strip_version}
+    column_names = %w{photo_request_date created_at photo_report_id user_id photo_file_name engineer_review_test_coding engineer_review_control_coding test_strip_version}
 
     CSV.generate(headers: true) do |csv|
 
