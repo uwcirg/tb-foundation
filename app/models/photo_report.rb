@@ -12,6 +12,7 @@ class PhotoReport < ApplicationRecord
   has_many :photo_reviews
 
   scope :first_report_per_user, -> {has_daily_report.group(:user_id).minimum(:id)}
+  scope :needs_approval, -> {has_daily_report.not_skipped.where("approved is null")}
 
   scope :has_daily_report, -> { where("daily_report_id IS NOT NULL") }
   scope :reviewable, -> { where(patient: Patient.non_test).has_daily_report }

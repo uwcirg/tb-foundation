@@ -27,7 +27,7 @@ class DailyReport < ApplicationRecord
   scope :photo_missing, -> { joins(:photo_report).where("photo_reports.id = ?", nil) }
   scope :medication_was_not_taken, -> { joins(:medication_report).where(medication_reports: { medication_was_taken: false }).distinct }
 
-  scope :unresolved, -> { active_patient.joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, "resolutions.id": Resolution.last_general_from_user).where("daily_reports.updated_at > resolutions.resolved_at") }
+  scope :unresolved, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_general_from_user).where("daily_reports.updated_at >= date(resolutions.resolved_at) or daily_reports.updated_at > resolutions.resolved_at") }
 
   def limit_one_report_per_day
     if self.patient.daily_reports.where(date: self.date).count > 0
