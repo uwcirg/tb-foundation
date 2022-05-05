@@ -107,11 +107,6 @@ Rails.application.routes.draw do
 
   get "/user/current", to: "user#get_current_user"
 
-  scope "/organizations/:organization_id", module: "organization" do
-    resources :cohort_summary, only: :index
-    resources :patients, only: [:index, :create, :show]
-  end
-
   resources :channels, only: [:index, :create], module: "channel" do
     resources :messages, only: [:index, :create]
   end
