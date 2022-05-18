@@ -2,10 +2,6 @@ class Patient::PatientsController < UserController
   before_action :snake_case_params
   before_action :auth_practitioner
 
-  def index
-    render(json: @current_practitoner.patients, each_serializer: PatientShortSerializer, status: :ok)
-  end
-
   def create
     patient_hash = patient_params
     is_test_account = patient_params[:is_tester]

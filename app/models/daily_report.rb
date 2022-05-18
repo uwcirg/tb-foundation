@@ -12,6 +12,8 @@ class DailyReport < ApplicationRecord
 
   after_commit :update_reminders_since_last_report, :update_patient_stats
 
+  scope :patient_id, -> patient_id { where(user_id: patient_id )}
+
   scope :today, -> { where(:date => (LocalizedDate.now_in_ar)) }
   scope :last_week, -> { where("daily_reports.date > ?", LocalizedDate.now_in_ar - 1.week) }
   scope :symptoms_last_week, -> { last_week.where(:symptom_report => SymptomReport.has_symptom) }
@@ -28,6 +30,10 @@ class DailyReport < ApplicationRecord
   scope :medication_was_not_taken, -> { joins(:medication_report).where(medication_reports: { medication_was_taken: false }).distinct }
 
   scope :unresolved, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_general_from_user).where("daily_reports.updated_at >= date(resolutions.resolved_at) or daily_reports.updated_at > resolutions.resolved_at") }
+
+  def self.policy_class
+    PatientRecordPolicy
+  end
 
   def limit_one_report_per_day
     if self.patient.daily_reports.where(date: self.date).count > 0

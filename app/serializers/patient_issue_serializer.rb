@@ -7,7 +7,9 @@ class PatientIssueSerializer < ActiveModel::Serializer
              :last_general_resolution,
              :id,
              :weeks_in_treatment,
-             :unresolved_reports
+             :unresolved_reports,
+             :treatment_start,
+             :photo_days_since_last_resolution
 
   has_many :unreviewed_photos do
     object.photo_reports.needs_approval
@@ -23,4 +25,6 @@ class PatientIssueSerializer < ActiveModel::Serializer
   def channel_id
     object.channels.where(is_private: true).first.id
   end
+
+
 end

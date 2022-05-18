@@ -1,5 +1,4 @@
 class V2::PatientController < PatientDataController
-  
   def index
     @patients = policy_scope(Patient).includes("patient_information")
 
@@ -9,7 +8,7 @@ class V2::PatientController < PatientDataController
       filtered_patients = @patients.active
     end
 
-    if(params[:all])
+    if (params[:all])
       filtered_patients = @patients.all
     end
 
@@ -54,7 +53,9 @@ class V2::PatientController < PatientDataController
   end
 
   def serializer
-    return PractitionerPatientSerializer if @current_user.practitioner?
+    if (@current_user.practitioner?)
+      return PractitionerPatientSerializer
+    end
     return AdminPatientSerializer if @current_user.admin?
     return PatientSerializer
   end

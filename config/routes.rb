@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :resolutions, only: [:create]
 
     resources :patient, only: [:update, :show] do
+      resources :daily_reports, only: [:index], controller: "daily_report"
       resources :photo_reports, only: [:index]
       resources :activation, only: [:create]
       resources :contact_tracing_surveys, only: [:index, :create]
@@ -126,7 +127,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :patients, only: [:create, :index], controller: "patient/patients"
+  resources :patients, only: [:create], controller: "patient/patients"
 
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
   get "/health-check", to: "health_check#index"

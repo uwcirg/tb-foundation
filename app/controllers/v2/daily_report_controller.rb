@@ -1,14 +1,11 @@
 class V2::DailyReportController < UserController
   before_action :snake_case_params
-  before_action :auth_patient
+  has_scope :patient_id
 
   def index
-    todays_report = @current_user.daily_reports.find_by(find_daily_report_params)
-    if (todays_report.nil?)
-      render(json: { error: "No report found for #{params[:date]}" }, status: :not_found)
-    else
-      render(json: todays_report, status: :ok)
-    end
+    daily_reports = policy_scope(DailyReport)
+    daily_reports = apply_scopes(daily_reports).all
+    render(json: daily_reports, status: :ok)
   end
 
   def create
@@ -28,11 +25,6 @@ class V2::DailyReportController < UserController
   end
 
   private
-
-  def find_daily_report_params
-    params.require(:date)
-    params.permit(:date)
-  end
 
   def create_params
     params.require(:date)
