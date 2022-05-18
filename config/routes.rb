@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :resolutions, only: [:create]
 
     resources :patient, only: [:update, :show] do
+      resources :daily_reports, only: [:index], controller: "daily_report"
       resources :photo_reports, only: [:index]
       resources :activation, only: [:create]
       resources :contact_tracing_surveys, only: [:index, :create]
@@ -22,6 +23,7 @@ Rails.application.routes.draw do
     end
 
     resources :patients, only: [:index], controller: "patient"
+    resources :patient_issues, only: [:index]
 
     resources :user, only: [:index] do
       resource :push_subscription, only: [:update]
@@ -106,11 +108,6 @@ Rails.application.routes.draw do
 
   get "/user/current", to: "user#get_current_user"
 
-  scope "/organizations/:organization_id", module: "organization" do
-    resources :cohort_summary, only: :index
-    resources :patients, only: [:index, :create, :show]
-  end
-
   resources :channels, only: [:index, :create], module: "channel" do
     resources :messages, only: [:index, :create]
   end
@@ -130,7 +127,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :patients, only: [:create, :index], controller: "patient/patients"
+  resources :patients, only: [:create], controller: "patient/patients"
 
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
   get "/health-check", to: "health_check#index"

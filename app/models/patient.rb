@@ -48,7 +48,7 @@ class Patient < User
   end
 
   def create_resolutions
-    kinds = ["MissedMedication", "Symptom", "MissedPhoto", "NeedSupport"]
+    kinds = ["MissedMedication", "Symptom", "MissedPhoto", "NeedSupport","General"]
     kinds.each do |kind|
       resolution = self.resolutions.create!(practitioner: self.organization.practitioners.first, kind: kind, resolved_at: self.treatment_start)
     end
@@ -290,7 +290,7 @@ class Patient < User
       self.send_push_to_user(I18n.t("redo_photo.title"), I18n.t("redo_photo.body"), "/redo-photo", "RedoPhoto")
     end
   end
-  
+
   def send_medication_reminder
     I18n.with_locale(self.locale) do
       self.send_push_to_user(I18n.t("medication_reminder"), I18n.t("medication_reminder_body"), "/home", "MedicationReminder", [
@@ -315,7 +315,30 @@ class Patient < User
   end
 
   def latest_photo_submission
-      PhotoReport.where(user_id: self.id).where("created_at IS NOT NULL").order("created_at DESC").first
+    PhotoReport.where(user_id: self.id).where("created_at IS NOT NULL").order("created_at DESC").first
+  end
+
+  def last_contacted
+    self.channels.find_by(is_private: true).last_message_time
+  end
+
+  def priority
+    self.patient_information.priority
+  end
+
+  def last_general_resolution
+    last_resolution = self.resolutions.General.last
+    last_resolution.nil? ? nil : last_resolution.resolved_at
+  end
+
+  def daily_reports_since_last_resolution
+    self.daily_reports.last(10)
+  end
+
+  def photo_days_since_last_resolution
+    if(!last_general_resolution.nil?)
+      return self.photo_days.where("date >= ? and date <= ?", last_general_resolution.to_date, Time.current.to_date).map { |pd| pd.date}
+    end
   end
 
   private
