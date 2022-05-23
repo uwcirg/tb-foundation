@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_06_031315) do
+ActiveRecord::Schema.define(version: 2022_05_19_024318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -306,6 +306,14 @@ ActiveRecord::Schema.define(version: 2022_04_06_031315) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.date "date"
+    t.boolean "vertigo"
+    t.boolean "confusion"
+    t.boolean "oliguria"
+    t.boolean "joint_pain"
+    t.boolean "burning_or_numbness"
+    t.boolean "flu_symptoms"
+    t.boolean "red_urine"
+    t.boolean "sleepy"
     t.index ["daily_report_id"], name: "index_symptom_reports_on_daily_report_id"
   end
 

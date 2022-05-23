@@ -30,6 +30,14 @@ class SymptomReport < ApplicationRecord
       difficulty_breathing
       facial_swelling
       nausea
+      vertigo
+      confusion
+      oliguria
+      joint_pain
+      burning_or_numbness
+      flu_symptoms
+      red_urine
+      sleepy
     ].select { |symptom| self.send(symptom) }
 
     if(!(self.other.nil? || self.other.empty?))
