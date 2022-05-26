@@ -1,4 +1,5 @@
 class PatientIssueSerializer < ActiveModel::Serializer
+
   attributes :full_name,
              :adherence,
              :last_contacted,
@@ -9,7 +10,8 @@ class PatientIssueSerializer < ActiveModel::Serializer
              :weeks_in_treatment,
              :unresolved_reports,
              :treatment_start,
-             :photo_days_since_last_resolution
+             :photo_days_since_last_resolution,
+             :photo_schedule
 
   has_many :unreviewed_photos do
     object.photo_reports.needs_approval
