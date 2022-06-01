@@ -1,6 +1,5 @@
 #Serializer used for practitioner viewing a patients information
 class PractitionerPatientSerializer < BasePatientSerializer
-
   attributes :given_name,
              :family_name,
              :id,
@@ -28,6 +27,10 @@ class PractitionerPatientSerializer < BasePatientSerializer
 
   has_one :last_report do
     @object.daily_reports.last
+  end
+
+  has_one :next_reminder do
+    @object.next_reminder
   end
 
   def daily_notification_time

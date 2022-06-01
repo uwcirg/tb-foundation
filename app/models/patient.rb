@@ -341,6 +341,11 @@ class Patient < User
     end
   end
 
+  def next_reminder
+    ordered_reminders = self.reminders.upcoming
+    return ordered_reminders.count > 0 ? ordered_reminders.first : nil
+  end
+
   private
 
   def create_patient_information_entry

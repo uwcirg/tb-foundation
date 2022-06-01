@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_19_024318) do
+ActiveRecord::Schema.define(version: 2022_06_01_143327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -271,6 +271,8 @@ ActiveRecord::Schema.define(version: 2022_05_19_024318) do
     t.boolean "send_push", default: true
     t.string "other_category"
     t.text "note"
+    t.bigint "creator_id"
+    t.index ["creator_id"], name: "index_reminders_on_creator_id"
     t.index ["patient_id"], name: "index_reminders_on_patient_id"
   end
 
@@ -386,6 +388,7 @@ ActiveRecord::Schema.define(version: 2022_05_19_024318) do
   add_foreign_key "photo_reviews", "photo_review_colors", column: "control_color_id"
   add_foreign_key "photo_reviews", "photo_review_colors", column: "test_color_id"
   add_foreign_key "photo_reviews", "users", column: "bio_engineer_id"
+  add_foreign_key "reminders", "users", column: "creator_id"
   add_foreign_key "reminders", "users", column: "patient_id"
   add_foreign_key "temp_accounts", "organizations", column: "organization", primary_key: "title"
   add_foreign_key "temp_accounts", "users", column: "practitioner_id"
