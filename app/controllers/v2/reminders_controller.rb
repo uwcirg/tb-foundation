@@ -2,7 +2,7 @@ class V2::RemindersController < UserController
     before_action :snake_case_params
 
     def index
-        reminders = Reminders.where(patient_id: params[:patient_id])
+        reminders = policy_scope(Reminder).where(patient_id: params[:patient_id])
         render(json: reminders, status: :ok)
     end
 
