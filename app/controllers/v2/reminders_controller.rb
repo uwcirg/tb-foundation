@@ -8,9 +8,9 @@ class V2::RemindersController < UserController
 
     def create
         patient = Patient.find(params[:patient_id])
-        reminder = patient.reminders.create(filter_reminder_params)
+        reminder = patient.reminders.create(filter_reminder_params.merge(:creator_id => @current_user.id))
         authorize reminder
-        reminder.save
+        reminder.save!
         render(json: reminder, status: 201)
     end
   
