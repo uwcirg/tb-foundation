@@ -17,7 +17,7 @@ class Patient::PatientsController < UserController
         new_patient.photo_day_override
       end
 
-      render(json: { account: new_patient, code: code }, status: 200)
+      render(json: { code: code }, status: 200)
     else
       errors = new_patient.errors.as_json
       errors = errors.as_json.deep_transform_keys! { |key| key.camelize(:lower) }
