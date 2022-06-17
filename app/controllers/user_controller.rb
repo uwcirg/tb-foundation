@@ -1,6 +1,20 @@
 class UserController < ApplicationController
+  before_action :debug_request
   before_action :decode_token, :except => [:login, :delete_cookie]
   around_action :switch_locale, :except => [:login, :delete_cookie]
+
+  def debug_request
+    if (Rails.env.development?)
+      puts("Cookies from request:")
+      puts(cookies.as_json)
+
+      if (!cookies.signed[:jwt].nil?)
+        jwt = cookies.signed[:jwt]
+        u_id = JsonWebToken.decode(jwt)
+        puts("Decoded token: #{u_id}")
+      end
+    end
+  end
 
   def switch_locale(&action)
     auth_user
