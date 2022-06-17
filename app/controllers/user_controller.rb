@@ -78,7 +78,13 @@ class UserController < ApplicationController
 
   def logout
     @current_user.unsubscribe_push
-    cookies.delete(:jwt)
+
+    if is_localhost
+      response.set_cookie("jwt", { :value => "", :expires => 1.year.ago })
+    else
+      response.set_cookie("jwt", { :value => "", :expires => 1.year.ago, same_site: :none, secure: true, httponly: true })
+    end
+
     render(json: { message: "Logout Successful" }, status: 200)
   end
 
@@ -156,14 +162,15 @@ class UserController < ApplicationController
 
     #Check if the user has the correct password
     if @user && BCrypt::Password.new(@user.password_digest) == params[:password]
-      token = JsonWebToken.encode(user_id: @user.id)
+      token = JsonWebToken.encode({ user_id: @user.id }, @user.session_length)
 
       #Get around samesite differences on localhost
       if is_localhost
-        cookies.signed[:jwt] = { value: token, httponly: true, expires: @user.session_length}
+        cookies.signed[:jwt] = { value: token, httponly: true, expires: @user.session_length }
       else
         cookies.signed[:jwt] = { value: token, httponly: true, expires: @user.session_length, secure: true, same_site: "None" }
       end
+
       render json: { user_id: @user.id, user_type: @user.type, token: token }, status: :ok
     else
       render json: { error: "Unauthorized: incorrect password", status: 401, isLogin: true }, status: :unauthorized
@@ -179,5 +186,4 @@ class UserController < ApplicationController
   def is_localhost
     ENV["URL_API"].include? "http://localhost"
   end
-
 end
