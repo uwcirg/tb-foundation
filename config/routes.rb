@@ -68,6 +68,7 @@ Rails.application.routes.draw do
   #Routes from in progress refractoring
   post "/auth", to: "user#login"
   delete "/auth", to: "user#logout"
+  delete "/auth/cookie", to: "user#delete_cookie"
 
   get "/patient/daily_reports/photo_upload_url", to: "patient#generate_upload_url"
 

@@ -1,6 +1,6 @@
 class UserController < ApplicationController
-  before_action :decode_token, :except => [:login]
-  around_action :switch_locale, :except => [:login]
+  before_action :decode_token, :except => [:login, :delete_cookie]
+  around_action :switch_locale, :except => [:login, :delete_cookie]
 
   def switch_locale(&action)
     auth_user
@@ -138,6 +138,16 @@ class UserController < ApplicationController
     if (@current_user != @selected_patient)
       render(json: "You cannot access another patients records", status: 401)
     end
+  end
+
+  def delete_cookie
+    if is_localhost
+      response.set_cookie("jwt", { :value => "", :expires => 1.year.ago })
+    else
+      response.set_cookie("jwt", { :value => "", :expires => 1.year.ago, same_site: :none, secure: true, httponly: true })
+    end
+
+    render(json: { message: "Logout Successful" }, status: 200)
   end
 
   private
