@@ -78,7 +78,13 @@ class UserController < ApplicationController
 
   def logout
     @current_user.unsubscribe_push
-    cookies.delete(:jwt)
+
+    if is_localhost
+      response.set_cookie("jwt", {:value => "", :expires => 1.year.ago})
+    else
+      response.set_cookie("jwt", {:value => "", :expires => 1.year.ago, same_site: :none, secure: true, httponly: true })
+    end
+
     render(json: { message: "Logout Successful" }, status: 200)
   end
 
@@ -164,6 +170,7 @@ class UserController < ApplicationController
       else
         cookies.signed[:jwt] = { value: token, httponly: true, expires: @user.session_length, secure: true, same_site: "None" }
       end
+
       render json: { user_id: @user.id, user_type: @user.type, token: token }, status: :ok
     else
       render json: { error: "Unauthorized: incorrect password", status: 401, isLogin: true }, status: :unauthorized
