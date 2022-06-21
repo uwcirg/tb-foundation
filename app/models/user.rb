@@ -27,7 +27,7 @@ class User < ApplicationRecord
     self.update(push_p256dh: nil, push_auth: nil, push_url: nil)
   end
 
-  def send_push_to_user(title, body, app_url = "/", type = 0,actions=nil)
+  def send_push_to_user(title, body, app_url = "/", type = 0, actions=nil, label)
     PushNotificationSender.new(self, title, body, app_url, type,actions).send_notification
   end
 
