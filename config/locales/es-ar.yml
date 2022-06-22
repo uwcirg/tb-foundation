@@ -3,8 +3,8 @@ es-AR:
   new_messages: "Nuevas Mensajes"
   medication_reminder: "Recuerde de reportar cada dia"
   medication_reminder_body: "Hoy tome mis medicamentos, no tengo nada para reportar y estoy bien. Seleccione su repuesta"
-  yes: "Sí"
-  no : "No"
+  "yes": "Sí"
+  "no" : "No"
   user_settings:
     password_mismatch: "Nuevas contraseñas no coinciden"
     current_password_incorrect: "Contraseña Actual Incorrecta"
@@ -12,3 +12,13 @@ es-AR:
   redo_photo:
     title: "Problema con el envío de la última foto"
     body: "Revise los comentarios de su asistente y complete otra tira reactiva"
+  missed_reporting_notifications:
+    three_days:
+      title: "No ha reportado en los últimos 3 días"
+      body: "Hola, han pasado 3 dias desde el ultimo reporte de medicacion. Por favor recuerde contactar a su asistente de tratamiento si tiene algun problema o alguna dificultad con la aplicacion. Gracias"
+    seven_days:
+      title: "No ha reportado en los últimos 7 días"
+      body: "Hola, No hemos recibido su reporte de medicacion en la ultima semana. Por favor contacte a su asistente de tratamiento en cuanto pueda para resolver cualquier dificultad. Gracias"
+    thrity_days:
+      title: "No ha reportado en los últimos 30 días"
+      body:  "Hola, por favor recuerde que es muy importante seguir tomando la medicacion para curar la TB. Necesitamos saber que Ud. esta bien. Por favor contacte a su asistente o a su medico a la brevedad posible.  Gracias"

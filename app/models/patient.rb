@@ -292,18 +292,7 @@ class Patient < User
   end
 
   def send_medication_reminder
-    I18n.with_locale(self.locale) do
-      self.send_push_to_user(I18n.t("medication_reminder"), I18n.t("medication_reminder_body"), "/home", "MedicationReminder", [
-        {
-          action: "good",
-          title: "👍 Si",
-        },
-        {
-          action: "issue",
-          title: "💬 No",
-        },
-      ])
-    end
+    NotifyPatient.new(self).medication_reminder
   end
 
   def number_of_messages_from_assistant
