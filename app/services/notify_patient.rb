@@ -61,12 +61,32 @@ class NotifyPatient
     end
   end
 
+  def photo_day_reminder_one
+    send_notification({
+      :title_key => "photo_reminder.first.title",
+      :body_key => "photo_reminder.first.body",
+      :url => "/home",
+      :type => "TestStripReminder",
+    })
+  end
 
-  def method_missing(name, *args, &block)
-    puts("in method missing")
+  def photo_day_reminder_two
   end
 
   private
+
+  def send_notification(notification)
+    # notification -> title_translation_key,body_translation_key,url,type
+    use_patient_locale do
+      PushNotificationSender.send(
+        @patient,
+        I18n.t(notification[:title_key]),
+        I18n.t(notification[:body_key]),
+        notification[:url],
+        notification[:type]
+      )
+    end
+  end
 
   def use_patient_locale
     I18n.with_locale(@patient.locale) do

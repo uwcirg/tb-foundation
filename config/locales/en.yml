@@ -30,3 +30,10 @@ en:
     thirty_days:
       title: "No report for the past month"
       body:  "Hello, please remember that it is very important to continue taking the medication to cure TB. We need to know that you're okay. Please contact your assistant or your doctor as soon as possible. Thank you"
+  photo_reminder:
+    first:
+      title: "Test strip required today"
+      body: "Please complete and submit the photo as soon as possible so we know you are on the right track."
+    second:
+      title: "Reminder: Test strip required today"
+      body: "We want to make sure you are doing okay. We will contact you if we do not receive the photo by the end of the day"

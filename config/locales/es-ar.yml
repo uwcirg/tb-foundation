@@ -22,3 +22,10 @@ es-AR:
     thrity_days:
       title: "No ha reportado en los últimos 30 días"
       body:  "Hola, por favor recuerde que es muy importante seguir tomando la medicacion para curar la TB. Necesitamos saber que Ud. esta bien. Por favor contacte a su asistente o a su medico a la brevedad posible.  Gracias"
+  photo_reminder:
+    first:
+      title: "Tira reactiva requerido hoy"
+      body: "Complete y envíe la foto lo antes posible para que sepamos que está bien encaminado."
+    second:
+      title: "Recordatorio: Hoy se requiere la tira reactiva"
+      body: "Queremos asegurarnos que estés bien. Nos comunicaremos contigo se no recibimos la foto al fin del día."
