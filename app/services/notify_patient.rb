@@ -71,6 +71,12 @@ class NotifyPatient
   end
 
   def photo_day_reminder_two
+    send_notification({
+      :title_key => "photo_reminder.second.title",
+      :body_key => "photo_reminder.second.body",
+      :url => "/home",
+      :type => "TestStripReminder",
+    })
   end
 
   private
