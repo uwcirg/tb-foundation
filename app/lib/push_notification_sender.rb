@@ -7,7 +7,6 @@ class PushNotificationSender
     new(*args, &block).send
   end
 
-
   def initialize(user, title, body, app_url, type, actions = nil)
     @user = user
     @title = title

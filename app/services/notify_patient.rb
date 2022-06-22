@@ -26,39 +26,30 @@ class NotifyPatient
   end
 
   def missed_three_days_reminder
-    use_patient_locale do
-      PushNotificationSender.send(
-        @patient,
-        I18n.t("missed_reporting_notifications.three_days.title"),
-        I18n.t("missed_reporting_notifications.three_days.body"),
-        "/missing-reporting/3",
-        "MissedReportingReminder"
-      )
-    end
+    send_notification({
+      :title_key => "missed_reporting_notifications.three_days.title",
+      :body_key => "missed_reporting_notifications.three_days.body",
+      :url => "/missing-reporting/3",
+      :type => "MissedReportingReminder",
+    })
   end
 
   def missed_seven_days_reminder
-    use_patient_locale do
-      PushNotificationSender.send(
-        @patient,
-        I18n.t("missed_reporting_notifications.seven_days.title"),
-        I18n.t("missed_reporting_notifications.seven_days.body"),
-        "/missing-reporting/7",
-        "MissedReportingReminder"
-      )
-    end
+    send_notification({
+      :title_key => "missed_reporting_notifications.seven_days.title",
+      :body_key => "missed_reporting_notifications.seven_days.body",
+      :url => "/missing-reporting/7",
+      :type => "MissedReportingReminder",
+    })
   end
 
   def missed_thirty_days_reminder
-    use_patient_locale do
-      PushNotificationSender.send(
-        @patient,
-        I18n.t("missed_reporting_notifications.thirty_days.title"),
-        I18n.t("missed_reporting_notifications.thirty_days.body"),
-        "/missing-reporting/30",
-        "MissedReportingReminder"
-      )
-    end
+    send_notification({
+      :title_key => "missed_reporting_notifications.thirty_days.title",
+      :body_key => "missed_reporting_notifications.thirty_days.body",
+      :url => "/missing-reporting/30",
+      :type => "MissedReportingReminder",
+    })
   end
 
   def photo_day_reminder_one

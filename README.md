@@ -28,6 +28,11 @@ docker-compose run --rm -e "RAILS_ENV=test" web rspec spec/requests/get_patients
 
 When working in vscode remote container mode I added an alias for easier testing ```rspec_test```
 
+To run the tests interactively you can run a one off container with the proper environment
+docker-compose run --rm -e "RAILS_ENV=test" web bash        
+
+and then run the rspec commands
+
 ## Helpful Commands
 
 Launch Rails Console
