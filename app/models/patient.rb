@@ -37,6 +37,15 @@ class Patient < User
   scope :non_test, -> { where("organization_id > 0") }
   scope :requested_test_not_submitted, ->(date) { joins(:photo_days).where(photo_days: { date: date }).where.not(id: PhotoReport.where(date: date).select(:patient_id)) }
   scope :has_not_reported_in_more_than_three_days, -> { where.not(id: DailyReport.where("created_at >= ?", DateTime.now - 3.days).select(:user_id)) }
+  scope :missed_reporting, -> {
+        joins(:patient_information)
+        .where(status: "Active")
+        .where("treatment_start < ? and patient_informations.reminders_since_last_report < 3", Time.now - 3.days)
+        .where.not(
+          id: DailyReport.where("created_at >= ?", DateTime.now - 3.days)
+            .select(:user_id),
+        )
+    }
 
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
@@ -48,7 +57,7 @@ class Patient < User
   end
 
   def create_resolutions
-    kinds = ["MissedMedication", "Symptom", "MissedPhoto", "NeedSupport","General"]
+    kinds = ["MissedMedication", "Symptom", "MissedPhoto", "NeedSupport", "General"]
     kinds.each do |kind|
       resolution = self.resolutions.create!(practitioner: self.organization.practitioners.first, kind: kind, resolved_at: self.treatment_start)
     end
@@ -325,8 +334,8 @@ class Patient < User
   end
 
   def photo_days_since_last_resolution
-    if(!last_general_resolution.nil?)
-      return self.photo_days.where("date >= ? and date <= ?", last_general_resolution.to_date, Time.current.to_date).map { |pd| pd.date}
+    if (!last_general_resolution.nil?)
+      return self.photo_days.where("date >= ? and date <= ?", last_general_resolution.to_date, Time.current.to_date).map { |pd| pd.date }
     end
   end
 
