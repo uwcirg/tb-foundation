@@ -178,22 +178,28 @@ RSpec.describe Patient, :type => :model do
     end
   end
 
-  describe "scope: missed_reporting" do
+  describe "scope: unresponsive" do
 
     it "should not include a newly created patient" do
       patient = FactoryBot.create(:patient, treatment_start: Time.now)
-      expect(Patient.missed_reporting.count).to eq(0)
+      expect(Patient.unresponsive.count).to eq(0)
+    end
+
+    it "should not include a patient that started yesterday" do
+      patient = FactoryBot.create(:patient, treatment_start: Time.now - 1.days)
+      expect(Patient.unresponsive.count).to eq(0)
     end
 
     it "should include a patient that has not reported in 3 days" do
       patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
-      expect(Patient.missed_reporting.count).to eq(1)
+      expect(Patient.unresponsive.count).to eq(1)
     end
 
-    # it "should not show a patient that reported today" do
-    #   patient = FactoryBot.create(:patient, treatment_start: Time.now - 5.days)
-    #   patient.create_seed_report(patient.localized_date,true)
-    # end
+    it "should not show a patient that reported today" do
+      patient = FactoryBot.create(:patient, treatment_start: Time.now - 3.days)
+      patient.create_seed_report(patient.localized_date,true)
+      expect(Patient.unresponsive.count).to eq(0)
+    end
 
   end
 end

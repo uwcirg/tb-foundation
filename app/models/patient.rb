@@ -37,7 +37,7 @@ class Patient < User
   scope :non_test, -> { where("organization_id > 0") }
   scope :requested_test_not_submitted, ->(date) { joins(:photo_days).where(photo_days: { date: date }).where.not(id: PhotoReport.where(date: date).select(:patient_id)) }
   scope :has_not_reported_in_more_than_three_days, -> { where.not(id: DailyReport.where("created_at >= ?", DateTime.now - 3.days).select(:user_id)) }
-  scope :missed_reporting, -> {
+  scope :unresponsive, -> {
         joins(:patient_information)
         .where(status: "Active")
         .where("treatment_start < ? and patient_informations.reminders_since_last_report < 3", Time.now - 3.days)

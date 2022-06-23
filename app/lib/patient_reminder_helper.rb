@@ -9,8 +9,7 @@ class PatientReminderHelper
   end
 
   def send_missed_reporting_reminders
-    patients_to_notify = Patient.includes(:patient_information, :daily_reports).active.has_not_reported_in_more_than_three_days
-
+    patients_to_notify = Patient.unresponsive
     patients_to_notify.each do |patient|
       evaluate_history_and_send_reminder(patient)
     end
