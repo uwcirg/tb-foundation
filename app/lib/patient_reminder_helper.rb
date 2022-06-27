@@ -25,14 +25,17 @@ class PatientReminderHelper
 
     if (days_since >= 30 and n_reminders_sent < 3)
       notifier.missed_thirty_days_reminder
+      return
     end
 
     if (days_since >= 7 and n_reminders_sent < 2)
       notifier.missed_seven_days_reminder
+      return
     end
 
     if (days_since >= 3 and n_reminders_sent < 1)
       notifier.missed_three_days_reminder
+      return
     end
 
   end
