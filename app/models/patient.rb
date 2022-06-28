@@ -294,12 +294,6 @@ class Patient < User
            }
   end
 
-  def send_redo_notification
-    I18n.with_locale(self.locale) do
-      self.send_push_to_user(I18n.t("redo_photo.title"), I18n.t("redo_photo.body"), "/redo-photo", "RedoPhoto")
-    end
-  end
-
   def send_medication_reminder
     NotifyPatient.new(self).medication_reminder
   end

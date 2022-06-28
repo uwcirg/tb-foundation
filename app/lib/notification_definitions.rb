@@ -56,5 +56,11 @@ class NotificationDefinitions
       :url => "/home",
       :type => "TestStripReminder",
     },
+    :redo_photo => {
+        :title_key => "redo_photo.title",
+        :body_key => "redo_photo.body",
+        :url => "/redo-photo",
+        :type =>  "RedoPhoto"
+    }
   }
 end
