@@ -1,8 +1,11 @@
 es-AR:
   welcome: "Bienvenidos"
   new_messages: "Nuevas Mensajes"
-  medication_reminder: "Recuerde de reportar cada dia"
-  medication_reminder_body: "Hoy tome mis medicamentos, no tengo nada para reportar y estoy bien. Seleccione su repuesta"
+  medication_reminder: 
+    title: "Recuerde de reportar cada dia"
+    body: "Hoy tome mis medicamentos, no tengo nada para reportar y estoy bien. Seleccione su repuesta"
+    yes_action: "👍 Sí" 
+    no_action: "💬 No"
   "yes": "Sí"
   "no" : "No"
   user_settings:

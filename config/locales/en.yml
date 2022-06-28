@@ -1,8 +1,11 @@
 en:
   welcome: "Welcome!"
   new_messages: "New Messages"
-  medication_reminder: "Medication Reminder"
-  medication_reminder_body: "Have you taken your medication today, and are you feeling okay?"
+  medication_reminder: 
+    title: "Medication Reminder"
+    body: "Have you taken your medication today, and are you feeling okay?"
+    yes_action: "👍 Yes"
+    no_action: "💬 No"
   "yes": "Yes"
   "no": "No"
   user_settings:
