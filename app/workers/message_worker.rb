@@ -9,12 +9,9 @@ class MessageWorker
 
     MessagingNotification.where(channel_id: channel_id, is_subscribed: true).each do |item|
       should_be_sent = (item.user_id != sender_id) && !(item.user.patient? && is_public)
-
       return if (!should_be_sent)
       notifer = NotifyUser.new(item.user)
       is_public ? notifer.public_message_alert(channel_title, channel_id) : notifer.private_message_alert(channel_id)
-      # item.user.send_push_to_user("Nuevos Mensajes", "#{channel_title} tiene un nuevo mensaje", "/messaging/channel/#{channel_id}", "Messaging")
-
     end
   end
 end
