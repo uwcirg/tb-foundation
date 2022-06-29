@@ -7,7 +7,7 @@ class Patient::PatientsController < UserController
     is_test_account = patient_params[:is_tester]
     code = SecureRandom.hex(10).upcase[0, 5]
     patient_hash.delete(:is_tester)
-    new_patient = @current_user.organization.add_pending_patient(patient_hash, code)
+    new_patient = @current_user.organization.add_pending_patient(patient_hash.merge(locale: locale), code)
 
     #On dev instances allow seeding of data for training + testing
     if new_patient.save
@@ -30,4 +30,10 @@ class Patient::PatientsController < UserController
   def patient_params
     params.permit(:phone_number, :family_name, :given_name, :treatment_start, :is_tester)
   end
+
+  def locale
+    ENV["DEFAULT_LOCALE"] || "es-AR"
+  end
+
+
 end
