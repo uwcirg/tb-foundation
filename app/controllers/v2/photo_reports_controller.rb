@@ -42,7 +42,7 @@ class V2::PhotoReportsController < UserController
 
   def send_redo_notification_if_needed
     if (params[:redo_flag])
-      NotifyPatient.new(@photo_report.patient).redo_photo
+      NotifyUser.new(@photo_report.patient).redo_photo
     end
   end
 

@@ -295,7 +295,7 @@ class Patient < User
   end
 
   def send_medication_reminder
-    NotifyPatient.new(self).medication_reminder
+    NotifyUser.new(self).medication_reminder
   end
 
   def number_of_messages_from_assistant

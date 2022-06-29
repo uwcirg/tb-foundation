@@ -1,9 +1,8 @@
 class PatientReminderHelper
   def send_test_reminders(reminder_number)
     patients_to_notify = Patient.requested_test_not_submitted(ApplicationTime.todays_date)
-
     patients_to_notify.each do |patient|
-      notifier = NotifyPatient.new(patient)
+      notifier = NotifyUser.new(patient)
       reminder_number == 2 ? notifier.photo_day_reminder_one : notifier.photo_day_reminder_two
     end
   end
@@ -18,7 +17,7 @@ class PatientReminderHelper
   private
 
   def evaluate_history_and_send_reminder(patient)
-    notifier = NotifyPatient.new(patient)
+    notifier = NotifyUser.new(patient)
 
     days_since = days_since_patients_last_report(patient)
     n_reminders_sent = patient.patient_information.reminders_since_last_report

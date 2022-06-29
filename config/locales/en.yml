@@ -40,3 +40,11 @@ en:
     second:
       title: "Reminder: Test strip required today"
       body: "We want to make sure you are doing okay. We will contact you if we do not receive the photo by the end of the day"
+  new_message_public:
+    #ie. New Messages in Icebreakers (channel)
+    title_partial: "New Messages in "
+    body: "Tap here to catch up on the latest discussions with other patients"
+  new_message_private:
+    title: "New message from your assistant"
+    body: "Tap here to view your private messages with your assistant"
+
