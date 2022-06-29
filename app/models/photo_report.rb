@@ -62,12 +62,6 @@ class PhotoReport < ApplicationRecord
     return !self.photo_url.nil?
   end
 
-  def send_redo_notification
-    if (is_latest_submission_for_patient?)
-      self.patient.send_redo_notification
-    end
-  end
-
   def is_latest_submission_for_patient?
     latest = self.patient.latest_photo_submission
     !latest.nil? && self.id == self.patient.latest_photo_submission.id

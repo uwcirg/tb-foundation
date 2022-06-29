@@ -1,7 +1,13 @@
 require "webpush"
 
 class PushNotificationSender
-  def initialize(user, title, body, app_url, type, actions=nil)
+
+  # Allow calling the send method without creating a new object - more information https://www.toptal.com/ruby-on-rails/rails-service-objects-tutorial
+  def self.send(*args, &block)
+    new(*args, &block).send
+  end
+
+  def initialize(user, title, body, app_url, type, actions = nil)
     @user = user
     @title = title
     @body = body
@@ -12,7 +18,6 @@ class PushNotificationSender
   end
 
   def send_notification
-
     return if user_missing_required_information?
 
     begin
@@ -22,6 +27,10 @@ class PushNotificationSender
     end
 
     @status.update!(sent_successfully: true)
+  end
+
+  def send
+    send_notification
   end
 
   private
@@ -36,7 +45,7 @@ class PushNotificationSender
              body: "#{@body}",
              url: "#{ENV["URL_CLIENT"]}",
              data: { url: @app_url, id: @status.id, type: @status.notification_type },
-             actions: @actions
+             actions: @actions,
            )
   end
 

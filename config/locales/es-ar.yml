@@ -1,10 +1,13 @@
 es-AR:
   welcome: "Bienvenidos"
   new_messages: "Nuevas Mensajes"
-  medication_reminder: "Recuerde de reportar cada dia"
-  medication_reminder_body: "Hoy tome mis medicamentos, no tengo nada para reportar y estoy bien. Seleccione su repuesta"
-  yes: "Sí"
-  no : "No"
+  medication_reminder: 
+    title: "Recuerde de reportar cada dia"
+    body: "Hoy tome mis medicamentos, no tengo nada para reportar y estoy bien. Seleccione su repuesta"
+    yes_action: "👍 Sí" 
+    no_action: "💬 No"
+  "yes": "Sí"
+  "no" : "No"
   user_settings:
     password_mismatch: "Nuevas contraseñas no coinciden"
     current_password_incorrect: "Contraseña Actual Incorrecta"
@@ -12,3 +15,27 @@ es-AR:
   redo_photo:
     title: "Problema con el envío de la última foto"
     body: "Revise los comentarios de su asistente y complete otra tira reactiva"
+  missed_reporting_notifications:
+    three_days:
+      title: "No ha reportado en los últimos 3 días"
+      body: "Hola, han pasado 3 dias desde el ultimo reporte de medicacion. Por favor recuerde contactar a su asistente de tratamiento si tiene algun problema o alguna dificultad con la aplicacion. Gracias"
+    seven_days:
+      title: "No ha reportado en los últimos 7 días"
+      body: "Hola, No hemos recibido su reporte de medicacion en la ultima semana. Por favor contacte a su asistente de tratamiento en cuanto pueda para resolver cualquier dificultad. Gracias"
+    thrity_days:
+      title: "No ha reportado en los últimos 30 días"
+      body:  "Hola, por favor recuerde que es muy importante seguir tomando la medicacion para curar la TB. Necesitamos saber que Ud. esta bien. Por favor contacte a su asistente o a su medico a la brevedad posible.  Gracias"
+  photo_reminder:
+    first:
+      title: "Tira reactiva requerido hoy"
+      body: "Complete y envíe la foto lo antes posible para que sepamos que está bien encaminado."
+    second:
+      title: "Recordatorio: Hoy se requiere la tira reactiva"
+      body: "Queremos asegurarnos que estés bien. Nos comunicaremos contigo se no recibimos la foto al fin del día."
+  new_message_public:
+    title_partial: "Nuevos Mensajes en "
+    body: "Toque aquí para ponerse al día con las últimas discusiones con otros usuarios"
+  new_message_private:
+    title: "Nuevos mensajes de su asistente"
+    body: "Toque aquí para ver sus mensajes privados con su asistente"
+
