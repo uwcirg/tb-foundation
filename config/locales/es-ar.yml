@@ -32,3 +32,10 @@ es-AR:
     second:
       title: "Recordatorio: Hoy se requiere la tira reactiva"
       body: "Queremos asegurarnos que estés bien. Nos comunicaremos contigo se no recibimos la foto al fin del día."
+  new_message_public:
+    title_partial: ""Nuevos Mensajes en "
+    body: "Toque aquí para ponerse al día con las últimas discusiones con otros usuarios"
+  new_message_private:
+    title: "Nuevos mensajes de su asistente"
+    body: "Toque aquí para ver sus mensajes privados con su asistente"
+
