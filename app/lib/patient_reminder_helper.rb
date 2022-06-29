@@ -3,7 +3,7 @@ class PatientReminderHelper
     patients_to_notify = Patient.requested_test_not_submitted(ApplicationTime.todays_date)
     patients_to_notify.each do |patient|
       notifier = NotifyUser.new(patient)
-      reminder_number == 2 ? notifier.photo_day_reminder_one : notifier.photo_day_reminder_two
+      reminder_number == 2 ? notifier.photo_reminder_two : notifier.photo_reminder_one
     end
   end
 
