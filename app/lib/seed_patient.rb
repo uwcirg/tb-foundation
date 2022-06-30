@@ -1,7 +1,15 @@
 module SeedPatient
-  
+  def seed_perfect_reporting
+    (treatment_start.to_date..DateTime.current.to_date).each do |day|
+      begin
+        create_perfect_report(day)
+      rescue
+        # - DB validation error will just skip a day that exists here -
+      end
+    end
+  end
+
   def seed_test_reports(is_good = false)
-   
     (treatment_start.to_date..DateTime.current.to_date).each do |day|
       #Decide if the user will report at all that day
       if (is_good)
@@ -16,14 +24,13 @@ module SeedPatient
     end
   end
 
-  def create_seed_report(day, is_good, photo_url="test_photo.jpg")
-  
+  def create_seed_report(day, is_good, photo_url = "test_photo.jpg")
     datetime = DateTime.new(day.year, day.month, day.day, 4, 5, 6, "-04:00")
 
     #TODO Fix
     is_photo_day = self.photo_days.where(date: day).exists?
 
-    if(!is_good)
+    if (!is_good)
       med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: [true, true, true, true, false, false].sample, datetime_taken: datetime)
       symptom_report = SymptomReport.create!(
         user_id: self.id,
@@ -39,14 +46,14 @@ module SeedPatient
       )
     else
       med_report = MedicationReport.create!(user_id: self.id, medication_was_taken: true, datetime_taken: datetime)
-      symptom_report = SymptomReport.create!(user_id: self.id )
+      symptom_report = SymptomReport.create!(user_id: self.id)
     end
 
-    if(is_photo_day)
+    if (is_photo_day)
       photo_report = PhotoReport.create!(user_id: self.id, photo_url: photo_url)
     end
 
-    new_report = DailyReport.create(date: day, user_id: self.id,doing_okay: [true,true,true,false].sample)
+    new_report = DailyReport.create(date: day, user_id: self.id, doing_okay: [true, true, true, false].sample)
     new_report.medication_report = med_report
     new_report.symptom_report = symptom_report
     new_report.photo_report = photo_report
@@ -54,15 +61,14 @@ module SeedPatient
   end
 
   def create_bad_report(day)
-    DailyReport.create!(date: day, user_id: self.id, doing_okay: false, 
-      medication_report: MedicationReport.create!(user_id: self.id, medication_was_taken: false),
-      symptom_report: SymptomReport.create!(user_id: self.id))
+    DailyReport.create!(date: day, user_id: self.id, doing_okay: false,
+                        medication_report: MedicationReport.create!(user_id: self.id, medication_was_taken: false),
+                        symptom_report: SymptomReport.create!(user_id: self.id))
   end
 
   def create_perfect_report(day)
-    DailyReport.create!(date: day, user_id: self.id, doing_okay: true, 
-      medication_report: MedicationReport.create!(user_id: self.id, medication_was_taken: true),
-      symptom_report: SymptomReport.create!(user_id: self.id))
+    DailyReport.create!(date: day, user_id: self.id, doing_okay: true,
+                        medication_report: MedicationReport.create!(user_id: self.id, medication_was_taken: true),
+                        symptom_report: SymptomReport.create!(user_id: self.id))
   end
-
 end
