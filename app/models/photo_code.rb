@@ -22,4 +22,8 @@ class PhotoCode < ApplicationRecord
     self.photo_code_group.group_code
   end
 
+  def display_name
+    "code_#{full_code}_#{self.title.parameterize.underscore}"
+  end
+
 end
