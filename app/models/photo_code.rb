@@ -23,7 +23,7 @@ class PhotoCode < ApplicationRecord
   end
 
   def display_name
-    "#{full_code} #{self.title}"
+    "code_#{full_code}_#{self.title.parameterize.underscore}"
   end
 
 end
