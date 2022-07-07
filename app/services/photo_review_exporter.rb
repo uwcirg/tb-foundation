@@ -27,7 +27,7 @@ class PhotoReviewExporter
       @s3.put_object(bucket: CSV_BUCKET, key: file_name, body: temp_file)
       url = Aws::S3::Resource.new.bucket(CSV_BUCKET).object(file_name).presigned_url(:get)
 
-      puts("URL to access your report: ")
+      puts("URL to access your report:")
       puts(url)
     rescue StandardError => e
       puts("There was an error uploading your file")
