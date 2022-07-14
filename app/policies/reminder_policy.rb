@@ -23,7 +23,6 @@ class ReminderPolicy < ApplicationPolicy
   end
 
   def destroy?
-    # (@user.patient? && @reminder.patient.id == user.id) || (@user.practitioner? && @reminder.creator_id == @user.id)
     @reminder.creator_id == @user.id
   end
 end
