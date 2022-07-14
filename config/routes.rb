@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     resources :photo_reports, only: [:create, :index, :update, :show]
     resources :mood_reports, only: [:create]
     resources :resolutions, only: [:create]
+    resources :reminders, only: [:destroy]
 
     resources :patient, only: [:update, :show] do
       resources :daily_reports, only: [:index], controller: "daily_report"
@@ -19,7 +20,7 @@ Rails.application.routes.draw do
       resources :activation, only: [:create]
       resources :contact_tracing_surveys, only: [:index, :create]
       resources :treatment_outcome, only: [:create]
-      resources :reminders, only: [:index,:create]
+      resources :reminders, only: [:index, :create]
       resource :test_medication_reminder, only: [:create], controller: "test_medication_reminder"
     end
 

@@ -22,7 +22,8 @@ class ReminderPolicy < ApplicationPolicy
     (@user.patient? && @reminder.patient.id == user.id) || (@user.practitioner? && @reminder.patient.organization_id == user.organization_id)
   end
 
-  def delete?
-    (@user.patient? && @reminder.patient.id == user.id) || (@user.practitioner? && @reminder.creator_id == @user.id)
+  def destroy?
+    # (@user.patient? && @reminder.patient.id == user.id) || (@user.practitioner? && @reminder.creator_id == @user.id)
+    @reminder.creator_id == @user.id
   end
 end
