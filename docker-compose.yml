@@ -16,6 +16,7 @@ services:
       MANIFEST_NAME: $MANIFEST_NAME
       MANIFEST_ICONS_FOLDER: $MANIFEST_ICONS_FOLDER
       HTML_APP_TITLE: $HTML_APP_TITLE
+      INDONESIA_PILOT_FLAG: $INDONESIA_PILOT_FLAG
   db:
     restart: always
     image: postgres:11
