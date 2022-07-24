@@ -14,8 +14,9 @@ class User < ApplicationRecord
   validates :email, uniqueness: true, allow_nil: true
   validates :phone_number, uniqueness: true, allow_nil: true
 
-  after_initialize :initalize_timezone
   after_commit :create_unread_messages_async, on: :create
+
+  attribute :time_zone, :string, default: ApplicationTime.time_zone
 
   def full_name
     "#{self.given_name} #{self.family_name}"
@@ -96,10 +97,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def initalize_timezone
-    self.update!(time_zone: ApplicationTime.time_zone)
-  end
 
   def create_unread_messages_async
     ::UnreadMessageCreationWorker.perform_async(self.id)
