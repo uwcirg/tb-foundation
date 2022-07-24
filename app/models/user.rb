@@ -16,6 +16,8 @@ class User < ApplicationRecord
 
   after_commit :create_unread_messages_async, on: :create
 
+  attribute :time_zone, :string, default: ApplicationTime.time_zone
+
   def full_name
     "#{self.given_name} #{self.family_name}"
   end
