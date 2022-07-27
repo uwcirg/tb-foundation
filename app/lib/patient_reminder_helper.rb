@@ -1,6 +1,6 @@
 class PatientReminderHelper
   def send_test_reminders(reminder_number)
-    patients_to_notify = Patient.requested_test_not_submitted(DeploymentSettings.todays_date)
+    patients_to_notify = Patient.requested_test_not_submitted(ApplicationTime.todays_date)
     patients_to_notify.each do |patient|
       notifier = NotifyUser.new(patient)
       reminder_number == 2 ? notifier.photo_reminder_two : notifier.photo_reminder_one
