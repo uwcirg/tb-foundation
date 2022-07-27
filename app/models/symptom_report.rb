@@ -3,8 +3,8 @@ class SymptomReport < ApplicationRecord
   belongs_to :patient, :foreign_key => :user_id
   after_commit :update_patient_stats
 
-  scope :has_symptom, -> { where(self.build_query(self.locale_symptoms("id"))) }
-  scope :high_alert, -> { where(self.build_query(self.locale_severe_symptoms("id"))) }
+  scope :has_symptom, -> (locale = self.env_locale ) { where(self.get_locale_symptom_query(locale)) }
+  scope :high_alert, -> (locale = self.env_locale) { where(self.get_locale_severe_symptom_query(locale)) }
   scope :low_alert, -> { has_symptom.where.not(id: high_alert) }
 
   def self.locale_symptoms(deploy_id)
@@ -99,10 +99,17 @@ class SymptomReport < ApplicationRecord
 
   private
 
+  def self.get_locale_symptom_query(locale)
+    self.build_query(self.locale_symptoms(locale))
+  end
+
+  def self.get_locale_severe_symptom_query(locale)
+    self.build_query(self.locale_severe_symptoms(locale))
+  end
+
   def self.build_query(symptom_list)
     query = ""
     symptom_list.each_with_index do |symptom_name, index|
-      puts(index)
       query += " OR " if index != 0
       query += "#{symptom_name}=TRUE"
     end
@@ -112,4 +119,9 @@ class SymptomReport < ApplicationRecord
   def update_patient_stats
     self.patient.update_stats_in_background
   end
+
+  def self.env_locale
+    ENV["INDONESIA_PILOT_FLAG"] == 'true' ? "id" : "es-Ar"
+  end
+
 end
