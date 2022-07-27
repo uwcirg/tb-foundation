@@ -4,8 +4,8 @@ class SymptomReport < ApplicationRecord
   after_commit :update_patient_stats
 
   scope :has_symptom, -> (locale = self.env_locale ) { where(self.get_locale_symptom_query(locale)) }
-  scope :high_alert, -> (locale = self.env_locale) { where(self.get_locale_severe_symptom_query(locale)) }
-  scope :low_alert, -> { has_symptom.where.not(id: high_alert) }
+  scope :has_severe_symptom, -> (locale = self.env_locale) { where(self.get_locale_severe_symptom_query(locale)) }
+  scope :low_alert, -> { has_symptom.where.not(id: has_severe_symptom) }
 
   def self.locale_symptoms(deploy_id)
     case deploy_id
