@@ -4,11 +4,19 @@ class V2::SymptomReportsController < UserController
 
   def create
     daily_report = DailyReport.create_if_not_exists(@current_user.id, params["date"])
-    daily_report.update!(symptom_report: @current_user.symptom_reports.create!(symptom_report_params))
+    symptom_report = @current_user.symptom_reports.create!(symptom_report_params)
+    daily_report.update!(symptom_report: symptom_report)
+    notify_providers_of_severe_symptom if symptom_report.has_severe_symptom?
     render(json: daily_report, status: :ok)
   end
 
   private
+
+  def notify_providers_of_severe_symptom
+    @current_user.organization.practitioners.each do |practitioner|
+      NotifyUser.new(practitioner).severe_symptom_alert(@current_user.id)
+    end
+  end
 
   def symptom_report_params
     params.require(:date)

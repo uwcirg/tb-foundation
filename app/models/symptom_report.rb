@@ -3,8 +3,8 @@ class SymptomReport < ApplicationRecord
   belongs_to :patient, :foreign_key => :user_id
   after_commit :update_patient_stats
 
-  scope :has_symptom, -> (locale = self.env_locale ) { where(self.get_locale_symptom_query(locale)) }
-  scope :has_severe_symptom, -> (locale = self.env_locale) { where(self.get_locale_severe_symptom_query(locale)) }
+  scope :has_symptom, ->(locale = self.env_locale) { where(self.get_locale_symptom_query(locale)) }
+  scope :has_severe_symptom, ->(locale = self.env_locale) { where(self.get_locale_severe_symptom_query(locale)) }
   scope :low_alert, -> { has_symptom.where.not(id: has_severe_symptom) }
 
   def self.locale_symptoms(deploy_id)
@@ -53,6 +53,10 @@ class SymptomReport < ApplicationRecord
        "difficulty_breathing",
        "facial_swelling"]
     end
+  end
+
+  def has_severe_symptom?
+   (self.reported_symptoms & self.class.locale_severe_symptoms(self.class.env_locale)).any?
   end
 
   def as_json(*args)
@@ -121,7 +125,6 @@ class SymptomReport < ApplicationRecord
   end
 
   def self.env_locale
-    ENV["INDONESIA_PILOT_FLAG"] == 'true' ? "id" : "es-Ar"
+    ENV["INDONESIA_PILOT_FLAG"] == "true" ? "id" : "es-Ar"
   end
-
 end
