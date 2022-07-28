@@ -14,7 +14,11 @@ class MessageWorker
       if is_public
         notifer.public_message_alert(channel_title, channel_id)
       else
-        notifer.private_message_alert(channel_id)
+        if (item.user.practitioner?)
+          notifer.provider_new_message
+        else
+          notifer.private_message_alert(channel_id)
+        end
       end
     end
   end

@@ -47,4 +47,10 @@ en:
   new_message_private:
     title: "New message from your assistant"
     body: "Tap here to view your private messages with your assistant"
+  new_message_private_provider:
+    title: "A patient sent you a message"
+    body: "Tap here to see the new message"
+  severe_symptom:
+    title: "Severe symptom reported"
+    body: "A patient has reported a severe symptom, tap for more details"
 
