@@ -9,7 +9,7 @@ class MessageWorker
 
     MessagingNotification.where(channel_id: channel_id, is_subscribed: true).each do |item|
       should_be_sent = (item.user_id != sender_id) && !(item.user.patient? && is_public)
-      return if (!should_be_sent)
+      next if (!should_be_sent)
       notifer = NotifyUser.new(item.user)
       if is_public
         notifer.public_message_alert(channel_title, channel_id)
