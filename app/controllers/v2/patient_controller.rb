@@ -16,7 +16,7 @@ class V2::PatientController < PatientDataController
   end
 
   def show
-    patient = Patient.find(params[:id])
+    patient = Patient.includes(:patient_information, :photo_days, :daily_reports, :medication_reports, :symptom_reports).find(params[:id])
     authorize patient
     render(json: patient, serializer: serializer, status: :ok)
   end

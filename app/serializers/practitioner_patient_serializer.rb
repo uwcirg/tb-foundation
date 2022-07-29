@@ -23,7 +23,8 @@ class PractitionerPatientSerializer < BasePatientSerializer
              :last_missed_day,
              :reporting_status,
              :priority,
-             :medication_summary
+             :medication_summary,
+             :photo_schedule
 
   has_one :last_report do
     @object.daily_reports.last

@@ -1,12 +1,12 @@
 class NotifyUser
-  def initialize(patient)
-    @patient = patient
+  def initialize(user)
+    @user = user
   end
 
   def private_message_alert(channel_id)
-    use_patient_locale do
+    with_user_locale do
       PushNotificationSender.send(
-        @patient,
+        @user,
         I18n.t("new_message_private.title"),
         I18n.t("new_message_private.body"),
         "/messaging/channel/#{channel_id}",
@@ -16,9 +16,9 @@ class NotifyUser
   end
 
   def public_message_alert(channel_name, channel_id)
-    use_patient_locale do
+    with_user_locale do
       PushNotificationSender.send(
-        @patient,
+        @user,
         "#{I18n.t("new_message_public.title_partial")} #{channel_name}",
         I18n.t("new_message_public.body"),
         "/messaging/channel/#{channel_id}",
@@ -29,7 +29,7 @@ class NotifyUser
 
   #Default to statically defined notifications when the text does not need to be personalized
   def method_missing(m, *args, &block)
-    use_patient_locale do
+    with_user_locale do
       send_notification(NotificationDefinitions.send(m))
     end
   end
@@ -42,9 +42,9 @@ class NotifyUser
       { action: og[:action], title: I18n.t(og[:title_key]) }
     } : nil
 
-    use_patient_locale do
+    with_user_locale do
       PushNotificationSender.send(
-        @patient,
+        @user,
         I18n.t(notification[:title_key]),
         I18n.t(notification[:body_key]),
         notification[:url],
@@ -54,8 +54,8 @@ class NotifyUser
     end
   end
 
-  def use_patient_locale
-    I18n.with_locale(@patient.locale) do
+  def with_user_locale
+    I18n.with_locale(@user.locale) do
       yield
     end
   end

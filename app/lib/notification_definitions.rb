@@ -61,6 +61,18 @@ class NotificationDefinitions
         :body_key => "redo_photo.body",
         :url => "/redo-photo",
         :type =>  "RedoPhoto"
+    },
+    :severe_symptom_alert => {
+      :title_key => "severe_symptom.title",
+      :body_key => "severe_symptom.body",
+      :url => "/home/needs-review",
+      :type =>  "SevereSymptom"
+    },
+    :provider_new_message => {
+      :title_key => "new_message_private_provider.title",
+      :body_key => "new_message_private_provider.body",
+      :url => "/messaging",
+      :type =>  "Messaging"
     }
   }
 end
