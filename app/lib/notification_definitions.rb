@@ -62,7 +62,7 @@ class NotificationDefinitions
         :url => "/redo-photo",
         :type =>  "RedoPhoto"
     },
-    :severe_symptom => {
+    :severe_symptom_alert => {
       :title_key => "severe_symptom.title",
       :body_key => "severe_symptom.body",
       :url => "/home/needs-review",

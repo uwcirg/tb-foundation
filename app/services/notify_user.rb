@@ -3,17 +3,17 @@ class NotifyUser
     @user = user
   end
 
-  def severe_symptom_alert(patient_id)
-    with_user_locale do
-      PushNotificationSender.send(
-        @user,
-        "Severe Symptom Reported",
-        "James reported a severe symptom, click here to view more information",
-        "/patients/#{patient_id}}",
-        "SevereSymptom"
-      )
-    end
-  end
+  # def severe_symptom_alert(patient_id)
+  #   with_user_locale do
+  #     PushNotificationSender.send(
+  #       @user,
+  #       "Severe Symptom Reported",
+  #       "James reported a severe symptom, click here to view more information",
+  #       "/patients/#{patient_id}}",
+  #       "SevereSymptom"
+  #     )
+  #   end
+  # end
 
   def private_message_alert(channel_id)
     with_user_locale do

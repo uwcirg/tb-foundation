@@ -13,9 +13,7 @@ class V2::SymptomReportsController < UserController
   private
 
   def notify_providers_of_severe_symptom
-    @current_user.organization.practitioners.each do |practitioner|
-      NotifyUser.new(practitioner).severe_symptom_alert(@current_user.id)
-    end
+    ::SevereSymptomsAlertWorker.perform_async(@current_user.organization_id)
   end
 
   def symptom_report_params
