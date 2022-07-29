@@ -46,3 +46,9 @@ id:
     new_message_private:
       title: "Ada pesan baru dari petugas"
       body: "Tekan disini untuk melihat percakapan rahasia kamu dengan petugas"
+    new_message_private_provider:
+      title: "Ada pesan dari pasien"
+      body: "Tekan disini untuk melihat pesan"
+    severe_symptom:
+      title: "Ada laporan efek samping berat"
+      body: "Pasien melaporkan efek samping berat, tekan disini untuk melihat lebih detail"
