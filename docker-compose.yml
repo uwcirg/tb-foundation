@@ -5,7 +5,7 @@ services:
     restart: on-failure
     ports:
       - 127.0.0.1:$PORT_CLIENT:80
-    image: 'uwcirg/tb-mobile-app:$API_DOCKER_TAG'
+    image: "uwcirg/tb-mobile-app:${CLIENT_DOCKER_TAG:?err}"
     environment:
       NODE_ENV: development
       URL_API: $URL_API
@@ -44,7 +44,7 @@ services:
        - 127.0.0.1:$PORT_MINIO:9000
 
   web:
-    image: uwcirg/tb-foundation:$API_DOCKER_TAG
+    image: "uwcirg/tb-foundation:${CLIENT_DOCKER_TAG:?err}"
     environment:
       - URL_POSTGRES=postgres://webuser:$POSTGRES_PASSWORD@db
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
