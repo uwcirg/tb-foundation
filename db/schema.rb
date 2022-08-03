@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_01_143327) do
+ActiveRecord::Schema.define(version: 2022_08_03_194950) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -368,6 +368,7 @@ ActiveRecord::Schema.define(version: 2022_06_01_143327) do
     t.string "push_client_permission"
     t.datetime "push_subscription_updated_at"
     t.string "time_zone", default: "America/Argentina/Buenos_Aires"
+    t.boolean "referred_for_exit_interview", default: false
     t.index ["organization_id"], name: "index_users_on_organization_id"
   end
 
