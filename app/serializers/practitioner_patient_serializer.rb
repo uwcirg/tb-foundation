@@ -24,7 +24,8 @@ class PractitionerPatientSerializer < BasePatientSerializer
              :reporting_status,
              :priority,
              :medication_summary,
-             :photo_schedule
+             :photo_schedule,
+             :referred_for_exit_interview
 
   has_one :last_report do
     @object.daily_reports.last
