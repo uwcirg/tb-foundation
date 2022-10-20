@@ -1,0 +1,21 @@
+daily_notification:
+  cron: '0 * * * * *'   # Runs once per minute
+  class: NotificationWorker
+reminders:
+  cron: '0 12 * * * Asia/Tokyo'   # Runs once per day at noon
+  class: ReminderWorker
+first_test_reminder:
+  cron: '0 9 * * * Asia/Tokyo'   # Runs once per day at 9am
+  class: PhotoReminderWorker
+  args: [1]
+second_test_reminder:
+  cron: '0 19 * * * Asia/Tokyo'   # Runs once per day at 7pm 
+  class: PhotoReminderWorker
+  args: [2]
+misssed_reporting_reminder:
+  cron: '0 0 * * * *'
+  class: MissedReportingReminderWorker
+patient_stats_update:
+  cron: '0 0 * * * Asia/Tokyo'   # Runs once per day at midnight
+  class: PatientStatsWorker
+  args: [true,0]
