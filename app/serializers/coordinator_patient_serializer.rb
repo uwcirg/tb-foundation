@@ -1,6 +1,7 @@
-class HugoPatientSerializer < BasePatientSerializer
+class CoordinatorPatientSerializer < BasePatientSerializer
   attributes :given_name,
              :family_name,
+             :organization_id
              :id,
              :full_name,
              :days_in_treatment,

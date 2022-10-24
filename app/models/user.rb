@@ -84,8 +84,8 @@ class User < ApplicationRecord
     self.type == "BioEngineer"
   end
 
-  def hugo?
-    self.type == "Hugo"
+  def coordinator?
+    self.type == "Coordinator"
   end
 
   def localized_datetime
