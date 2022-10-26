@@ -1,14 +1,13 @@
 class CoordinatorPatientSerializer < BasePatientSerializer
-  attributes :given_name,
-             :family_name,
-             :organization_id
-             :id,
+  attributes
              :full_name,
-             :days_in_treatment,
+             :id,    
+             :organization_name,
              :phone_number,
+             :referred_for_exit_interview
+             :days_in_treatment,
              :status,
              :channel_id,
-             :referred_for_exit_interview
 
   def organization_name
     object.organization.title
