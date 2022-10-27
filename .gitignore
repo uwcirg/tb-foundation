@@ -4,7 +4,8 @@
 # Local configuration
 .env
 
-.DS_Store
+# Annoying mac directory pref files
+**/.DS_Store
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -13,3 +14,4 @@
 !/tmp/.keep
 
 .byebug_history
+.DS_Store

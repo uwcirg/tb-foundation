@@ -12,6 +12,8 @@ class DailyReport < ApplicationRecord
 
   after_commit :update_reminders_since_last_report, :update_patient_stats
 
+  scope :patient_id, -> patient_id { where(user_id: patient_id )}
+
   scope :today, -> { where(:date => (LocalizedDate.now_in_ar)) }
   scope :last_week, -> { where("daily_reports.date > ?", LocalizedDate.now_in_ar - 1.week) }
   scope :symptoms_last_week, -> { last_week.where(:symptom_report => SymptomReport.has_symptom) }
@@ -21,11 +23,17 @@ class DailyReport < ApplicationRecord
   scope :unresolved_symptoms, -> { active_patient.joins(:resolutions).where(:symptom_report => SymptomReport.has_symptom, "resolutions.id": Resolution.last_symptom_from_user).where("daily_reports.updated_at > resolutions.resolved_at") }
   scope :since_last_missing_resolution, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_medication_from_user).where("daily_reports.date > resolutions.resolved_at") }
   scope :has_symptoms, -> { active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.has_symptom) }
-  scope :has_severe_symptoms, -> { active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.high_alert) }
+  scope :has_severe_symptoms, -> { active_patient.joins(:symptom_report).where(:symptom_report => SymptomReport.has_severe_symptom) }
   scope :has_photo, -> { joins(:photo_report).where("photo_reports.photo_url IS NOT NULL") }
   scope :unresolved_support_request, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_support_request, "daily_reports.doing_okay": false).where("daily_reports.created_at > resolutions.resolved_at") }
   scope :photo_missing, -> { joins(:photo_report).where("photo_reports.id = ?", nil) }
   scope :medication_was_not_taken, -> { joins(:medication_report).where(medication_reports: { medication_was_taken: false }).distinct }
+
+  scope :unresolved, -> { active_patient.joins(:resolutions).where("resolutions.id": Resolution.last_general_from_user).where("daily_reports.updated_at >= date(resolutions.resolved_at) or daily_reports.updated_at > resolutions.resolved_at") }
+
+  def self.policy_class
+    PatientRecordPolicy
+  end
 
   def limit_one_report_per_day
     if self.patient.daily_reports.where(date: self.date).count > 0

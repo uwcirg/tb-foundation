@@ -12,6 +12,7 @@ class PhotoReport < ApplicationRecord
   has_many :photo_reviews
 
   scope :first_report_per_user, -> {has_daily_report.group(:user_id).minimum(:id)}
+  scope :needs_approval, -> {has_daily_report.not_skipped.where("approved is null")}
 
   scope :has_daily_report, -> { where("daily_report_id IS NOT NULL") }
   scope :reviewable, -> { where(patient: Patient.non_test).has_daily_report }
@@ -59,12 +60,6 @@ class PhotoReport < ApplicationRecord
 
   def has_photo?
     return !self.photo_url.nil?
-  end
-
-  def send_redo_notification
-    if (is_latest_submission_for_patient?)
-      self.patient.send_redo_notification
-    end
   end
 
   def is_latest_submission_for_patient?

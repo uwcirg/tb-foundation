@@ -1,6 +1,6 @@
 class MessageWorker
   include Sidekiq::Worker
-  # call this from the channel controller ::IncrementCountWorker.perform_async(params[:post_id])
+
   #Dont retry if any of them fail ( will send duplicate notifications)
   sidekiq_options retry: 0
 
@@ -8,12 +8,17 @@ class MessageWorker
     is_public = Channel.find(channel_id).public?
 
     MessagingNotification.where(channel_id: channel_id, is_subscribed: true).each do |item|
-      is_not_user_who_sent = item.user_id != sender_id
-      recipient_is_patient_and_channel_is_public = item.user.patient? && is_public
-      notificaiton_should_be_sent = is_not_user_who_sent && !recipient_is_patient_and_channel_is_public
-
-      if (notificaiton_should_be_sent)
-        item.user.send_push_to_user("Nuevos Mensajes", "#{channel_title} tiene un nuevo mensaje", "/messaging/channel/#{channel_id}", "Messaging")
+      should_be_sent = (item.user_id != sender_id) && !(item.user.patient? && is_public)
+      next if (!should_be_sent)
+      notifer = NotifyUser.new(item.user)
+      if is_public
+        notifer.public_message_alert(channel_title, channel_id)
+      else
+        if (item.user.practitioner?)
+          notifer.provider_new_message
+        else
+          notifer.private_message_alert(channel_id)
+        end
       end
     end
   end

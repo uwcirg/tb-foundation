@@ -5,7 +5,7 @@ services:
     restart: on-failure
     ports:
       - 127.0.0.1:$PORT_CLIENT:80
-    image: 'uwcirg/tb-mobile-app:$API_DOCKER_TAG'
+    image: "uwcirg/tb-mobile-app:${CLIENT_DOCKER_TAG:?err}"
     environment:
       NODE_ENV: development
       URL_API: $URL_API
@@ -13,6 +13,10 @@ services:
       DEFAULT_LOCALE: $DEFAULT_LOCALE
       DOCKER_TAG: $API_DOCKER_TAG
       REDCAP_EOT_SURVEY_LINK: $REDCAP_EOT_SURVEY_LINK
+      MANIFEST_NAME: $MANIFEST_NAME
+      MANIFEST_ICONS_FOLDER: $MANIFEST_ICONS_FOLDER
+      HTML_APP_TITLE: $HTML_APP_TITLE
+      INDONESIA_PILOT_FLAG: $INDONESIA_PILOT_FLAG
   db:
     restart: always
     image: postgres:11
@@ -40,7 +44,7 @@ services:
        - 127.0.0.1:$PORT_MINIO:9000
 
   web:
-    image: uwcirg/tb-foundation:$API_DOCKER_TAG
+    image: "uwcirg/tb-foundation:${CLIENT_DOCKER_TAG:?err}"
     environment:
       - URL_POSTGRES=postgres://webuser:$POSTGRES_PASSWORD@db
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
@@ -56,6 +60,9 @@ services:
       - RAILS_BASE_PASS=$RAILS_BASE_PASS
       - VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
       - VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
+      - DEFAULT_LOCALE=$DEFAULT_LOCALE
+      - DEPLOY_TIME_ZONE=$DEPLOY_TIME_ZONE
+      - INDONESIA_PILOT_FLAG=$INDONESIA_PILOT_FLAG
     ports:
       - 127.0.0.1:$PORT_API:3000
     depends_on:
@@ -90,6 +97,9 @@ services:
       - VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
       - VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
       - CORS_ORIGINS=$CORS_ORIGINS
+      - DEFAULT_LOCALE=$DEFAULT_LOCALE
+      - DEPLOY_TIME_ZONE=$DEPLOY_TIME_ZONE
+      - INDONESIA_PILOT_FLAG=$INDONESIA_PILOT_FLAG
     depends_on:
       - redis
       - db

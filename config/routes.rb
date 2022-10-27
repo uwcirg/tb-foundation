@@ -12,16 +12,20 @@ Rails.application.routes.draw do
     resources :photo_reports, only: [:create, :index, :update, :show]
     resources :mood_reports, only: [:create]
     resources :resolutions, only: [:create]
+    resources :reminders, only: [:destroy]
 
     resources :patient, only: [:update, :show] do
+      resources :daily_reports, only: [:index], controller: "daily_report"
       resources :photo_reports, only: [:index]
       resources :activation, only: [:create]
       resources :contact_tracing_surveys, only: [:index, :create]
       resources :treatment_outcome, only: [:create]
+      resources :reminders, only: [:index, :create]
       resource :test_medication_reminder, only: [:create], controller: "test_medication_reminder"
     end
 
     resources :patients, only: [:index], controller: "patient"
+    resources :patient_issues, only: [:index]
 
     resources :user, only: [:index] do
       resource :push_subscription, only: [:update]
@@ -65,6 +69,7 @@ Rails.application.routes.draw do
   #Routes from in progress refractoring
   post "/auth", to: "user#login"
   delete "/auth", to: "user#logout"
+  delete "/auth/cookie", to: "user#delete_cookie"
 
   get "/patient/daily_reports/photo_upload_url", to: "patient#generate_upload_url"
 
@@ -106,11 +111,6 @@ Rails.application.routes.draw do
 
   get "/user/current", to: "user#get_current_user"
 
-  scope "/organizations/:organization_id", module: "organization" do
-    resources :cohort_summary, only: :index
-    resources :patients, only: [:index, :create, :show]
-  end
-
   resources :channels, only: [:index, :create], module: "channel" do
     resources :messages, only: [:index, :create]
   end
@@ -130,7 +130,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :patients, only: [:create, :index], controller: "patient/patients"
+  resources :patients, only: [:create], controller: "patient/patients"
 
   get "/photo_uploaders/messaging", to: "photo_upload#message_upload_url"
   get "/health-check", to: "health_check#index"

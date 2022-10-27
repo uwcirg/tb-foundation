@@ -1,5 +1,4 @@
 class V2::PatientController < PatientDataController
-  
   def index
     @patients = policy_scope(Patient).includes("patient_information")
 
@@ -9,7 +8,7 @@ class V2::PatientController < PatientDataController
       filtered_patients = @patients.active
     end
 
-    if(params[:all])
+    if (params[:all])
       filtered_patients = @patients.all
     end
 
@@ -17,7 +16,7 @@ class V2::PatientController < PatientDataController
   end
 
   def show
-    patient = Patient.find(params[:id])
+    patient = Patient.includes(:patient_information, :photo_days, :daily_reports, :medication_reports, :symptom_reports).find(params[:id])
     authorize patient
     render(json: patient, serializer: serializer, status: :ok)
   end
@@ -54,7 +53,9 @@ class V2::PatientController < PatientDataController
   end
 
   def serializer
-    return PractitionerPatientSerializer if @current_user.practitioner?
+    if (@current_user.practitioner?)
+      return PractitionerPatientSerializer
+    end
     return AdminPatientSerializer if @current_user.admin?
     return PatientSerializer
   end

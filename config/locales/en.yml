@@ -1,10 +1,13 @@
 en:
   welcome: "Welcome!"
   new_messages: "New Messages"
-  medication_reminder: "Medication Reminder"
-  medication_reminder_body: "Have you taken your medication today, and are you feeling okay?"
-  yes: "Yes"
-  no : "No"
+  medication_reminder: 
+    title: "Medication Reminder"
+    body: "Have you taken your medication today, and are you feeling okay?"
+    yes_action: "👍 Yes"
+    no_action: "💬 No"
+  "yes": "Yes"
+  "no": "No"
   user_settings:
     password_mismatch: "Passwords Do Not Match"
     current_password_incorrect: "Current Password Incorrect"
@@ -20,3 +23,34 @@ en:
   redo_photo:
     title: "Issue with last photo submission"
     body: "Please review feedback from your assistant and complete another test"
+  missed_reporting_notifications:
+    three_days:
+      title: "No report for the past 3 days"
+      body: "Hello, it has been 3 days since the last medication report. Please remember to contact your treatment assistant if you have any problems or difficulties with the application. Thank you"
+    seven_days:
+      title: "No report for the past 7 days"
+      body: "Hello, We have not received your medication report in the last week. Please contact your treatment assistant as soon as possible to resolve any difficulties. Thank you"
+    thirty_days:
+      title: "No report for the past month"
+      body:  "Hello, please remember that it is very important to continue taking the medication to cure TB. We need to know that you're okay. Please contact your assistant or your doctor as soon as possible. Thank you"
+  photo_reminder:
+    first:
+      title: "Test strip required today"
+      body: "Please complete and submit the photo as soon as possible so we know you are on the right track."
+    second:
+      title: "Reminder: Test strip required today"
+      body: "We want to make sure you are doing okay. We will contact you if we do not receive the photo by the end of the day"
+  new_message_public:
+    #ie. New Messages in Icebreakers (channel)
+    title_partial: "New Messages in "
+    body: "Tap here to catch up on the latest discussions with other patients"
+  new_message_private:
+    title: "New message from your assistant"
+    body: "Tap here to view your private messages with your assistant"
+  new_message_private_provider:
+    title: "A patient sent you a message"
+    body: "Tap here to see the new message"
+  severe_symptom:
+    title: "Severe symptom reported"
+    body: "A patient has reported a severe symptom, tap for more details"
+
