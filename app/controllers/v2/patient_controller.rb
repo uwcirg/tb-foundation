@@ -59,6 +59,9 @@ class V2::PatientController < PatientDataController
     if (@current_user.coordinator?)
       return CoordinatorPatientSerializer
     end
+    if (@current_user.data_scientist?)
+      return DataScientistPatientSerializer
+    end
     return AdminPatientSerializer if @current_user.admin?
     return PatientSerializer
   end
