@@ -88,6 +88,10 @@ class User < ApplicationRecord
     self.type == "Coordinator"
   end
 
+  def data_scientist?
+    self.type == "DataScientist"
+  end
+
   def localized_datetime
     Time.current.in_time_zone(self.time_zone)
   end

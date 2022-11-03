@@ -4,7 +4,7 @@ class PatientPolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if  @user.admin? || @user.coordinator?
+      if  @user.admin? || @user.coordinator? || @user.data_scientist?
         scope.all
       elsif @user.practitioner?
         scope.where(organization_id: @user.organization_id)
@@ -26,7 +26,7 @@ class PatientPolicy < ApplicationPolicy
   end
 
   def show?
-    patient_belongs_to_practitioner or user_is_current_patient or @user.admin? or @user.coordinator?
+    patient_belongs_to_practitioner or user_is_current_patient or @user.admin? or @user.coordinator? or @user.data_scientist?
   end
 
   def activate?
