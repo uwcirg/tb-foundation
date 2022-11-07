@@ -5,7 +5,7 @@ repo_path="${bin_path}/.."
 #Backup DB to Kyles home folder
 echo "🚧 Making a database backup..."
 mkdir -p "/home/kjgood1/deploy-backups"
-backup.sh -b "/home/kjgood1/deploy-backups/"
+sh ./backup.sh -b "/home/kjgood1/deploy-backups/"
 
 #docker-compose commands must be run in the same directory as docker-compose.yaml
 cd "${repo_path}"
