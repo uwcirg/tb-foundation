@@ -24,5 +24,5 @@ docker-compose exec web bash -c "bundle exec rails db:migrate"
 #Rails services need to be restarted for new database columns to be reflected in the application
 echo "Restarting services..."
 docker-compose stop web sidekiq;
-docker-compose rm web sidekiq;
+docker-compose rm -f web sidekiq;
 docker-compose up -d;
