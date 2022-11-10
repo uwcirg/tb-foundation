@@ -12,20 +12,19 @@ class TrialSummary < ActiveModelSerializers::Model
       days_in_treatment = patient.patient_information.days_since_app_start
 
       (activation_date.to_date..activation_date.to_date + 180.days).each do |day|
-        i+=1
-        if (i > days_in_treatment )
+        i += 1
+        if (i > days_in_treatment)
           days.push("futureDate")
         else
-          days.push( date_hash["#{day}"] == true ? "taken" : "notTaken")
+          days.push(date_hash["#{day}"] == true ? "taken" : "notTaken")
         end
       end
 
-      if(orgHash["#{patient.organization_id}"].nil?)
+      if (orgHash["#{patient.organization_id}"].nil?)
         orgHash["#{patient.organization_id}"] = {}
       end
 
       orgHash["#{patient.organization_id}"]["#{patient.id}"] = days
-
     end
     return orgHash
   end
@@ -90,6 +89,20 @@ class TrialSummary < ActiveModelSerializers::Model
       hash[value] = results[value]
     end
     hash
+  end
+
+  def self.participant_adherence_summary
+    Rails.cache.fetch("monthly_adherence_summary", expires_in: 1.days) do
+      Patient.non_test.where("treatment_start < ?", Date.current - 4.months).includes(:daily_reports, :medication_reports, :patient_information).map do |patient|
+        {
+          id: patient.id,
+          age: patient.age,
+          gender: patient.gender,
+          two_month_adherence: patient.adherence_to_month(2),
+          four_month_adherence: patient.adherence_to_month(4),
+        }
+      end
+    end
   end
 
   private

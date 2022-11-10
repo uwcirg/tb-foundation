@@ -338,6 +338,21 @@ class Patient < User
     return ordered_reminders.count > 0 ? ordered_reminders.first : nil
   end
 
+  def adherence_for_timeframe(start,finish)
+    self.daily_reports.was_taken
+  end
+
+  def adherence_start_date
+    patient_information.datetime_patient_activated || daily_reports.order(:date).first&.date || treatment_start
+  end
+
+  def adherence_to_month(n_months)
+    start_date = adherence_start_date.in_time_zone(time_zone).to_date
+    days_where_meds_taken = daily_reports.was_taken.between(start_date,start_date + n_months.months).count.to_f
+    days = (start_date + 2.months - start_date).to_i.to_f
+    ([( days_where_meds_taken/days).round(2),1.0].min * 100.0).round(2)
+  end
+
   private
 
   def create_patient_information_entry
