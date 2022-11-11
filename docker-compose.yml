@@ -44,7 +44,7 @@ services:
        - 127.0.0.1:$PORT_MINIO:9000
 
   web:
-    image: "uwcirg/tb-foundation:${CLIENT_DOCKER_TAG:?err}"
+    image: "uwcirg/tb-foundation:${API_DOCKER_TAG:?err}"
     environment:
       - URL_POSTGRES=postgres://webuser:$POSTGRES_PASSWORD@db
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
