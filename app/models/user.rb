@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_many :push_notification_statuses, dependent: :destroy
 
   enum locale: { "en": 0, "es-AR": 1, "id": 2 }
-  enum type: { Patient: 0, Practitioner: 1, Administrator: 2, Expert: 3, BioEngineer: 4}
+  enum type: { Patient: 0, Practitioner: 1, Administrator: 2, Expert: 3, BioEngineer: 4, Coordinator: 5 }
   enum status: { Pending: 0, Active: 1, Archived: 2 }
   enum gender: { Man: 0, Woman: 1, Other: 2, TransMan: 3, TransWoman: 4, Nonbinary: 5 }
 
@@ -42,7 +42,7 @@ class User < ApplicationRecord
 
   def create_unread_messages
     self.available_channels.map do |c|
-      new_unread = self.messaging_notifications.create(channel_id: c.id, user_id: self.id, read_message_count: 0)
+      new_unread = self.messaging_notifications.create(channel_id: c.id, user_id: self.id, read_message_count: c.messages.count)
       if (new_unread.valid?)
         new_unread.save
       end
@@ -82,6 +82,10 @@ class User < ApplicationRecord
 
   def bio_engineer?
     self.type == "BioEngineer"
+  end
+
+  def coordinator?
+    self.type == "Coordinator"
   end
 
   def localized_datetime

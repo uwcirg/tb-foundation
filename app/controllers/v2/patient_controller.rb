@@ -41,7 +41,7 @@ class V2::PatientController < PatientDataController
   end
 
   def update_patient_params
-    new_params = params.permit(:phone_number, :given_name, :family_name, :id, :treatment_end_date)
+    new_params = params.permit(:phone_number, :given_name, :family_name, :id, :treatment_end_date, :treatment_start)
     if (new_params[:phone_number])
       new_params[:phone_number] = new_params[:phone_number].delete("^0-9")
     end
@@ -55,6 +55,9 @@ class V2::PatientController < PatientDataController
   def serializer
     if (@current_user.practitioner?)
       return PractitionerPatientSerializer
+    end 
+    if (@current_user.coordinator?)
+      return CoordinatorPatientSerializer
     end
     return AdminPatientSerializer if @current_user.admin?
     return PatientSerializer

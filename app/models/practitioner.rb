@@ -45,7 +45,7 @@ class Practitioner < User
   def patients_missed_medication
     
     new_list = []
-    latest_resolutions = Resolution.where(kind: "MissedMedication", patient: self.patients.active).select("MAX(resolved_at) as last_resolution, patient_id").group(:patient_id)
+    latest_resolutions = Resolution.where(kind: ["MissedMedication", "General"], patient: self.patients.active).select("MAX(resolved_at) as last_resolution, patient_id").group(:patient_id)
     reports_per_patient = DailyReport.since_last_missing_resolution.where(patient: self.patients).group(:user_id).count()
 
     latest_resolutions.each do |resolution|

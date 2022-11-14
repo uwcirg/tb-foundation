@@ -12,8 +12,8 @@ class DailyReport < ApplicationRecord
 
   after_commit :update_reminders_since_last_report, :update_patient_stats
 
-  scope :patient_id, -> patient_id { where(user_id: patient_id )}
-
+  scope :patient_id, ->patient_id { where(user_id: patient_id) }
+  scope :between, ->(start_date, end_date) { where("daily_reports.date >= ? AND daily_reports.date <= ?", start_date, end_date) }
   scope :today, -> { where(:date => (LocalizedDate.now_in_ar)) }
   scope :last_week, -> { where("daily_reports.date > ?", LocalizedDate.now_in_ar - 1.week) }
   scope :symptoms_last_week, -> { last_week.where(:symptom_report => SymptomReport.has_symptom) }
