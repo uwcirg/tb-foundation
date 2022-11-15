@@ -27,7 +27,7 @@ class PractitionerPatientSerializer < BasePatientSerializer
              :photo_schedule
 
   has_one :last_report do
-    @object.daily_reports.order("created_at").last
+    @object.daily_reports.order("updated_at").last
   end
 
   has_one :next_reminder do
