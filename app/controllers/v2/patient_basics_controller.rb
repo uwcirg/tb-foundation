@@ -1,4 +1,4 @@
-class V2::PatientBasicController < PatientDataController
+class V2::PatientBasicsController < PatientDataController
 
   before_action :snake_case_params
 
