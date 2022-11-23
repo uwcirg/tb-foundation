@@ -3,15 +3,8 @@ class V2::PatientBasicsController < PatientDataController
   before_action :snake_case_params
 
   def index
-    @patients = policy_scope(Patient).includes("patient_information")
-
+    @patients = policy_scope(Patient)
     render(json: patients, status: :ok, each_serializer: serializer)
-  end
-
-  def show
-    patient = Patient.includes(:patient_information).find(params[:id])
-    authorize patient
-    render(json: patient, serializer: serializer, status: :ok)
   end
 
   private 
