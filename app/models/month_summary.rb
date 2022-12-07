@@ -33,6 +33,10 @@ class MonthSummary < ActiveModelSerializers::Model
 
   
   def number_of_reports_requested
+    # Where is the days_requested_since method coming from?
+    # we need to make sure the patient is active
+    # status may be active, but are they really?
+    # end dates do not line up with active
     PatientInformation.where(patient: Patient.active.non_test).reduce(0) { |sum, pi| sum + pi.requested_from_to(start_of_month, end_of_month) }
   end
 
