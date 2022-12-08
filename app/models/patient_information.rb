@@ -86,9 +86,7 @@ class PatientInformation < ApplicationRecord
     end
   
     begining_date = (!calculation_start_date.nil? && (calculation_start_date > self.datetime_patient_activated)) ? calculation_start_date : self.datetime_patient_activated
-    puts begining_date
     calculation_end_date = patient_completed_treatment ? end_date  : localized_date
-    puts calculation_end_date
     days_in_treatment = (calculation_end_date - begining_date.to_date).to_i + 1
 
     if (!self.patient.has_reported_today && days_in_treatment > 1 && !patient_completed_treatment)
@@ -97,15 +95,21 @@ class PatientInformation < ApplicationRecord
     return days_in_treatment
   end
 
-  # def requested_from_to(from, to)
-  #   calculation_end_date = patient_completed_treatment ? end_date  : to
-  #   days_in_treatment = (calculation_end_date - from.to_date).to_i + 1
+  def requested_from_to(from, to)
 
-  #   if (!self.patient.has_reported_today && days_in_treatment > 1 && !patient_completed_treatment)
-  #     days_in_treatment -= 1
-  #   end
-  #   return days_in_treatment
-  # end
+    if(self.created_at >= from && self.created_at < to)
+        from = self.created_at
+    end
+
+    calculation_end_date = patient_completed_treatment ? end_date  : to
+    days_in_treatment = (calculation_end_date - from).to_i
+
+    if (!self.patient.has_reported_today && days_in_treatment > 1 && !patient_completed_treatment)
+      days_in_treatment -= 1
+    end
+
+    return days_in_treatment
+  end
 
   private
 

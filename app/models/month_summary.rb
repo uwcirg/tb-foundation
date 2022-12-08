@@ -1,11 +1,9 @@
 class MonthSummary < ActiveModelSerializers::Model
   # (Time.local(2022, 7))..(Time.local(2022, 7 + 1) - 1.day) 
-  def initialize(month, year)
-    @month = month
-    @year = year
-    @start_of_month = Time.local(year, month)
-    @end_of_month = (Time.local(year, month + 1) - 1.second)
-    @date_range = (start_of_month)..(end_of_month)
+  def initialize(from, to)
+    @start_date = Time.local(from)
+    @end_date = (Time.local(to) + 1.day) - 1.second
+    @date_range = (start_date)..(end_date)
   end
 
 
@@ -32,12 +30,24 @@ class MonthSummary < ActiveModelSerializers::Model
   private
 
   
-  def number_of_reports_requested
-    # Where is the days_requested_since method coming from?
-    # we need to make sure the patient is active
-    # status may be active, but are they really?
-    # end dates do not line up with active
-    PatientInformation.where(patient: Patient.active.non_test).reduce(0) { |sum, pi| sum + pi.requested_from_to(start_of_month, end_of_month) }
+  def number_of_reports_requested(start_date, end_date)
+    start_date = start_date.to_date
+    end_date = end_date.to_date
+    
+    archived_patient = PatientInformation.where(patient: Patient.non_test, patient: Patient.where(status: "Archived"))
+    active_patient = PatientInformation.where(patient: Patient.active.non_test, patient: Patient.where(status: "Active"))
+
+    if (archived_patient.where(app_end_date: date_range).or(archived_patient.where(created_at: date_range)))
+      # calculate how many days the patient was active between these date ranges
+      archived_patient.pluck(:created_at, :app_end_date).reduce(0) { |sum, pi| sum + pi.requested_from_to(start_date, end_date) }
+    end
+    
+    if (active_patient.where(created_at: date_range))
+      # calculate how many days the patient was active between these date ranges
+      active_patient.pluck(:created_at, :updated_at).reduce(0) { |sum, pi| sum + pi.requested_from_to(start_date, end_date) }
+    end
+
+    return active_patient + archived_patient
   end
 
   
