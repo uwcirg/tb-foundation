@@ -1,15 +1,18 @@
 class MonthSummary < ActiveModelSerializers::Model
   # (Time.local(2022, 7))..(Time.local(2022, 7 + 1) - 1.day) 
-  def initialize(from, to)
+  def initialize(from, to, site)
+    @site = site
     @start_date = Time.local(from)
     @end_date = (Time.local(to) + 1.day) - 1.second
     @date_range = (start_date)..(end_date)
   end
 
+  
+
 
   def photo_reports
     {
-      requested: PhotoDay.requested.where(patient: Patient.non_test.active).where(date: date_range).count,
+      requested: PhotoDay.requested.from_active_patient.within_date_range(date_range).count,
       submitted: submitted_photos.count,
       skipped: submitted_photos.where(photo_was_skipped: true).count,
     }
@@ -24,7 +27,7 @@ class MonthSummary < ActiveModelSerializers::Model
   end
 
   def number_of_symptoms
-    SymptomReport.has_symptom.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where(date: date_range)).count
+    SymptomReport.has_symptom.where(daily_report_id: DailyReport.from_active_patient.within_date_range(date_range)).count
   end
 
   private
@@ -34,8 +37,8 @@ class MonthSummary < ActiveModelSerializers::Model
     start_date = start_date.to_date
     end_date = end_date.to_date
     
-    archived_patient = PatientInformation.where(patient: Patient.non_test, patient: Patient.where(status: "Archived"))
-    active_patient = PatientInformation.where(patient: Patient.active.non_test, patient: Patient.where(status: "Active"))
+    archived_patient = PatientInformation.status("Archived")
+    active_patient = PatientInformation.status("Active")
 
     if (archived_patient.where(app_end_date: date_range).or(archived_patient.where(created_at: date_range)))
       # calculate how many days the patient was active between these date ranges
@@ -53,10 +56,10 @@ class MonthSummary < ActiveModelSerializers::Model
   
 
   def submitted_photos
-    PhotoReport.where(daily_report_id: DailyReport.where(patient: Patient.non_test.active).where(date: date_range))
+    PhotoReport.where(daily_report_id: DailyReport.from_active_patient.where(date: date_range))
   end
 
   def submitted_reports
-    DailyReport.where(patient: Patient.non_test.active).where(date: date_range)
+    DailyReport.from_active_patient.where(date: date_range)
   end
 end

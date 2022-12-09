@@ -7,6 +7,8 @@ class PatientInformation < ApplicationRecord
   #WHO Treatment Outcomes: success, default, transferred out, deceased, lost to follow-up. Added  withdraw as a study specific outcome
   enum treatment_outcome: { "success": 0, "default": 1, "transferred": 2, "deceased": 3,  "lost-to-follow-up": 4, "withdraw": 5, "refuse-to-use-app": 6 }
 
+  scope :patient_status, ->(status) {  where( patient: Patient.non_test ,patient: {status: status}) }
+
 
   def adherence
     days = medication_adherence_denominator
@@ -95,6 +97,9 @@ class PatientInformation < ApplicationRecord
     return days_in_treatment
   end
 
+  # add percentage changes to the patient information 
+  # or add up/down arrows to the dashboard and trends
+
   def requested_from_to(from, to)
 
     if(self.created_at >= from && self.created_at < to)
@@ -102,7 +107,7 @@ class PatientInformation < ApplicationRecord
     end
 
     calculation_end_date = patient_completed_treatment ? end_date  : to
-    days_in_treatment = (calculation_end_date - from).to_i
+    days_in_treatment = (calculation_end_date - from).to_i 
 
     if (!self.patient.has_reported_today && days_in_treatment > 1 && !patient_completed_treatment)
       days_in_treatment -= 1
