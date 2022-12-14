@@ -1,3 +1,4 @@
+# Consider user time zones
 class MonthSummary < ActiveModelSerializers::Model
   def initialize(from, to, site)
     @site = site
@@ -5,10 +6,6 @@ class MonthSummary < ActiveModelSerializers::Model
     @end_date = (Time.local(to) + 1.day) - 1.second
     @date_range = (start_date)..(end_date)
   end
-
-  # add scope for site in other models
-  # if site is all, then no scope
-  # 1,3,4,5
 
   def photo_reports
     {
@@ -39,12 +36,15 @@ class MonthSummary < ActiveModelSerializers::Model
     
     archived_patient = PatientInformation.status("Archived")
     active_patient = PatientInformation.status("Active")
+    # assign total out here
 
     if (archived_patient.where(app_end_date: date_range).or(archived_patient.where(created_at: date_range)))
+      # total +=
       archived_patient.pluck(:created_at, :app_end_date).reduce(0) { |sum, patient_info| sum + patient_info.requested_from_to(start_date, end_date) }
     end
     
     if (active_patient.where(created_at: date_range))
+
       active_patient.pluck(:created_at, :updated_at).reduce(0) { |sum, patient_info| sum + patient_info.requested_from_to(start_date, end_date) }
     end
 
