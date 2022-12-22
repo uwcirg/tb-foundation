@@ -26,6 +26,14 @@ class TimeSummary < ActiveModelSerializers::Model
     SymptomReport.has_symptom.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today)).count
   end
 
+  def all_symptoms
+    symptoms = {};
+    SymptomReport.has_symptom.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today)).each { |report| report.reported_symptoms.each  { |symptom| if symptoms.include?(symptom); symptoms[symptom] += 1; else symptoms[symptom] = 1; end   } }
+    symptoms;
+  end
+
+
+
   private
 
   def start_date
