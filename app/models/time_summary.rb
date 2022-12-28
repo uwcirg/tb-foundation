@@ -3,8 +3,7 @@ class TimeSummary < ActiveModelSerializers::Model
     if (number_of_days.nil?)
       number_of_days = (Time.now.in_time_zone("America/Argentina/Buenos_Aires").to_date - PatientInformation.order(:datetime_patient_activated).first.datetime_patient_activated.to_date).to_i
     end
-    @number_of_days = number_of_days
-    @symptoms = SymptomReport.has_symptom.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today)) 
+    @number_of_days = number_of_days 
   end
 
   def photo_reports
@@ -25,7 +24,7 @@ class TimeSummary < ActiveModelSerializers::Model
   end
 
   def number_of_symptoms
-    @symptoms.count
+    SymptomReport.has_symptom.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today)).count
   end
 
   private
@@ -48,7 +47,7 @@ class TimeSummary < ActiveModelSerializers::Model
 
   def all_symptoms
     symptoms_hash = {};
-    @symptoms.each { |report| report.reported_symptoms.each {|symptom| if symptoms_hash.include?(symptom); symptoms_hash[symptom] += 1; else symptoms_hash[symptom] = 1; end } }
+    SymptomReport.has_symptom.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today)).each { |report| report.reported_symptoms.each {|symptom| if symptoms_hash.include?(symptom); symptoms_hash[symptom] += 1; else symptoms_hash[symptom] = 1; end } }
     symptoms_hash;
   end
   
