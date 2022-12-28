@@ -8,7 +8,7 @@ class TimeSummary < ActiveModelSerializers::Model
 
   def photo_reports
     {
-      requested: PhotoDay.requested.where(patient: Patient.non_test.active).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today).count,
+      requested: PhotoDay.requested.where(patient: Patient.non_test.active).where(date: Time.now() -30.days..Time.now).count,
       submitted: submitted_photos.count,
       skipped: submitted_photos.where(photo_was_skipped: true).count,
     }
@@ -24,7 +24,7 @@ class TimeSummary < ActiveModelSerializers::Model
   end
 
   def number_of_symptoms
-    SymptomReport.has_symptom.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today)).count
+    SymptomReport.has_symptom.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where(date: Time.now() -30.days..Time.now)).count
   end
 
   private
@@ -38,16 +38,16 @@ class TimeSummary < ActiveModelSerializers::Model
   end
 
   def submitted_photos
-    PhotoReport.where(daily_report_id: DailyReport.where(patient: Patient.non_test.active).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today))
+    PhotoReport.where(daily_report_id: DailyReport.where(patient: Patient.non_test.active).where(date: Time.now() -30.days..Time.now))
   end
 
   def submitted_reports
-    DailyReport.where(patient: Patient.non_test.active).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today)
+    DailyReport.where(patient: Patient.non_test.active).where(date: Time.now() -30.days..Time.now)
   end
 
   def all_symptoms
     symptoms_hash = {};
-    SymptomReport.has_symptom.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where("date > ? AND date < ?", Date.today - @number_of_days.days, Date.today)).each { |report| report.reported_symptoms.each {|symptom| if symptoms_hash.include?(symptom); symptoms_hash[symptom] += 1; else symptoms_hash[symptom] = 1; end } }
+    SymptomReport.has_symptom.where(daily_report_id: DailyReport.where(patient: Patient.non_test).where(date: Time.now() -30.days..Time.now)).each { |report| report.reported_symptoms.each {|symptom| if symptoms_hash.include?(symptom); symptoms_hash[symptom] += 1; else symptoms_hash[symptom] = 1; end } }
     symptoms_hash;
   end
   
