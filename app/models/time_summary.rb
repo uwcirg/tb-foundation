@@ -6,6 +6,8 @@ class TimeSummary < ActiveModelSerializers::Model
     @number_of_days = number_of_days 
   end
 
+# test again
+
   def photo_reports
     {
       requested: PhotoDay.requested.where(patient: Patient.non_test.active).where(date: Time.now() - @number_of_days.days..Time.now).count,
