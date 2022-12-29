@@ -19,7 +19,7 @@ RUN make install
 # Install gems
 WORKDIR /foundation
 ADD Gemfile* /foundation/
-RUN gem install bundler
+RUN gem install bundler -v 2.3.26
 RUN bundle install
 RUN echo 'alias create_docs="RAILS_ENV=test bundle exec rake rswag:specs:swaggerize PATTERN="spec/integration/\*\*/\*_spec.rb""' >> ~/.bashrc
 RUN echo 'alias rls="bundle exec rails"' >> ~/.bashrc
