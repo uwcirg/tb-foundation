@@ -47,6 +47,17 @@ class Patient < User
         )
     }
 
+    def requested_between(to, from)
+      patient_start = patient_information.datetime_patient_activated.to_date
+      patient_end = patient_start + 6.months # This is fine for now, we should verify with Sarah what she wants here
+      # ^ could also modify this to take into account when they stopped using the app, etc
+      start_date = [to.to_date, patient_start].max
+      end_date = [from.to_date, patient_end ].min
+      between = (end_date - start_date).to_i
+      [0, between].max
+    end
+  
+
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
     ActiveRecord::Base.connection.exec_query(sql).to_a[0]
