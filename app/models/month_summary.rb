@@ -1,7 +1,3 @@
-# Consider user time zones
-# make unit test for this model spec folder
-# byebug to debug individual methods
-
 class MonthSummary < ActiveModelSerializers::Model
   def initialize(from, to, site)
     @site = site
