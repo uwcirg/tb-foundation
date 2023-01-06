@@ -20,7 +20,7 @@ Rails.application.routes.draw do
       resources :activation, only: [:create]
       resources :contact_tracing_surveys, only: [:index, :create]
       resources :treatment_outcome, only: [:create]
-      resources :reminders, only: [:index, :create]
+      resources :reminders, only: [:index, :create, :future_appointments]
       resource :test_medication_reminder, only: [:create], controller: "test_medication_reminder"
     end
 
