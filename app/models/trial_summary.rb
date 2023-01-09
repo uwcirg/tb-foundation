@@ -11,7 +11,7 @@ class TrialSummary < ActiveModelSerializers::Model
       i = 0
       days_in_treatment = patient.patient_information.days_since_app_start
 
-      (activation_date.to_date..activation_date.to_date + 180.days).each do |day|
+      ((activation_date.to_date)..(activation_date.to_date + 180.days)).each do |day|
         i += 1
         if (i > days_in_treatment)
           days.push("futureDate")
