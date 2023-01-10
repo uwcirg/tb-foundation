@@ -40,11 +40,11 @@ class PatientInformation < ApplicationRecord
   end
 
   def days_since_app_start
-    if (self.datetime_patient_activated){
+    if self.datetime_patient_activated?
       (localized_date - (self.datetime_patient_activated).to_date).to_i + 1
-    } else{
+     else
       0
-    }
+     end
   
   end
 
