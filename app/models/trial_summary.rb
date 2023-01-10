@@ -7,7 +7,10 @@ class TrialSummary < ActiveModelSerializers::Model
       date_hash = {}
       days = []
       patient.daily_reports.joins(:medication_report).pluck("medication_reports.medication_was_taken", :date).map { |p| date_hash["#{p[1]}"] = p[0] }
-      activation_date = patient.patient_information.datetime_patient_activated
+      activation_date = if patient.patient_information.datetime_patient_activated? 
+        patient.patient_information.datetime_patient_activated 
+      else Time.now().to_date 
+      end
       i = 0
       days_in_treatment = patient.patient_information.days_since_app_start
 
