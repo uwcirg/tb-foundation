@@ -1,8 +1,8 @@
 #!/bin/sh -e
-cd "/srv/www/tb-api.cirg.washington.edu/tb-foundation/bin"
+cd "/srv/www/api.samocare.id/tb-foundation/bin"
 sh backup.sh || { echo "Backup of prod db failed"; exit 1; }
 
-restore_file_name="$(ls -t /tmp | grep "tb-v2.sql" | head -n1)"
+restore_file_name="$(ls -t /tmp | grep "tb-papua.sql" | head -n1)"
 
 if [ -z "$restore_file_name" ]; then
      >&2 echo "Error: psql dump file not found"
