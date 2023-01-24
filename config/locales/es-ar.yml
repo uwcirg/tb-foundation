@@ -1,13 +1,13 @@
 es-AR:
   welcome: "Bienvenidos"
   new_messages: "Nuevas Mensajes"
-  medication_reminder: 
+  medication_reminder:
     title: "Recuerde de reportar cada dia"
     body: "Hoy tome mis medicamentos, no tengo nada para reportar y estoy bien. Seleccione su repuesta"
-    yes_action: "👍 Sí" 
+    yes_action: "👍 Sí"
     no_action: "💬 No"
   "yes": "Sí"
-  "no" : "No"
+  "no": "No"
   user_settings:
     password_mismatch: "Nuevas contraseñas no coinciden"
     current_password_incorrect: "Contraseña Actual Incorrecta"
@@ -24,7 +24,7 @@ es-AR:
       body: "Hola, No hemos recibido su reporte de medicacion en la ultima semana. Por favor contacte a su asistente de tratamiento en cuanto pueda para resolver cualquier dificultad. Gracias"
     thrity_days:
       title: "No ha reportado en los últimos 30 días"
-      body:  "Hola, por favor recuerde que es muy importante seguir tomando la medicacion para curar la TB. Necesitamos saber que Ud. esta bien. Por favor contacte a su asistente o a su medico a la brevedad posible.  Gracias"
+      body: "Hola, por favor recuerde que es muy importante seguir tomando la medicacion para curar la TB. Necesitamos saber que Ud. esta bien. Por favor contacte a su asistente o a su medico a la brevedad posible.  Gracias"
   photo_reminder:
     first:
       title: "Tira reactiva requerido hoy"
@@ -38,4 +38,7 @@ es-AR:
   new_message_private:
     title: "Nuevos mensajes de su asistente"
     body: "Toque aquí para ver sus mensajes privados con su asistente"
-
+  post_treatment_teststrip_prompt:
+    # needs translation
+    title: "¿Nos Ayude con algo?"
+    body: "En su último día de tratamiento y 2 días seguidos, envíe una imagen de la tira reactiva por los mensajes para ayudar a verificar la prueba."

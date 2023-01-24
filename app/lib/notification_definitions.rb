@@ -73,6 +73,13 @@ class NotificationDefinitions
       :body_key => "new_message_private_provider.body",
       :url => "/messaging",
       :type =>  "Messaging"
+    },
+    # send this notification for 3 days after a user has completed treatment
+    :post_treatment_teststrip_prompt => {
+      :title_key => "send_post_treatment_test_prompt.title",
+      :body_key => "send_post_treatment_test_prompt.body",
+      :url => "/messaging",
+      :type =>  "Messaging"
     }
   }
 end

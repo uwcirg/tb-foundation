@@ -1,7 +1,7 @@
 en:
   welcome: "Welcome!"
   new_messages: "New Messages"
-  medication_reminder: 
+  medication_reminder:
     title: "Medication Reminder"
     body: "Have you taken your medication today, and are you feeling okay?"
     yes_action: "👍 Yes"
@@ -12,7 +12,7 @@ en:
     password_mismatch: "Passwords Do Not Match"
     current_password_incorrect: "Current Password Incorrect"
     update_success: "Password Updated"
-  appointment: 
+  appointment:
     you_have: "You have a"
     reminder: "Appointment Reminder"
     check_in: "Check In"
@@ -32,7 +32,7 @@ en:
       body: "Hello, We have not received your medication report in the last week. Please contact your treatment assistant as soon as possible to resolve any difficulties. Thank you"
     thirty_days:
       title: "No report for the past month"
-      body:  "Hello, please remember that it is very important to continue taking the medication to cure TB. We need to know that you're okay. Please contact your assistant or your doctor as soon as possible. Thank you"
+      body: "Hello, please remember that it is very important to continue taking the medication to cure TB. We need to know that you're okay. Please contact your assistant or your doctor as soon as possible. Thank you"
   photo_reminder:
     first:
       title: "Test strip required today"
@@ -53,4 +53,7 @@ en:
   severe_symptom:
     title: "Severe symptom reported"
     body: "A patient has reported a severe symptom, tap for more details"
-
+  send_post_treatment_test_prompt:
+    # needs real title and body
+    title: "Send us the pic, plz"
+    body: "Tap here to see the new message"
