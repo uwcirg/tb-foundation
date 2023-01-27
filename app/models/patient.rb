@@ -353,6 +353,14 @@ class Patient < User
     ([( days_where_meds_taken/days).round(2),1.0].min * 100.0).round(2)
   end
 
+  def private_message_channel
+    channels.first
+  end
+
+  def send_automated_message_to_patient(body)
+    private_message_channel.messages.create!(user_id: Administrator.first.id, body: body)
+  end
+
   private
 
   def create_patient_information_entry

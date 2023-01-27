@@ -1,6 +1,11 @@
 es-AR:
   welcome: "Bienvenidos"
   new_messages: "Nuevas Mensajes"
+  end_treatment_message_reminder: "¡Felicitaciones por completar su tratamiento! Fue un gran desafío. En su último día de tratamiento y 3 días seguidos, envíe una imagen de la tira reactiva por los mensajes para ayudar a verificar la prueba. Gracias por su participación en el estudio. Esperamos que el apoyo virtual haya sido de ayuda."
+  end_treatment_photo_0: "Sabemos que es mucho pedir, ¿pero podría subir otra imagen de la tira reactiva? ¡Le agradecemos profundamente por su ayuda!"
+  end_treatment_photo_1: "Sabemos que ha finalizado su tratamiento, pero ¿podría subir otra foto de su tratamiento de la tira reactiva? Estamos probando la sensibilidad de nuestras tira reactiva. ¡Gracias!"
+  end_treatment_photo_2: "Esperamos que te encuentres mucho mejor. ¿Podrías enviarnos una foto de la tira de prueba? Sabemos que esta es la penúltima vez que te lo pediremos. Muchas gracias de nuevo."
+  end_treatment_photo_3: "¿Podría enviar una foto más de una tira reactiva?"
   medication_reminder: 
     title: "Recuerde de reportar cada dia"
     body: "Hoy tome mis medicamentos, no tengo nada para reportar y estoy bien. Seleccione su repuesta"

@@ -19,3 +19,7 @@ patient_stats_update:
   cron: '0 0 * * * America/Argentina/Buenos_Aires'   # Runs once per day at midnight Argentina
   class: PatientStatsWorker
   args: [true,0]
+end_of_treatment_message_worker:
+  cron: '0 12 * * * America/Argentina/Buenos_Aires'   # Runs once per day at noon ART, first reminder for completing test
+  class: EndOfTreatmentMessageWorker
+
