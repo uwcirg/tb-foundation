@@ -7,14 +7,9 @@ class PatientReminderHelper
     end
   end
 
-  # def send_post_treatment_teststrip_message
-  #   patients_to_notify = Patient.where(treatment_end_date: Time.now..Time.now + 1.week)
-  #   patients_to_notify.each do |patient|
-  #     notifier = NotifyUser.new(patient)
-  #     notifier.post_treatment_teststrip_message
-  #   end
 
-  # end
+  # need to send patient a message from practitioner regarding the test strip asks.
+
 
   def send_post_treatment_test_prompt
     patients_to_notify = Patient.where(treatment_end_date: Time.now - 3.day..Time.now)
