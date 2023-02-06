@@ -10,7 +10,7 @@ class EndOfTreatmentMessageWorker
       end
     end
 
-    recently_finished = Patient.where("treatment_end_date <= ? AND treatment_end_date >= ?", Date.current, Date.current - 3.days)
+    recently_finished = Patient.where("treatment_end_date <= ? AND treatment_end_date >= ?", Date.current, Date.current - 4.days)
 
     recently_finished.each do |patient|
       I18n.with_locale(patient.locale) do

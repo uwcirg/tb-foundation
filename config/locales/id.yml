@@ -1,6 +1,12 @@
 id:
     welcome: "Selamat datang!"
     new_messages: "Ada pesan baru"
+    end_treatment_message_reminder: "Selamat! Kamu sudah menyelesaikan pengobatan. Kami tau ini tidak mudah. Dihari terakhir pengobatan dan 3 hari selanjutnya, kami minta anda untuk dapat mengirim foto strip tes melalui fitur mengirim pesan dalam aplikasi sehingga dapat kami verifikasi. Terima kasih terlah berpartisipasi dalam program ini. Kami berharap dukungan virtual ini berguna bagi anda"
+  end_treatment_photo_0: "Teman… kami sadari kami sangat banyak permintaan, tapi bolehkah kamu mengunggah foto strip tes untuk hari ini? Kami sangat mengapresiasi bantuanmu!"
+  end_treatment_photo_1: "Kamu sudah menyelesaikan pengobatanmu, tapi bisakah kamu menggunggah foto strip tes hari ini? Hasil foto kamu sangat membantu kami dalam menguji sensitivitas dari stip tes ini. Tetap semangat!"
+  end_treatment_photo_2: "Harapan kami hari ini kamu semakin sehat. Jangan lupa unggah foto strip tes untuk hari ini kedalam pesan ya!. Terima Kasih"
+  end_treatment_photo_3: "Kamu sangat super! Tolong unggah foto test strip hari ini ya!"
+  end_treatment_photo_4: "Kamu sangat super! Tolong unggah foto test strip hari ini ya!"
     medication_reminder: 
       title: "Waktunya minum obat"
       body: "Apakah kamu sudah minum obat hari ini dan semuanya baik-baik saja?"
