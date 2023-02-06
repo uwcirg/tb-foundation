@@ -1,60 +1,60 @@
 id:
-    welcome: "Selamat datang!"
-    new_messages: "Ada pesan baru"
-    end_treatment_message_reminder: "Selamat! Kamu sudah menyelesaikan pengobatan. Kami tau ini tidak mudah. Dihari terakhir pengobatan dan 3 hari selanjutnya, kami minta anda untuk dapat mengirim foto strip tes melalui fitur mengirim pesan dalam aplikasi sehingga dapat kami verifikasi. Terima kasih terlah berpartisipasi dalam program ini. Kami berharap dukungan virtual ini berguna bagi anda"
+  welcome: "Selamat datang!"
+  new_messages: "Ada pesan baru"
+  end_treatment_message_reminder: "Selamat! Kamu sudah menyelesaikan pengobatan. Kami tau ini tidak mudah. Dihari terakhir pengobatan dan 3 hari selanjutnya, kami minta anda untuk dapat mengirim foto strip tes melalui fitur mengirim pesan dalam aplikasi sehingga dapat kami verifikasi. Terima kasih terlah berpartisipasi dalam program ini. Kami berharap dukungan virtual ini berguna bagi anda"
   end_treatment_photo_0: "Teman… kami sadari kami sangat banyak permintaan, tapi bolehkah kamu mengunggah foto strip tes untuk hari ini? Kami sangat mengapresiasi bantuanmu!"
   end_treatment_photo_1: "Kamu sudah menyelesaikan pengobatanmu, tapi bisakah kamu menggunggah foto strip tes hari ini? Hasil foto kamu sangat membantu kami dalam menguji sensitivitas dari stip tes ini. Tetap semangat!"
   end_treatment_photo_2: "Harapan kami hari ini kamu semakin sehat. Jangan lupa unggah foto strip tes untuk hari ini kedalam pesan ya!. Terima Kasih"
   end_treatment_photo_3: "Kamu sangat super! Tolong unggah foto test strip hari ini ya!"
   end_treatment_photo_4: "Kamu sangat super! Tolong unggah foto test strip hari ini ya!"
-    medication_reminder: 
-      title: "Waktunya minum obat"
-      body: "Apakah kamu sudah minum obat hari ini dan semuanya baik-baik saja?"
-      yes_action: "👍 Ya"
-      no_action: "💬 Tidak"
-    "yes": "Ya"
-    "no": "Tidak"
-    user_settings:
-      password_mismatch: "Passwords tidak cocok"
-      current_password_incorrect: "password yang kamu masukkan salah"
-      update_success: "Password telah diperbaharui"
-    appointment: 
-      you_have: "kamu memiliki"
-      reminder: "Pengingat Janji temu"
-      check_in: "Check In"
-      sputum_test: "Tes sputum"
-      medication_pickup: "Ambil obat"
-      other: "Lainnya"
-      tomorrow: "Besok"
-    redo_photo:
-      title: "Ada masalah dengan foto yang kamu masukkan"
-      body: "Tolong segera lihat tanggapan dari petugas dan lakukan tes baru"
-    missed_reporting_notifications:
-      three_days:
-        title: "Sudah 3 hari kamu tidak melapor"
-        body: "Hallo, sudah 3 hari kamu tidak melapor dari aktifitas kamu terakhir. Jangan lupa hubungi petugas pendamping berobat jika kamu mengalami masalah atau kesulitan dengan aplikasi ini. Terima Kasih"
-      seven_days:
-        title: "Sudah 7 hari kamu tidak melapor"
-        body: "Hallo, kamu sudah 1 minggu tidak melapor. Tolong hubungi petugas pendamping berobat secepatnya ya! untuk bersama kita bahas jika ada kesulitan yang kamu alami. Terima Kasih"
-      thirty_days:
-        title: "Tidak ada laporan selama satu bulan"
-        body:  "Hallo, Kami ingin mengingatkan bahwa minum obat TBC teratur sampai tuntas sangat penting untuk kesembuhanmu. Kami ingin memastikan keadaanmu baik-baik saja. Tolong hubungi kami atau dokter segera ya! Terima Kasih"
-    photo_reminder:
-      first:
-        title: "Waktunya melakukan Tes strip"
-        body: "Tolong segera lakukan tes strip dan segera unggah foto kedalam aplikasi untuk memastikan perkembangan kamu sesuai yang diharapkan"
-      second:
-        title: "Peringatan: Waktunya melakukan Tes strip"
-        body: "Kami ingin memastikan kondisi kamu baik-baik saja. Kami akan menghubungi kamu jika kami belum menerima foto tes strip sampai sore ini"
-    new_message_public:
-      title_partial: "Ada pesan baru"
-      body: "Tekan disini untuk melihat percakapan terakhir dari grup diskusi dengan pasien lainnya"
-    new_message_private:
-      title: "Ada pesan baru dari petugas"
-      body: "Tekan disini untuk melihat percakapan rahasia kamu dengan petugas"
-    new_message_private_provider:
-      title: "Ada pesan dari pasien"
-      body: "Tekan disini untuk melihat pesan"
-    severe_symptom:
-      title: "Ada laporan efek samping berat"
-      body: "Pasien melaporkan efek samping berat, tekan disini untuk melihat lebih detail"
+  medication_reminder:
+    title: "Waktunya minum obat"
+    body: "Apakah kamu sudah minum obat hari ini dan semuanya baik-baik saja?"
+    yes_action: "👍 Ya"
+    no_action: "💬 Tidak"
+  "yes": "Ya"
+  "no": "Tidak"
+  user_settings:
+    password_mismatch: "Passwords tidak cocok"
+    current_password_incorrect: "password yang kamu masukkan salah"
+    update_success: "Password telah diperbaharui"
+  appointment:
+    you_have: "kamu memiliki"
+    reminder: "Pengingat Janji temu"
+    check_in: "Check In"
+    sputum_test: "Tes sputum"
+    medication_pickup: "Ambil obat"
+    other: "Lainnya"
+    tomorrow: "Besok"
+  redo_photo:
+    title: "Ada masalah dengan foto yang kamu masukkan"
+    body: "Tolong segera lihat tanggapan dari petugas dan lakukan tes baru"
+  missed_reporting_notifications:
+    three_days:
+      title: "Sudah 3 hari kamu tidak melapor"
+      body: "Hallo, sudah 3 hari kamu tidak melapor dari aktifitas kamu terakhir. Jangan lupa hubungi petugas pendamping berobat jika kamu mengalami masalah atau kesulitan dengan aplikasi ini. Terima Kasih"
+    seven_days:
+      title: "Sudah 7 hari kamu tidak melapor"
+      body: "Hallo, kamu sudah 1 minggu tidak melapor. Tolong hubungi petugas pendamping berobat secepatnya ya! untuk bersama kita bahas jika ada kesulitan yang kamu alami. Terima Kasih"
+    thirty_days:
+      title: "Tidak ada laporan selama satu bulan"
+      body: "Hallo, Kami ingin mengingatkan bahwa minum obat TBC teratur sampai tuntas sangat penting untuk kesembuhanmu. Kami ingin memastikan keadaanmu baik-baik saja. Tolong hubungi kami atau dokter segera ya! Terima Kasih"
+  photo_reminder:
+    first:
+      title: "Waktunya melakukan Tes strip"
+      body: "Tolong segera lakukan tes strip dan segera unggah foto kedalam aplikasi untuk memastikan perkembangan kamu sesuai yang diharapkan"
+    second:
+      title: "Peringatan: Waktunya melakukan Tes strip"
+      body: "Kami ingin memastikan kondisi kamu baik-baik saja. Kami akan menghubungi kamu jika kami belum menerima foto tes strip sampai sore ini"
+  new_message_public:
+    title_partial: "Ada pesan baru"
+    body: "Tekan disini untuk melihat percakapan terakhir dari grup diskusi dengan pasien lainnya"
+  new_message_private:
+    title: "Ada pesan baru dari petugas"
+    body: "Tekan disini untuk melihat percakapan rahasia kamu dengan petugas"
+  new_message_private_provider:
+    title: "Ada pesan dari pasien"
+    body: "Tekan disini untuk melihat pesan"
+  severe_symptom:
+    title: "Ada laporan efek samping berat"
+    body: "Pasien melaporkan efek samping berat, tekan disini untuk melihat lebih detail"
