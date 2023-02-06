@@ -2,11 +2,10 @@ class V2::MonthSummaryController < UserController
   before_action :auth_admin
 
   def index
-    month = params[:month].to_i || Time.now.month
-    year = params[:year].to_i || Time.now.year
-    site = params[:site] || "all"
+    from = params[:from] || Time.now - 1.month
+    to = params[:to] || Time.now - 1.day
     
-    summary = MonthSummary.new(month, year, site)
+    summary = MonthSummary.new(month, year)
     render(json: summary, status: :ok)
   end
 

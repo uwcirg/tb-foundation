@@ -1,8 +1,7 @@
 class MonthSummary < ActiveModelSerializers::Model
-  def initialize(from, to, site)
-    @site = site
-    @start_date = Time.parse(from)
-    @end_date = (Time.parse(to) + 1.day) - 1.second
+  def initialize(from, to)
+    @start_date = Time.parse(from).beginning_of_day
+    @end_date = Time.parse(to).end_of_day
     @date_range = (start_date)..(end_date)
   end
 
