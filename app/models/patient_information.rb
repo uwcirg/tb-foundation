@@ -40,7 +40,12 @@ class PatientInformation < ApplicationRecord
   end
 
   def days_since_app_start
-    (localized_date - self.datetime_patient_activated.to_date).to_i + 1
+    if self.datetime_patient_activated?
+      (localized_date - (self.datetime_patient_activated).to_date).to_i + 1
+     else
+      0
+     end
+  
   end
 
   def photo_reporting_summary

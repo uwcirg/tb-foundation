@@ -1,13 +1,19 @@
 es-AR:
   welcome: "Bienvenidos"
   new_messages: "Nuevas Mensajes"
-  medication_reminder: 
+  end_treatment_message_reminder: "¡Felicitaciones por completar su tratamiento! Fue un gran desafío. En su último día de tratamiento y 4 días seguidos, envíe una imagen de la tira reactiva por los mensajes para ayudar a verificar la sensibilidad de la prueba. Gracias por su participación en el estudio. Esperamos que el apoyo virtual haya sido de ayuda."
+  end_treatment_photo_0: "Hoy, y durante los próximos 4 días, no olvide enviar una foto de la tira reactiva aquí por mensajes. Muchísimas gracias."
+  end_treatment_photo_1: "Por favor, haz la tira reactiva y envie la foto por mensajes. ¡Gracias! Si ya la envió, ignore este mensaje."
+  end_treatment_photo_2: "Día 3/5. Esperamos que envie una foto de la tira reactiva por mensajes. Si ya la envió, ignore este mensaje."
+  end_treatment_photo_3: "Día 4/5. Esperamos que envie una foto de la tira reactiva por mensajes. Si ya la envió, ignore este mensaje."
+  end_treatment_photo_4: "Día 5/5. Esperamos que envie una foto de la tira reactiva por mensajes. Si ya la envió, ignore este mensaje. Muchísimas gracias."
+  medication_reminder:
     title: "Recuerde de reportar cada dia"
     body: "Hoy tome mis medicamentos, no tengo nada para reportar y estoy bien. Seleccione su repuesta"
-    yes_action: "👍 Sí" 
+    yes_action: "👍 Sí"
     no_action: "💬 No"
   "yes": "Sí"
-  "no" : "No"
+  "no": "No"
   user_settings:
     password_mismatch: "Nuevas contraseñas no coinciden"
     current_password_incorrect: "Contraseña Actual Incorrecta"
@@ -24,7 +30,7 @@ es-AR:
       body: "Hola, No hemos recibido su reporte de medicacion en la ultima semana. Por favor contacte a su asistente de tratamiento en cuanto pueda para resolver cualquier dificultad. Gracias"
     thrity_days:
       title: "No ha reportado en los últimos 30 días"
-      body:  "Hola, por favor recuerde que es muy importante seguir tomando la medicacion para curar la TB. Necesitamos saber que Ud. esta bien. Por favor contacte a su asistente o a su medico a la brevedad posible.  Gracias"
+      body: "Hola, por favor recuerde que es muy importante seguir tomando la medicacion para curar la TB. Necesitamos saber que Ud. esta bien. Por favor contacte a su asistente o a su medico a la brevedad posible.  Gracias"
   photo_reminder:
     first:
       title: "Tira reactiva requerido hoy"
@@ -38,4 +44,3 @@ es-AR:
   new_message_private:
     title: "Nuevos mensajes de su asistente"
     body: "Toque aquí para ver sus mensajes privados con su asistente"
-
