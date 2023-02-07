@@ -1,22 +1,22 @@
 class MonthSummary < ActiveModelSerializers::Model
   def initialize(from, to)
-    @start_date = Time.parse(from).beginning_of_day
-    @end_date = Time.parse(to).end_of_day
+    @start_date = Time.parse(from).beginning_of_day.to_date
+    @end_date = Time.parse(to).end_of_day.to_date
     @date_range = (@start_date)..(@end_date)
   end
 
   def photo_reports
     {
-      requested: PhotoDay.requested.from_active_patient.within_date_range(@date_range).count,
+      requested: PhotoDay.requested.from_active_patient.within_date_range(@start_date..@end_date).count,
       submitted: submitted_photos.count,
       skipped: submitted_photos.where(photo_was_skipped: true).count,
     }
   end
 
   def reports
-    {
+    {,
       requested: number_of_reports_requested,
-      submitted: submitted_reports.count,
+      submitted: submitted_reports.count, 
       needSupport: submitted_reports.where(doing_okay: false).count
     }
   end
