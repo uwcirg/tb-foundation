@@ -5,7 +5,7 @@ class V2::MonthSummaryController < UserController
     from = params[:from] || Time.now - 1.month
     to = params[:to] || Time.now - 1.day
     
-    summary = MonthSummary.new(month, year)
+    summary = MonthSummary.new(from, to)
     render(json: summary, status: :ok)
   end
 

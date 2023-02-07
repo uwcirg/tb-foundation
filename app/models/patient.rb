@@ -48,7 +48,7 @@ class Patient < User
     }
 
     def requested_between(to, from)
-      patient_start = patient_information.datetime_patient_activated.to_date
+      patient_start = self.treatment_start.to_date
       # patient_end = [patient_information.datetime_patient_archived, patient_information.app_end_date, self.treatment_end_date].compact.min.to_date
       patient_end = patient_start + 6.months
       start_date = [to.to_date, patient_start].max

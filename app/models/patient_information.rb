@@ -8,7 +8,11 @@ class PatientInformation < ApplicationRecord
   enum treatment_outcome: { "success": 0, "default": 1, "transferred": 2, "deceased": 3,  "lost-to-follow-up": 4, "withdraw": 5, "refuse-to-use-app": 6 }
 
   scope :patient_status, ->(status) {  where( patient: Patient.non_test, patient: {status: status}) }
+  
 
+  def activated_date
+    return self.datetime_patient_activated
+  end
 
   def adherence
     days = medication_adherence_denominator
@@ -102,11 +106,9 @@ class PatientInformation < ApplicationRecord
 
   def requested_from_to(from, to)
     # may not be able to re-assign params
-
     if(self.created_at >= from && self.created_at < to)
         from = self.created_at
     end
-
     calculation_end_date = patient_completed_treatment ? end_date  : to
     days_in_treatment = (calculation_end_date - from).to_i 
 
