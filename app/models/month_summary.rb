@@ -14,7 +14,7 @@ class MonthSummary < ActiveModelSerializers::Model
   end
 
   def reports
-    {,
+    {
       requested: number_of_reports_requested,
       submitted: submitted_reports.count, 
       needSupport: submitted_reports.where(doing_okay: false).count
