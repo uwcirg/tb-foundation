@@ -6,7 +6,8 @@ class Message < ApplicationRecord
     attr_accessor :skip_notify
     skip_callback :create, :after, :send_notifications, if: :skip_notify
 
-    scope :get_photo_urls, -> { where.not(photo_path: nil).map(&:presigned_url) } 
+    scope :last_photo_urls, ->(count = 1) { where.not(photo_path: nil).last(count).map(&:presigned_url) }
+    scope :with_photos, -> { where.not(photo_path: nil) }
     
     def presigned_url
         return FileHandler.new(Message.photo_bucket, self.photo_path).get_presigned_download_url
