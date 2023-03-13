@@ -12,7 +12,9 @@ class PatientIssueSerializer < ActiveModel::Serializer
              :treatment_start,
              :photo_days_since_last_resolution,
              :photo_schedule,
-             :next_reminder
+             :next_reminder,
+             :most_recent_report,
+             :most_recent_photo_report
 
   has_many :unreviewed_photos do
     object.photo_reports.needs_approval
