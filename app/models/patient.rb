@@ -327,6 +327,18 @@ class Patient < User
     self.daily_reports.last(10)
   end
 
+  
+  def most_recent_report
+    self.daily_reports.last.created_at
+  end
+
+  def most_recent_photo_report
+    self.photo_reports.last.created_at
+
+  end
+
+  
+
   def photo_days_since_last_resolution
     if (!last_general_resolution.nil?)
       return self.photo_days.where("date >= ? and date <= ?", last_general_resolution.to_date, Time.current.to_date).map { |pd| pd.date }
