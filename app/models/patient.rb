@@ -47,6 +47,7 @@ class Patient < User
         )
     }
 
+
   def symptom_summary_by_days(days)
     sql = ActiveRecord::Base.sanitize_sql [SYMPTOM_SUMMARY, { user_id: self.id, num_days: days }]
     ActiveRecord::Base.connection.exec_query(sql).to_a[0]
@@ -329,11 +330,11 @@ class Patient < User
 
   
   def most_recent_report
-    self.daily_reports.last.created_at
+    self.daily_reports.pluck(:created_at).last
   end
 
   def most_recent_photo_report
-    self.photo_reports.last.created_at
+    self.photo_reports.pluck(:created_at).last
 
   end
 
