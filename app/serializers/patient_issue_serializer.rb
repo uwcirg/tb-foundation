@@ -11,7 +11,10 @@ class PatientIssueSerializer < ActiveModel::Serializer
              :unresolved_reports,
              :treatment_start,
              :photo_days_since_last_resolution,
-             :photo_schedule
+             :photo_schedule,
+             :next_reminder,
+             :most_recent_report,
+             :most_recent_photo_report
 
   has_many :unreviewed_photos do
     object.photo_reports.needs_approval
@@ -26,6 +29,10 @@ class PatientIssueSerializer < ActiveModel::Serializer
 
   def channel_id
     object.channels.where(is_private: true).first.id
+  end
+
+  def next_reminder
+    object.next_reminder
   end
 
 
