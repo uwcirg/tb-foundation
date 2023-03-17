@@ -330,11 +330,11 @@ class Patient < User
 
   
   def most_recent_report
-    self.daily_reports.pluck(:created_at).first
+    self&.daily_reports&.last&.created_at
   end
 
   def most_recent_photo_report
-    self.photo_reports.pluck(:created_at).first
+    self&.photo_reports&.last&.created_at
 
   end
 
