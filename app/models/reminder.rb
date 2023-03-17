@@ -4,6 +4,8 @@ class Reminder < ApplicationRecord
 
     # scope :on_or_after, -> date { where("date(datetime) >= ?", date)}
     scope :upcoming, -> {where("datetime > ?", Time.now).order("datetime")}
+    scope :past, -> {where("datetime < ?", Time.now).order("datetime DESC")}
+
 
     enum category: { check_in: 0, medication_pickup: 1, sputum_test: 2, other: 3}
 

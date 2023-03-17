@@ -13,6 +13,7 @@ class PatientIssueSerializer < ActiveModel::Serializer
              :photo_days_since_last_resolution,
              :photo_schedule,
              :next_reminder,
+             :prev_reminder,
              :most_recent_report,
              :most_recent_photo_report
 
@@ -33,6 +34,10 @@ class PatientIssueSerializer < ActiveModel::Serializer
 
   def next_reminder
     object.next_reminder
+  end
+
+  def prev_reminder
+    object.prev_reminder
   end
 
 

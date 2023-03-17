@@ -329,11 +329,11 @@ class Patient < User
 
   
   def most_recent_report
-    self.daily_reports.last.created_at
+    self&.daily_reports&.last&.created_at
   end
 
   def most_recent_photo_report
-    self.photo_reports.last.created_at
+    self&.photo_reports&.last&.created_at
 
   end
 
@@ -349,6 +349,12 @@ class Patient < User
     ordered_reminders = self.reminders.upcoming
     return ordered_reminders.count > 0 ? ordered_reminders.first : nil
   end
+
+  def prev_reminder
+    self&.reminders&.past&.first
+  end
+
+
 
   def adherence_for_timeframe(start,finish)
     self.daily_reports.was_taken
